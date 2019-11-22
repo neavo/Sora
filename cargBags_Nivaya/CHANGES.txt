@@ -1,0 +1,47 @@
+------------------------------------------------------------------------
+r81 | humfras | 2019-08-29 10:43:21 +0000 (Thu, 29 Aug 2019) | 1 line
+Changed paths:
+   M /trunk/style.lua
+
+* add restack feature for classic
+------------------------------------------------------------------------
+r80 | humfras | 2019-08-28 15:43:26 +0000 (Wed, 28 Aug 2019) | 1 line
+Changed paths:
+   M /trunk/cargBags_Nivaya.lua
+   M /trunk/filters.lua
+   M /trunk/style.lua
+
+* more updates for classic
+------------------------------------------------------------------------
+r79 | humfras | 2019-08-28 09:29:30 +0000 (Wed, 28 Aug 2019) | 1 line
+Changed paths:
+   M /trunk/cargBags/base/implementation.lua
+
+* fix quest item border for Classic
+------------------------------------------------------------------------
+r78 | humfras | 2019-08-27 20:41:56 +0000 (Tue, 27 Aug 2019) | 1 line
+Changed paths:
+   M /trunk/cargBags/base/implementation.lua
+   M /trunk/cargBags/base/itembutton.lua
+   M /trunk/cargBags/mixins-add/default.scaffold.lua
+   M /trunk/cargBags/mixins-add/itemkeys/equipSets.lua
+   M /trunk/cargBags/mixins-add/plugins/bagBar.lua
+   M /trunk/cargBags_Nivaya.lua
+   M /trunk/filters.lua
+   M /trunk/style.lua
+
+* add Classic compatibility
+------------------------------------------------------------------------
+r77 | humfras | 2019-08-03 10:27:49 +0000 (Sat, 03 Aug 2019) | 1 line
+Changed paths:
+   M /trunk/style.lua
+
+* fix potential bug with bank sorting call
+------------------------------------------------------------------------
+r76 | humfras | 2019-08-03 09:28:54 +0000 (Sat, 03 Aug 2019) | 1 line
+Changed paths:
+   M /trunk/style.lua
+
+* fix potential bug with bank sorting call
+------------------------------------------------------------------------
+

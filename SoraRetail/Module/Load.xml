@@ -1,0 +1,13 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<include file = "Chat\Load.xml" />
+	<include file = "Aura\Load.xml" />
+	<include file = "Threat\Load.xml" />
+	<include file = "Minimap\Load.xml" />
+	<include file = "UIScaler\Load.xml" />
+	<include file = "ActionBar\Load.xml" />
+	<include file = "UnitFrame\Load.xml" />
+	<include file = "AuraTimer\Load.xml" />
+	<include file = "FontOutline\Load.xml" />
+
+</Ui>

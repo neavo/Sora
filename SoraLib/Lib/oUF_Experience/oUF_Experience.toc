@@ -1,0 +1,11 @@
+## Interface: 80100
+## Author: p3lim
+## Version: @project-version@
+## Title: oUF Experience
+## Notes: Experience Bar support for oUF layouts.
+## RequiredDeps: oUF
+
+## X-Curse-Project-ID: 20343
+## X-WoWI-ID: 10647
+
+oUF_Experience.lua

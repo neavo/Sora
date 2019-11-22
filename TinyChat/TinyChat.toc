@@ -1,0 +1,12 @@
+## Interface: 80000
+## Title: TinyChat
+## Notes: TinyChat
+## Author: M
+## Version: 8.0.1
+
+ChatAtFriends.lua
+ChatCopy.lua
+ChatEmote.lua
+ChatHistory.lua
+##ChatLinkIcon.lua
+ChatTabSwitch.lua

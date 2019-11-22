@@ -1,0 +1,16 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<Script file = "DB.lua" />
+	<Script file = "API.lua" />
+
+	<include file = "oUF\oUF.xml" />
+	<include file = "oUF_Smooth\Load.xml" />
+	<include file = "oUF_Experience\Load.xml" />
+	<include file = "oUF_Reputation\Load.xml" />
+	<include file = "oUF_ArtifactPower\Load.xml" />
+
+	<include file = "rLib\Load.xml" />
+	<include file = "rActionBar\Load.xml" />
+	<include file = "rButtonTemplate\Load.xml" />
+
+</Ui>

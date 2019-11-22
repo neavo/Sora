@@ -1,0 +1,13 @@
+## Interface: 60200
+
+## Title: |cffCC3333 nc|rShadow Fix
+## Author: Imithat/Nightcracker (Maintained by Ferous)
+
+## Version: 1.0.4
+## Notes: Creates a shadow overlay
+
+## SavedVariables: ncShadowLevel
+
+ncShadow.lua
+
+ncShadow.lua

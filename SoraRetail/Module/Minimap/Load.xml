@@ -1,0 +1,8 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<Script file = "Config.lua" />
+	<Script file = "Minimap.lua" />
+	<Script file = "MinimapButton.lua" />
+	<Script file = "MinimapInfoBar.lua" />
+
+</Ui>
