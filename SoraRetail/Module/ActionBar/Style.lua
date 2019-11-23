@@ -71,14 +71,16 @@ local function OnPlayerLogin(self, event, ...)
 
 	rButtonTemplate:StyleAllActionButtons(style)
 	rButtonTemplate:StyleExtraActionButton(style)
-	-- rButtonTemplate:StyleActionButton(_G["Sora'sVehicleExitButton"], style)
 end
 
 -- Event
 local Event = CreateFrame("Frame")
 Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript("OnEvent",function(self, event, ...)
-	if event == "PLAYER_LOGIN" then
-		OnPlayerLogin(self, event, ...)
+Event:SetScript(
+	"OnEvent",
+	function(self, event, ...)
+		if event == "PLAYER_LOGIN" then
+			OnPlayerLogin(self, event, ...)
+		end
 	end
-end)
+)

@@ -1,0 +1,8 @@
+## Interface: 80200
+## Title: Simple Interrupt Announce Config
+## Notes: Configuration panel for SIA
+## Author: BeathsCurse (Bowmore - Silvermoon EU)
+## Dependencies: SimpleInterruptAnnounce
+## LoadOnDemand: 1
+
+ConfigurationPanel.lua

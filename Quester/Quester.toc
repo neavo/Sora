@@ -1,0 +1,30 @@
+## Interface: 80205
+
+## Title: Quester
+## Notes: Improved Questing Experience
+## Author: Nevcairiel
+## Version: 8.2.5.0
+## X-Credits: SmoothQuest by Ammo
+## X-Website: http://www.wowace.com/addons/quester/
+## X-Curse-Project-ID: 84833
+
+## OptionalDeps: Ace3, LibSink-2.0
+
+## SavedVariables: QuesterDB
+
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+
+libs\AceAddon-3.0\AceAddon-3.0.xml
+libs\AceHook-3.0\AceHook-3.0.xml
+libs\AceDB-3.0\AceDB-3.0.xml
+libs\AceLocale-3.0\AceLocale-3.0.xml
+
+libs\AceGUI-3.0\AceGUI-3.0.xml
+libs\AceConsole-3.0\AceConsole-3.0.xml
+libs\AceConfig-3.0\AceConfig-3.0.xml
+
+libs\LibSink-2.0\lib.xml
+
+Localization.lua
+Quester.lua

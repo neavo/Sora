@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: TinyChat
 ## Notes: TinyChat
 ## Author: M
@@ -8,5 +8,5 @@ ChatAtFriends.lua
 ChatCopy.lua
 ChatEmote.lua
 ChatHistory.lua
-##ChatLinkIcon.lua
+ChatLinkIcon.lua
 ChatTabSwitch.lua

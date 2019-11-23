@@ -1,0 +1,9 @@
+## Interface: 80200
+## Title: Simple Interrupt Announce
+## Notes: A simple interrupt announcer
+## Author: BeathsCurse (Bowmore - Silvermoon EU)
+## Version: 1.0.40
+## SavedVariablesPerCharacter: SIACFG
+
+SimpleInterruptAnnounce.lua
+ConfigurationPanelLoader.lua

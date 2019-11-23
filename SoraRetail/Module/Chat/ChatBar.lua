@@ -20,10 +20,10 @@ local function SetChatbar()
 	local btnSize = 18
 
 	local parent = CreateFrame("Frame", nil, UIParent)
-	parent:SetSize(btnSize * 8, btnSize)
+	parent:SetSize(btnSize * 9, btnSize)
 	parent:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 84, 4)
 
-	for i = 1, 8 do
+	for i = 1, 9 do
 		local btn = nil
 
 		if i <= 7 then
@@ -31,10 +31,13 @@ local function SetChatbar()
 			btn:SetScript("OnClick", function(self, event, ...)
 				ChatFrame_OpenChat(Channel[i], chatFrame)
 			end)
-		else
+		elseif i == 8 then
 			btn = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
 			btn:SetAttribute("*type*", "macro")
 			btn:SetAttribute("macrotext", "/roll")
+		else
+			btn = _G["ChatFrameChannelButton"]
+			btn:ClearAllPoints()
 		end
 
 		btn:SetAlpha(0.25)
@@ -51,13 +54,15 @@ local function SetChatbar()
 			end
 		end)
 
-		btn:SetBackdrop({
-			bgFile = DB.Statusbar,
-			edgeFile = DB.GlowTex,
-			insets = {left = 2, right = 2, top = 2, bottom = 2}, edgeSize = 2
-		})
-		btn:SetBackdropColor(unpack(Color[i]))
-		btn:SetBackdropBorderColor(0, 0, 0, 1)
+		if i <=8 then
+			btn:SetBackdrop({
+				bgFile = DB.Statusbar,
+				edgeFile = DB.GlowTex,
+				insets = {left = 2, right = 2, top = 2, bottom = 2}, edgeSize = 2
+			})
+			btn:SetBackdropColor(unpack(Color[i]))
+			btn:SetBackdropBorderColor(0, 0, 0, 1)
+		end
 
 		if i == 1 then
 			btn:SetPoint("TOP", parent, "TOP", 0, 0)

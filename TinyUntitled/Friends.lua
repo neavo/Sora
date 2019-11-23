@@ -15,6 +15,12 @@ end
 
 local pattern = "|cff%02x%02x%02x%s|r |c%s%s|r"
 
+--override function
+local levelColor = {r=1,g=0.82,b=0.2}
+local function GetCreatureDifficultyColor(level)
+    return levelColor
+end
+
 hooksecurefunc("FriendsFrame_UpdateFriendButton", function(button)
     if (not button:IsShown()) then return end
     if (not button.bname) then

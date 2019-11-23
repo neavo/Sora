@@ -52,14 +52,14 @@ local function SetHealth(self, ...)
 end
 
 local function SetTag(self, ...)
-    local nameTag = S.MakeText(self.Health, 10)
+    local nameTag = S.MakeText(self.Health, 12)
     nameTag:SetPoint("LEFT", 4, 0)
     
-    local powerTag = S.MakeText(self.Power, 8)
+    local powerTag = S.MakeText(self.Power, 10)
     powerTag:SetPoint("RIGHT", -4, 0)
     
-    local healthtag = S.MakeText(self.Health, 10)
-    healthtag:SetPoint("RIGHT", -4, 0)
+    local healthTag = S.MakeText(self.Health, 12)
+    healthTag:SetPoint("RIGHT", -4, 0)
     
     self:Tag(nameTag, "[Sora:Level][Sora:Rare][Sora:Color][name]|r")
     self:Tag(powerTag, "[Sora:Power] | [Sora:PerPower]")
@@ -109,7 +109,7 @@ local function SetCastbar(self, ...)
     local bar = CreateFrame("StatusBar", nil, self)
     bar:SetSize(width, height)
     bar:SetStatusBarTexture(DB.Statusbar)
-    bar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -height - 4, 8)
+    bar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -height - 4, 4)
     
     bar.shadow = S.MakeShadow(bar, 2)
     bar.bg = bar:CreateTexture(nil, "BACKGROUND")

@@ -1,0 +1,61 @@
+v7.0.0 - 02-08-2016
+	-Updated TOC for 7.0.0 (Legion).
+	
+v6.0.2 - 16-10-2014
+	-Updated TOC for 6.0.2.
+	
+v5.4.2 - 20-01-2014
+	-Updated TOC for 5.4.2.
+	
+v5.2.0 - 05-03-2013
+	-Updated TOC for 5.2.0.
+	
+v5.1.1 - 26-12-2012
+	-Added feature, support for instance chat.
+	-Updated version in TOC.
+	
+v5.1.0 - 03-12-2012
+	-Updated TOC for 5.1.0.
+
+v5.0.1 - 31-08-2012
+	-Removed deprecated GetNumPartyMembers function.
+	-Added feature, ability to enable/disable QuestAnnounce sound.
+	
+v5.0.0 - 28-08-2012
+	- Updated TOC for 5.0.4.
+	
+v4.3.2 - 07-08-2012
+	- Removed unused Localizations phrases.
+	- Removed command line configuration. Command line /qa will now open the options GUI.
+	- Refactored how configuration worked.
+	- Added feature, ability to announce to say, party, guild, officer, and whisper.
+	- Added feature, ability to announce to any or all of the following frames: Chat, UI Errors, and/or Raid Warning (with sound).
+	
+v4.3.1a - 28-07-2012
+	- Fixed Localizations.
+
+v4.3.1 - 25-07-2012
+	- Added feature, ability to announce when a quest is completed only. Setting /qa every 0 will only announce when the quest objective is completed.
+
+v4.3.0 - 29-03-2012
+	- Updated TOC for 4.3.
+
+v4.2.0 - 28-06-2011
+	- Updated TOC for 4.2.
+
+v4.1.0 - 19-05-2011
+	- Updated TOC for 4.1.
+
+v4.0.3 - 07-01-2011 (stable)
+	- Fixed an invalid file reference for AceDBOptions-3.0.
+	- Reworked how the enable/disable logic worked; it should now properly save this state when logging out or /reload'ing the UI.
+
+v4.0.2 - 25-12-2010 (stable)
+	- Added GUI config under Blizzard's Addon tab.
+	- Reworded "toggle" to "enable".
+	
+v4.0.1 - 21-12-2010 (stable)
+	- Added validation check to ensure the /qa every command line option could not be set outside its limit [1-10].
+
+v4.0.0 - 18-12-2010 (stable)
+	- Rewritten for Cataclysm (4.0.3a) using Ace-3.0.

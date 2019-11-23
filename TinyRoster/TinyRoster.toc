@@ -1,8 +1,8 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: TinyRoster
 ## Notes: TinyRoster
 ## Author: M
 ## Version: 8.0.0
 ## SavedVariables: TinyRosterDB
 
-TinyRoster.lua
+TinyRoster.xml

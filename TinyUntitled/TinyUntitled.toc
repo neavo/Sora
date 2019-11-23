@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: TinyUntitled
 ## Notes: untitled
 ## Author: M
@@ -6,7 +6,6 @@
 
 ActionBar.lua
 CastingBar.lua
-Menu.lua
 Player.lua
 Target.lua
 Friends.lua

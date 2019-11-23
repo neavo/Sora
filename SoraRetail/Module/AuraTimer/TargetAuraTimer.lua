@@ -68,9 +68,8 @@ local function SetAuras(self, ...)
     
 	auras.CustomFilter = function(self, unit, button, name, _, count, _, duration, expiration, caster, _, _, spellID, _, _, _, _, _, _, _, _)
 		local flag = false
-		
-		if caster == "player" and duration > 0 and (duration < 60 or C.AuraTimer.WhiteList.Target[spellID]) then
-			
+        
+        if caster == "player" and ((duration > 0 and duration < 60) or C.AuraTimer.WhiteList.Target[spellID]) then			
             flag = true
             button.name = name
             button.duration = duration

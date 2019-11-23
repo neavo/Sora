@@ -124,7 +124,7 @@ local function OnPlayerLogin(self, event, ...)
     
     for i = 1, 4 do
         local bar = CreateFrame("StatusBar", nil, UIParent)
-        bar:SetSize(220, 12)
+        bar:SetSize(220, 14)
         bar:SetMinMaxValues(0, 130)
         bar:SetStatusBarTexture(DB.Statusbar)
         
@@ -134,10 +134,10 @@ local function OnPlayerLogin(self, event, ...)
         bar.bg:SetAllPoints()
         bar.bg:SetVertexColor(0.12, 0.12, 0.12)
         
-        bar.infoText = S.MakeText(bar, 8)
+        bar.infoText = S.MakeText(bar, 10)
         bar.infoText:SetPoint("LEFT", bar, "LEFT", 4, 0)
         
-        bar.valueText = S.MakeText(bar, 8)
+        bar.valueText = S.MakeText(bar, 10)
         bar.valueText:SetPoint("RIGHT", bar, "RIGHT", -4, 0)
         
         if i == 1 then

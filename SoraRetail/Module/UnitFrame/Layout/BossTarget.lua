@@ -50,11 +50,12 @@ end
 
 local function SetTag(self, ...)
     local nameTag = S.MakeText(self.Health, 9)
-    nameTag:SetPoint("TOPLEFT", 1, -2)
-    self:Tag(nameTag, "[Sora:ShortName]")
+    nameTag:SetPoint("TOPLEFT", 1, -1)
     
-    local healthTag = S.MakeText(self.Health, 9)
-    healthTag:SetPoint("BOTTOMRIGHT", self.Health, 1, 1)
+    local healthTag = S.MakeText(self.Health, 8)
+    healthTag:SetPoint("BOTTOMRIGHT", self.Health, 1, -1)
+    
+    self:Tag(nameTag, "[Sora:ShortName]")
     self:Tag(healthTag, "[Sora:PerHealth]")
 end
 
@@ -80,9 +81,9 @@ local function RegisterForClicks(self, ...)
 end
 
 local function RegisterStyle(self, ...)
-    local height = (_G[self:GetName():gsub("Target", "")]:GetWidth() - 4 * 8) / 9 + 4
+    local height = (_G[self:GetName():gsub("Target", "")]:GetWidth() - 4 * 8) / 9
     
-    self:SetSize(height * 2.5, height)
+    self:SetSize(height * 3, height)
     self:SetPoint("BOTTOMLEFT", _G[self:GetName():gsub("Target", "")], "TOPLEFT", 0, 4)
     
     SetPower(self, ...)

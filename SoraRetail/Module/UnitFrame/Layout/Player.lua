@@ -70,15 +70,15 @@ local function SetHealth(self, ...)
 end
 
 local function SetTag(self, ...)
-    local nameTag = S.MakeText(self.Health, 10)
+    local nameTag = S.MakeText(self.Health, 12)
     nameTag:SetAlpha(0.00)
     nameTag:SetPoint("LEFT", 4, 0)
     
-    local powerTag = S.MakeText(self.Power, 8)
+    local powerTag = S.MakeText(self.Power, 10)
     powerTag:SetAlpha(0.00)
     powerTag:SetPoint("RIGHT", -4, 0)
     
-    local healthTag = S.MakeText(self.Health, 10)
+    local healthTag = S.MakeText(self.Health, 12)
     healthTag:SetAlpha(0.00)
     healthTag:SetPoint("RIGHT", -4, 0)
     

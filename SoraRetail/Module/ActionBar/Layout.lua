@@ -67,7 +67,7 @@ end
 local function CreateExtraBar(self, event, ...)
 	rActionBar:CreateExtraBar("Sora", {
 		frameScale = 1.0, framePoint = {"BOTTOMRIGHT", _G["SoraBar2"], "TOPRIGHT", 0, C.ActionBar.Space}, framePadding = 0,
-		buttonWidth = C.ActionBar.Size * 1.5, buttonHeight = C.ActionBar.Size * 1.5, buttonMargin = C.ActionBar.Space,
+		buttonWidth = C.ActionBar.Size, buttonHeight = C.ActionBar.Size, buttonMargin = C.ActionBar.Space,
 		numCols = 1,
 		startPoint = "LEFT",
 	})
@@ -76,7 +76,7 @@ end
 local function CreateVehicleExitBar(self, event, ...)
 	rActionBar:CreateVehicleExitBar("Sora", {
 		frameScale = 1.0, framePoint = {"BOTTOMRIGHT", _G["SoraBar2"], "TOPRIGHT", 0, C.ActionBar.Space}, framePadding = 0,
-		buttonWidth = C.ActionBar.Size * 1.5, buttonHeight = C.ActionBar.Size * 1.5, buttonMargin = C.ActionBar.Space,
+		buttonWidth = C.ActionBar.Size, buttonHeight = C.ActionBar.Size, buttonMargin = C.ActionBar.Space,
 		numCols = 1,
 		startPoint = "LEFT",
 	})
@@ -85,7 +85,7 @@ end
 local function CreatePossessExitBar(self, event, ...)
 	rActionBar:CreatePossessExitBar("Sora", {
 		frameScale = 1.0, framePoint = {"BOTTOMRIGHT", _G["SoraBar2"], "TOPRIGHT", 0, C.ActionBar.Space}, framePadding = 0,
-		buttonWidth = C.ActionBar.Size * 1.5, buttonHeight = C.ActionBar.Size * 1.5, buttonMargin = C.ActionBar.Space,
+		buttonWidth = C.ActionBar.Size, buttonHeight = C.ActionBar.Size, buttonMargin = C.ActionBar.Space,
 		numCols = 2,
 		startPoint = "LEFT",
 	})
