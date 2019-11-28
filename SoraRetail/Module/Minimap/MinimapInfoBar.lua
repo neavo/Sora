@@ -175,7 +175,7 @@ end
 local function SetAddonBar(self, ...)
     local bar = CreateFrame("StatusBar", nil, anchors[1])
     bar:SetPoint("BOTTOMRIGHT")
-    bar:SetMinMaxValues(0, 48 * 1024)
+    bar:SetMinMaxValues(0, 128 * 1024)
     bar:SetStatusBarTexture(DB.Statusbar)
     bar:SetStatusBarColor(0.00, 0.40, 1.00)
     bar:SetSize((C.MiniMap.Width - 4 * 2) / 3, C.MiniMap.BarHeight)
@@ -476,9 +476,9 @@ local function UpdateAddonBar(self, ...)
     bar:SetValue(currMemory)
     bar.text:SetText(S.FormatMemory(currMemory))
     
-    if currMemory > 42 * 1024 then
+    if currMemory > 96 * 1024 then
         bar:SetStatusBarColor(1.00, 0.00, 0.00)
-    elseif currMemory > 36 * 1024 then
+    elseif currMemory > 64 * 1024 then
         bar:SetStatusBarColor(1.00, 1.00, 0.00)
     else
         bar:SetStatusBarColor(0.00, 0.40, 1.00)

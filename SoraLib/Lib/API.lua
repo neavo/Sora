@@ -4,22 +4,27 @@ local S, C, L, DB = unpack(select(2, ...))
 -- Begin
 function S.Dump(target)
     local getIndent, quoteStr, wrapKey, wrapVal, isArray, dumpObj
-    
+
     getIndent = function(level)
         return string.rep("    ", level)
     end
-    
+
     quoteStr = function(str)
-        str = string.gsub(str, "[%c\\\"]", {
-            ["\t"] = "\\t",
-            ["\r"] = "\\r",
-            ["\n"] = "\\n",
-            ["\""] = "\\\"",
-            ["\\"] = "\\\\",
-        })
+        str =
+            string.gsub(
+            str,
+            '[%c\\"]',
+            {
+                ["\t"] = "\\t",
+                ["\r"] = "\\r",
+                ["\n"] = "\\n",
+                ['"'] = '\\"',
+                ["\\"] = "\\\\"
+            }
+        )
         return '"' .. str .. '"'
     end
-    
+
     wrapKey = function(val)
         if type(val) == "number" then
             return "[" .. val .. "]"
@@ -29,7 +34,7 @@ function S.Dump(target)
             return "[" .. tostring(val) .. "]"
         end
     end
-    
+
     wrapVal = function(val, level)
         if type(val) == "table" then
             return dumpObj(val, level)
@@ -41,7 +46,7 @@ function S.Dump(target)
             return tostring(val)
         end
     end
-    
+
     isArray = function(arr)
         local count = 0
         for k, v in pairs(arr) do
@@ -54,7 +59,7 @@ function S.Dump(target)
         end
         return true, count
     end
-    
+
     dumpObj = function(obj, level)
         if type(obj) ~= "table" then
             return wrapVal(obj)
@@ -75,14 +80,24 @@ function S.Dump(target)
         tokens[#tokens + 1] = getIndent(level - 1) .. "}"
         return table.concat(tokens, "\n")
     end
-    
+
     return dumpObj(target, 0)
+end
+
+--[[
+print_dump是一个用于调试输出数据的函数，能够打印出nil,boolean,number,string,table类型的数据，以及table类型值的元表
+参数data表示要输出的数据
+参数showMetatable表示是否要输出元表
+参数lastCount用于格式控制，用户请勿使用该变量
+]]
+function S.Dump(data, showMetatable, lastCount)
+
 end
 
 function S.MakeText(parent, size)
     local Text = parent:CreateFontString(nil, "ARTWORK")
     Text:SetFont(STANDARD_TEXT_FONT, (C.Core and C.Core.FontScale) and C.Core.FontScale * size or size, "OUTLINE")
-    
+
     return Text
 end
 
@@ -93,7 +108,7 @@ function S.MakeBorder(parent, size)
     Border:SetPoint("BOTTOMRIGHT", size, -size)
     Border:SetBackdropBorderColor(0, 0, 0, size)
     Border:SetBackdrop({edgeFile = DB.Solid, edgesize = size})
-    
+
     return Border
 end
 
@@ -102,12 +117,14 @@ function S.MakeShadow(parent, size)
     Shadow:SetFrameLevel(0)
     Shadow:SetPoint("TOPLEFT", parent, -size, size)
     Shadow:SetPoint("BOTTOMRIGHT", parent, size, -size)
-    Shadow:SetBackdrop({
-        edgeSize = size,
-        edgeFile = DB.GlowTex,
-    })
+    Shadow:SetBackdrop(
+        {
+            edgeSize = size,
+            edgeFile = DB.GlowTex
+        }
+    )
     Shadow:SetBackdropBorderColor(0, 0, 0, 1)
-    
+
     return Shadow
 end
 
@@ -116,12 +133,14 @@ function S.MakeTextureShadow(parent, anchor, size)
     Shadow:SetFrameLevel(1)
     Shadow:SetPoint("TOPLEFT", anchor, -size, size)
     Shadow:SetPoint("BOTTOMRIGHT", anchor, size, -size)
-    Shadow:SetBackdrop({
-        edgeSize = size,
-        edgeFile = DB.GlowTex,
-    })
+    Shadow:SetBackdrop(
+        {
+            edgeSize = size,
+            edgeFile = DB.GlowTex
+        }
+    )
     Shadow:SetBackdropBorderColor(0, 0, 0, 1)
-    
+
     return Shadow
 end
 

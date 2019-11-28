@@ -63,7 +63,7 @@ local function SetTag(self, ...)
     
     self:Tag(nameTag, "[Sora:Level][Sora:Rare][Sora:Color][name]|r")
     self:Tag(powerTag, "[Sora:Power] | [Sora:PerPower]")
-    self:Tag(healthtag, "[Sora:Color][Sora:Health]|r | [Sora:Color][Sora:PerHealth]|r")
+    self:Tag(healthTag, "[Sora:Color][Sora:Health]|r | [Sora:Color][Sora:PerHealth]|r")
 end
 
 local function SetAuras(self, ...)

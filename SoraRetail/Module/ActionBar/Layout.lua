@@ -66,7 +66,7 @@ end
 
 local function CreateExtraBar(self, event, ...)
 	rActionBar:CreateExtraBar("Sora", {
-		frameScale = 1.0, framePoint = {"BOTTOMRIGHT", _G["SoraBar2"], "TOPRIGHT", 0, C.ActionBar.Space}, framePadding = 0,
+		frameScale = 1.0, framePoint = {"BOTTOM", _G["SoraBar2"], "TOP", C.ActionBar.Size * 2 + C.ActionBar.Space * 3, C.ActionBar.Size +  C.ActionBar.Space * 2 + 16}, framePadding = 0,
 		buttonWidth = C.ActionBar.Size, buttonHeight = C.ActionBar.Size, buttonMargin = C.ActionBar.Space,
 		numCols = 1,
 		startPoint = "LEFT",

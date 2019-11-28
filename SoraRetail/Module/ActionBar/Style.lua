@@ -20,51 +20,51 @@ local function OnPlayerLogin(self, event, ...)
 			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		flash = {
-			file = ""
+			file = "",
+			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		flyoutBorder = {
-			file = ""
+			file = "",
+			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		flyoutBorderShadow = {
-			file = ""
+			file = "",
+			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		border = {
-			file = ""
+			file = "",
+			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		normalTexture = {
-			file = ""
+			file = "",
+			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		pushedTexture = {
-			file = ""
+			file = "",
+			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		checkedTexture = {
-			points = {
-				{"TOPLEFT", -2, 2},
-				{"BOTTOMRIGHT", 2, -2}
-			}
+			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		highlightTexture = {
-			points = {
-				{"TOPLEFT", -2, 2},
-				{"BOTTOMRIGHT", 2, -2}
-			}
+			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		name = {
-			font = {STANDARD_TEXT_FONT, 10, "OUTLINE"},
+			font = {STANDARD_TEXT_FONT, 10, "THINOUTLINE"},
 			points = {
 				{"BOTTOM", 0, 1}
 			}
 		},
 		count = {
-			font = {STANDARD_TEXT_FONT, 12, "OUTLINE"},
+			font = {STANDARD_TEXT_FONT, 12, "THINOUTLINE"},
 			points = {
 				{"TOPLEFT", 0, 0}
 			}
 		},
 		hotkey = {
-			font = {STANDARD_TEXT_FONT, 12, "OUTLINE"},
+			font = {STANDARD_TEXT_FONT, 12, "THINOUTLINE"},
 			points = {
-				{"TOPRIGHT", 1, -1}
+				{"TOPRIGHT", 0, -1}
 			}
 		}
 	}

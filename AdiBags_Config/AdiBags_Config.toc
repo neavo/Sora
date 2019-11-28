@@ -1,10 +1,10 @@
-## Interface: 80200
+## Interface: 80205
 
 ## Title: AdiBags Configuration
 ## Notes: Adirelle's bag addon.
 ## Author: Adirelle
-## Version: v1.9.17
-## X-Date: 2019-07-09T18:22:10Z
+## Version: v1.9.18
+## X-Date: 2019-11-25T23:43:39Z
 ## X-Part-Of: AdiBags
 ## LoadOnDemand: 1
 ## Dependencies: AdiBags
