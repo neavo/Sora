@@ -10,12 +10,7 @@ tinsert(C.themes["AuroraClassic"], function()
 	RaidInfoDetailFooter:Hide()
 	RaidInfoDetailHeader:Hide()
 	RaidInfoDetailCorner:Hide()
-	RaidInfoFrame.Header = RaidInfoFrame.Header or RaidInfoFrameHeader -- deprecated in 8.3
-	if C.isNewPatch then
-		F.StripTextures(RaidInfoFrame.Header)
-	else
-		RaidInfoFrame.Header:Hide()
-	end
+	RaidInfoFrameHeader:Hide()
 
 	F.Reskin(RaidFrameRaidInfoButton)
 	F.Reskin(RaidFrameConvertToRaidButton)
