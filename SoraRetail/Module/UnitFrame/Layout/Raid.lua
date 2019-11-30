@@ -148,50 +148,6 @@ local function OnUnitAura(self, event, unit, ...)
 	UpdateRaidDebuff(self, event, unit, ...)
 end
 
-local function SetPower(self, ...)
-	local power = CreateFrame("StatusBar", nil, self)
-	power:SetPoint("BOTTOM", self)
-	power:SetSize(self:GetWidth(), 2)
-	power:SetStatusBarTexture(DB.Statusbar)
-	
-	power.bg = power:CreateTexture(nil, "BACKGROUND")
-	power.bg:SetTexture(DB.Statusbar)
-	power.bg:SetAllPoints()
-	power.bg:SetVertexColor(0.12, 0.12, 0.12)
-	power.bg.multiplier = 0.12
-	
-	power.Smooth = true
-	power.colorPower = true
-	power.frequentUpdates = true
-	power.shadow = S.MakeShadow(power, 2)
-	
-	self.Power = power
-end
-
-local function SetHealth(self, ...)
-	local health = CreateFrame("StatusBar", nil, self)
-	health:SetPoint("TOP", self)
-	health:SetStatusBarTexture(DB.Statusbar)
-	health:SetSize(self:GetWidth(), self:GetHeight() - 4)
-	
-	health.bg = health:CreateTexture(nil, "BACKGROUND")
-	health.bg:SetAllPoints()
-	health.bg:SetTexture(DB.Statusbar)
-	health.bg:SetVertexColor(0.12, 0.12, 0.12)
-	health.bg.multiplier = 0.12
-	
-	health.Smooth = true
-	health.colorTapping = true
-	health.colorDisconnected = true
-	health.colorClass = true
-	health.colorReaction = true
-	health.colorHealth = true
-	health.frequentUpdates = true
-	health.shadow = S.MakeShadow(health, 2)
-	
-	self.Health = health
-end
-
 local function SetAnchor(self, ...)
 	if oUF_Sora_Raid_Anchor and not UnitAffectingCombat("player") then
 		oUF_Sora_Raid_Anchor:ClearAllPoints()
@@ -203,34 +159,13 @@ local function SetAnchor(self, ...)
 	end
 end
 
-local function SetTag(self, ...)
-	local nameTag = S.MakeText(self.Health, 10)
-	nameTag:SetPoint("CENTER", 0, 0)
-	
-	self.NameTag = nameTag
-	self:Tag(self.NameTag, "[Sora:Color][name]|r")
-	
-	local statusTag = S.MakeText(self.Health, 7)
-	statusTag:SetPoint("CENTER", 0, -10)
-	
-	self.StatusTag = statusTag
-	self:Tag(self.StatusTag, "[Sora:Color][Sora:Status]|r")
-end
-
-local function SetRange(self, ...)
-	self.Range = {
-		insideAlpha = 1.00,
-		outsideAlpha = 0.40,
-	}
-end
-
 local function SetThreatIndicator(self, ...)
 	local anchor = CreateFrame("Frame", nil, self)
 	anchor:SetAllPoints()
 	anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
 	
 	local indicator = anchor:CreateTexture(nil, "ARTWORK")
-	indicator.PostUpdate = function(_, unit, status, r, g, b)
+	indicator.PostUpdate = function(indicator, unit, status, r, g, b)
 		local alpha = 1.00
 
 		if status and status > 1 then
@@ -246,7 +181,7 @@ local function SetThreatIndicator(self, ...)
 	self.ThreatIndicator = indicator
 end
 
-local function SetIndicator(self, ...)
+local function SetAuraIndicator(self, ...)
 	local indicators = {}
 	
 	for i = 1, 6 do
@@ -308,53 +243,6 @@ local function SetCompactRaidFrame(self, ...)
 	end
 end
 
-local function SetLeaderIndicator(self, ...)
-	local anchor = CreateFrame("Frame", nil, self)
-	anchor:SetAllPoints()
-	anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
-	
-	local indicator = anchor:CreateTexture(nil, "ARTWORK")
-	indicator:SetSize(12, 12)
-	indicator:SetPoint("CENTER", anchor, "TOPLEFT", 0, 1)
-	
-	self.LeaderIndicator = indicator
-end
-
-local function SetAssistantIndicator(self, ...)
-	local anchor = CreateFrame("Frame", nil, self)
-	anchor:SetAllPoints()
-	anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
-	
-	local indicator = anchor:CreateTexture(nil, "ARTWORK")
-	indicator:SetSize(12, 12)
-	indicator:SetPoint("CENTER", anchor, "TOPLEFT", 0, 1)
-	
-	self.AssistantIndicator = indicator
-end
-
-local function SetRaidRoleIndicator(self, ...)
-	local anchor = CreateFrame("Frame", nil, self)
-	anchor:SetAllPoints()
-	anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
-	
-	local indicator = anchor:CreateTexture(nil, "ARTWORK")
-	indicator:SetSize(12, 12)
-	indicator:SetPoint("CENTER", anchor, "TOPRIGHT", 0, 0)
-	self.RaidRoleIndicator = indicator
-end
-
-local function SetGroupRoleIndicator(self, ...)
-	local anchor = CreateFrame("Frame", nil, self)
-	anchor:SetAllPoints()
-	anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
-	
-	local indicator = anchor:CreateTexture(nil, "ARTWORK")
-	indicator:SetSize(12, 12)
-	indicator:SetPoint("CENTER", anchor, "TOPRIGHT", 0, 0)
-	
-	self.GroupRoleIndicator = indicator
-end
-
 local function SetReadyCheckIndicator(self, ...)
 	local anchor = CreateFrame("Frame", nil, self.Health)
 	anchor:SetAllPoints()
@@ -367,50 +255,30 @@ local function SetReadyCheckIndicator(self, ...)
 	self.ReadyCheckIndicator = indicator
 end
 
-local function SetRaidTargetIndicator(self, ...)
-	local anchor = CreateFrame("Frame", nil, self)
-	anchor:SetAllPoints()
-	anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
-	
-	local indicator = anchor:CreateTexture(nil, "ARTWORK")
-	indicator:SetSize(12, 12)
-	indicator:SetPoint("CENTER", anchor, "TOP", 0, 0)
-	
-	self.RaidTargetIndicator = indicator
-end
-
-local function RegisterForEvent(self, ...)
-	self:SetScript("OnLeave", UnitFrame_OnLeave)
-	self:SetScript("OnEnter", UnitFrame_OnEnter)
-	self:RegisterEvent("UNIT_AURA", OnUnitAura)
-end
-
-local function RegisterForClicks(self, ...)
+local function RegisterStyle(self, unit, ...)
+	self.Range = {
+		insideAlpha = 1.00,
+		outsideAlpha = 0.40,
+	}
 	self:RegisterForClicks("AnyUp")
-end
+	self:RegisterEvent("UNIT_AURA", OnUnitAura)
+	self:SetScript("OnEnter", UnitFrame_OnEnter)
+    self:SetScript("OnLeave", UnitFrame_OnLeave)
 
-local function RegisterStyle(self, ...)
-	SetPower(self, ...)
-	SetHealth(self, ...)
+	S.oUF.CreatePower(self, unit, ...)
+	S.oUF.CreateHealth(self, unit, ...)
+
+	S.oUF.CreateTag(self, unit, ...)
+	S.oUF.CreateGroupRoleIndicator(self, unit, ...)
+	S.oUF.CreateRaidRoleIndicator(self, unit, ...)
+	S.oUF.CreateRaidTargetIndicator(self, unit, ...)
+
 	SetAnchor(self, ...)
-	
-	SetTag(self, ...)
-	SetRange(self, ...)
 	SetThreatIndicator(self, ...)
-	SetIndicator(self, ...)
+	SetAuraIndicator(self, ...)
 	SetRaidDebuff(self, ...)
-	SetCompactRaidFrame(self, ...)
-	
-	SetLeaderIndicator(self, ...)
-	SetAssistantIndicator(self, ...)
-
-	SetRaidRoleIndicator(self, ...)
-	SetGroupRoleIndicator(self, ...)
+	-- SetCompactRaidFrame(self, ...)
 	SetReadyCheckIndicator(self, ...)
-	SetRaidTargetIndicator(self, ...)
-	
-	RegisterForEvent(self, ...)
-	RegisterForClicks(self, ...)
 end
 
 local function OnPlayerLogin(self, event, ...)
@@ -422,15 +290,15 @@ local function OnPlayerLogin(self, event, ...)
 	local anchor = CreateFrame("Frame", "oUF_Sora_Raid_Anchor", UIParent)
 	anchor:SetSize(width * 5 + 8 * 4, height * 6 + 8 * 5)
 
-	local oUFFrame = oUF:SpawnHeader("oUF_Sora_Raid", nil, "raid,party,solo",
+	local frame = oUF:SpawnHeader("oUF_Sora_Raid", nil, "raid,party,solo",
 		"showSolo", true, "showRaid", true, "showParty", true, "showPlayer", true,
 		"xoffset", 8, "yoffset", -8,
 		"sortMethod", "INDEX", "point", "LEFT",
 		"groupBy", "GROUP", "groupFilter", "1,2,3,4,5,6", "groupingOrder", "1,2,3,4,5,6",
-		"maxColumns", 5, "columnSpacing", 8, "unitsPerColumn", 5, "columnAnchorPoint", "TOP",
+		"maxColumns", 6, "columnSpacing", 8, "unitsPerColumn", 5, "columnAnchorPoint", "TOP",
 		"oUF-initialConfigFunction", ([[ self:SetWidth(%d) self:SetHeight(%d) ]]):format(width, height)
 	)
-	oUFFrame:SetPoint("TOPLEFT", anchor, "TOPLEFT", 0, 0)
+	frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", 0, 0)
 end
 
 local function OnPlayerTalentUpdate(self, event, ...)
