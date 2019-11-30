@@ -1,0 +1,445 @@
+﻿-- Engines
+local _, ns = ...
+local oUF = ns.oUF or oUF
+local S, C, L, DB = unpack(select(2, ...))
+
+-- Variables
+S.oUF = {}
+
+-- Power
+S.oUF.CreatePower = function(self, unit, ...)
+    local height = nil
+
+    if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
+        height = 4
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+        height = 2
+    elseif unit == "raid" then
+        height = 2
+    end
+
+    local power = CreateFrame("StatusBar", nil, self)
+    power:SetPoint("BOTTOM")
+    power:SetSize(self:GetWidth(), height)
+    power:SetStatusBarTexture(DB.Statusbar)
+
+    power.bg = power:CreateTexture(nil, "BACKGROUND")
+    power.bg:SetTexture(DB.Statusbar)
+    power.bg:SetAllPoints()
+    power.bg:SetVertexColor(0.12, 0.12, 0.12)
+    power.bg.multiplier = 0.12
+
+    power.Smooth = true
+    power.colorPower = true
+    power.colorSmooth = true
+    power.frequentUpdates = true
+    power.shadow = S.MakeShadow(power, 2)
+
+    self.Power = power
+end
+
+-- Health
+S.oUF.CreateHealth = function(self, unit, ...)
+    local height = nil
+
+    if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
+        height = self:GetHeight() - 8
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+        height = self:GetHeight() - 4
+    elseif unit == "raid" then
+        height = self:GetHeight() - 4
+    end
+
+    local health = CreateFrame("StatusBar", nil, self)
+    health:SetPoint("TOP")
+    health:SetStatusBarTexture(DB.Statusbar)
+    health:SetSize(self:GetWidth(), height)
+
+    health.bg = health:CreateTexture(nil, "BACKGROUND")
+    health.bg:SetAllPoints()
+    health.bg:SetTexture(DB.Statusbar)
+    health.bg:SetVertexColor(0.12, 0.12, 0.12)
+    health.bg.multiplier = 0.12
+
+    health.Smooth = true
+    health.colorTapping = true
+    health.colorDisconnected = true
+    health.colorClass = true
+    health.colorReaction = true
+    health.colorSmooth = true
+    health.colorHealth = true
+    health.frequentUpdates = true
+    health.shadow = S.MakeShadow(health, 2)
+
+    self.Health = health
+end
+
+-- Tag
+S.oUF.CreateTag = function(self, unit, ...)
+    if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
+        local nameTag = S.MakeText(self.Health, 12)
+        nameTag:SetAlpha(0.00)
+        nameTag:SetPoint("LEFT", 4, 0)
+
+        local powerTag = S.MakeText(self.Power, 10)
+        powerTag:SetAlpha(0.00)
+        powerTag:SetPoint("RIGHT", -4, 0)
+
+        local healthTag = S.MakeText(self.Health, 11)
+        healthTag:SetAlpha(0.00)
+        healthTag:SetPoint("RIGHT", -4, 0)
+
+        self.nameTag = nameTag
+        self:Tag(self.nameTag, "[UnitFrame:Level][UnitFrame:Rare][UnitFrame:Color][UnitFrame:Name]|r")
+
+        self.powerTag = powerTag
+        self:Tag(self.powerTag, "[UnitFrame:Power] | [UnitFrame:PerPower]")
+
+        self.healthTag = healthTag
+        self:Tag(self.healthTag, "[UnitFrame:Color][UnitFrame:Health]|r | [UnitFrame:Color][UnitFrame:PerHealth]|r")
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+        local nameTag = S.MakeText(self.Health, 9)
+        nameTag:SetPoint("TOPLEFT", 1, -1)
+
+        local healthTag = S.MakeText(self.Health, 8)
+        healthTag:SetPoint("BOTTOMRIGHT", self.Health, 1, -1)
+
+        self:Tag(nameTag, "[UnitFrame:ShortName]")
+        self:Tag(healthTag, "[UnitFrame:PerHealth]")
+    elseif unit == "raid" then
+        local nameTag = S.MakeText(self.Health, 10)
+        nameTag:SetPoint("CENTER", 0, 0)
+        
+        self.NameTag = nameTag
+        self:Tag(self.NameTag, "[UnitFrame:Color][name]|r")
+        
+        local statusTag = S.MakeText(self.Health, 7)
+        statusTag:SetPoint("CENTER", 0, -10)
+        
+        self.StatusTag = statusTag
+        self:Tag(self.StatusTag, "[UnitFrame:Color][UnitFrame:Status]|r")
+    end
+end
+
+-- Auras
+S.oUF.CreateAuras = function(self, unit, ...)
+    local spacing = 4
+    local size = (self:GetWidth() - 4 * 8) / 9
+
+    local auras = CreateFrame("Frame", nil, self)
+    auras:SetSize(self:GetWidth(), size * 3 + spacing * 2)
+    auras:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -spacing)
+
+    auras.gap = true
+    auras.size = size
+    auras.spacing = spacing
+    auras["growth-y"] = "DOWN"
+    auras["growth-x"] = "RIGHT"
+    auras.onlyShowPlayer = false
+    auras.disableCooldown = false
+    auras.initialAnchor = "TOPLEFT"
+
+    auras.PostCreateIcon = function(self, icon, ...)
+        if not icon._isProcessed then
+            icon.shadow = S.MakeShadow(icon, 2)
+
+            icon.icon:SetAllPoints()
+            icon.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+            icon.count = S.MakeText(icon, 10)
+            icon.count:SetPoint("BOTTOMRIGHT", 3, 0)
+
+            icon._isProcessed = true
+        end
+    end
+
+    if unit == "player" then
+        auras.numBuffs = 0
+        auras.numDebuffs = 27
+    else
+        auras.numBuffs = 9
+        auras.numDebuffs = 18
+    end
+
+    self.Auras = auras
+end
+
+-- Castbar
+S.oUF.CreateCastbar = function(self, unit, ...)
+    local spacing, barHeight = self.Auras.spacing, self.Auras.size
+
+    local castbar = CreateFrame("StatusBar", nil, self)
+    castbar:SetFrameLevel(self.Health:GetFrameLevel() + 255)
+    castbar:SetStatusBarTexture(DB.Statusbar)
+    castbar:SetSize(self:GetWidth() - barHeight - spacing, barHeight)
+
+    castbar.shadow = S.MakeShadow(castbar, 2)
+    castbar.bg = castbar:CreateTexture(nil, "BACKGROUND")
+    castbar.bg:SetAllPoints()
+    castbar.bg:SetTexture(DB.Statusbar)
+    castbar.bg:SetVertexColor(0.12, 0.12, 0.12, 0.75)
+
+    castbar.Text = S.MakeText(castbar, 10)
+    castbar.Text:SetPoint("LEFT", 2, 0)
+
+    castbar.Time = S.MakeText(castbar, 10)
+    castbar.Time:SetPoint("RIGHT", -2, 0)
+
+    castbar.Icon = castbar:CreateTexture(nil, "ARTWORK")
+    castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+    castbar.Icon:SetSize(castbar:GetHeight(), castbar:GetHeight())
+    castbar.Icon.Shadow = S.MakeTextureShadow(castbar, castbar.Icon, 2)
+
+    castbar.SafeZone = castbar:CreateTexture(nil, "BORDER")
+    castbar.SafeZone:SetAlpha(0.25)
+    castbar.SafeZone:SetAllPoints()
+
+    if unit == "player" then
+        castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -spacing)
+        castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
+    elseif unit == "target" or unit == "focus" then
+        castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -spacing)
+        castbar.Icon:SetPoint("RIGHT", castbar, "LEFT", -spacing, 0)
+    else
+        castbar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", barHeight * 3 + spacing, spacing)
+        castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
+        castbar:SetSize(self:GetWidth() - barHeight - barHeight * 3 - spacing * 2, barHeight)
+    end
+
+    local handler = CreateFrame("Frame", nil, UIParent)
+    handler.timer = 0
+    handler.fading = false
+
+    castbar.CustomTimeText = function(self, duration)
+        self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
+    end
+
+    castbar.PostCastStart = function(self, unit, name, castid, spellid)
+        if handler.fading then
+            handler.fading = false
+            handler:SetScript("OnUpdate", nil)
+        end
+
+        if self.notInterruptible then
+            self:SetStatusBarColor(1.00, 0.50, 0.50)
+        else
+            self:SetStatusBarColor(0.37, 0.71, 1.00)
+        end
+
+        self:Show()
+        self:SetAlpha(1.00)
+    end
+
+    castbar.PostCastFailed = function(self, unit, spellname, castid, spellid)
+        if handler.fading then
+            handler.fading = false
+            handler:SetScript("OnUpdate", nil)
+        end
+
+        self:Show()
+        self:SetAlpha(1.00)
+        self:SetStatusBarColor(1.00, 0.05, 0.00)
+
+        handler.timer = 0.00
+        handler:SetScript(
+            "OnUpdate",
+            function(handler, elasped, ...)
+                handler.fading = true
+                handler.timer = handler.timer + elasped
+
+                if handler.timer > 0.30 then
+                    handler.fading = false
+                    handler:SetScript("OnUpdate", nil)
+                else
+                    self:Show()
+                    self:SetAlpha(1.00 * (1 - handler.timer / 0.30))
+                end
+            end
+        )
+    end
+
+    castbar.CustomDelayText = castbar.CustomTimeText
+    castbar.PostChannelStart = castbar.PostCastStart
+    castbar.PostCastInterrupted = castbar.PostCastFailed
+
+    self.Castbar = castbar
+end
+
+-- Portrait
+local function PortraitFadeIn(self, ...)
+    UIFrameFadeIn(self.Portrait, 0.30, 0.00, 0.30)
+    UIFrameFadeOut(self.nameTag, 0.30, 1.00, 0.00)
+    UIFrameFadeOut(self.powerTag, 0.30, 1.00, 0.00)
+    UIFrameFadeOut(self.healthTag, 0.30, 1.00, 0.00)
+end
+
+local function PortraitFadeOut(self, ...)
+    UIFrameFadeIn(self.nameTag, 0.30, 0.00, 1.00)
+    UIFrameFadeIn(self.healthTag, 0.30, 0.00, 1.00)
+    UIFrameFadeIn(self.powerTag, 0.30, 0.00, 1.00)
+    UIFrameFadeOut(self.Portrait, 0.30, 0.30, 0.00)
+end
+
+S.oUF.CreatePortrait = function(self, unit, ...)
+    local portrait = CreateFrame("PlayerModel", nil, self)
+    portrait:SetAlpha(0.30)
+    portrait:SetAllPoints(self.Health)
+    portrait:SetFrameLevel(self.Health:GetFrameLevel() + 1)
+
+    self:SetScript(
+        "OnLeave",
+        function(self, event, ...)
+            UnitFrame_OnLeave(self)
+
+            if not UnitAffectingCombat("player") then
+                PortraitFadeIn(self, ...)
+            end
+        end
+    )
+
+    self:SetScript(
+        "OnEnter",
+        function(self, event, ...)
+            UnitFrame_OnEnter(self)
+
+            if not UnitAffectingCombat("player") then
+                PortraitFadeOut(self, ...)
+            end
+        end
+    )
+
+    self.handler = CreateFrame("Frame", nil, UIParent)
+    self.handler:RegisterEvent("PLAYER_REGEN_ENABLED")
+    self.handler:RegisterEvent("PLAYER_REGEN_DISABLED")
+    self.handler:SetScript(
+        "OnEvent",
+        function(handler, event, ...)
+            if event == "PLAYER_REGEN_ENABLED" then
+                PortraitFadeIn(self, ...)
+            elseif event == "PLAYER_REGEN_DISABLED" then
+                PortraitFadeOut(self, ...)
+            end
+        end
+    )
+
+    self.Portrait = portrait
+end
+
+-- ClassPowers
+-- Only for Player
+S.oUF.CreateClassPowers = function(self, unit, ...)
+    local _, class = UnitClass("player")
+    local classPowers, classPowersNum = {}, class == "DEATHKNIGHT" and 6 or 8
+
+    for i = 1, classPowersNum do
+        local classPower = CreateFrame("StatusBar", nil, self)
+        classPower:SetStatusBarTexture(DB.Statusbar)
+
+        classPower.backgourd = CreateFrame("StatusBar", nil, self)
+        classPower.backgourd:SetAllPoints(classPower)
+        classPower.backgourd:SetFrameLevel(0)
+        classPower.backgourd:SetStatusBarTexture(DB.Statusbar)
+        classPower.backgourd:SetStatusBarColor(0.12, 0.12, 0.12)
+        classPower.backgourd.shadow = S.MakeShadow(classPower.backgourd, 2)
+
+        classPowers[i] = classPower
+    end
+
+    if class == "DEATHKNIGHT" then
+        for i = 1, classPowersNum do
+            if i == 1 then
+                classPowers[i]:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
+            else
+                classPowers[i]:SetPoint("LEFT", classPowers[i - 1], "RIGHT", 4, 0)
+            end
+
+            classPowers[i]:SetSize((self:GetWidth() - (classPowersNum - 1) * 4) / classPowersNum, 4)
+        end
+
+        self.Runes = classPowers
+    else
+        classPowers.PostUpdate = function(element, cur, max, hasMaxChanged, powerType)
+            if (max and max > 0) and hasMaxChanged then
+                for i = max, 8 do
+                    element[i]:ClearAllPoints()
+                end
+
+                for i = 1, max do
+                    if i == 1 then
+                        element[i]:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
+                    else
+                        element[i]:SetPoint("LEFT", classPowers[i - 1], "RIGHT", 4, 0)
+                    end
+
+                    element[i]:SetSize((self:GetWidth() - (max - 1) * 4) / max, 4)
+                end
+            end
+        end
+
+        self.ClassPower = classPowers
+    end
+end
+
+-- RaidRoleIndicator
+-- TODO : Verify
+S.oUF.CreateRaidRoleIndicator = function(self, unit, ...)
+    local anchor, indicator = nil, nil
+
+    anchor = CreateFrame("Frame", nil, self)
+    anchor:SetAllPoints()
+    anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
+
+    indicator = anchor:CreateTexture(nil, "ARTWORK")
+    indicator:SetSize(12, 12)
+    indicator:SetPoint("CENTER", anchor, "TOPLEFT", 0, 1)
+    self.LeaderIndicator = indicator
+
+    indicator = anchor:CreateTexture(nil, "ARTWORK")
+    indicator:SetSize(12, 12)
+    indicator:SetPoint("CENTER", anchor, "TOPLEFT", 0, 1)
+    self.RaidRoleIndicator = indicator
+
+    indicator = anchor:CreateTexture(nil, "ARTWORK")
+    indicator:SetSize(12, 12)
+    indicator:SetPoint("CENTER", anchor, "TOPLEFT", 0, 1)
+    self.RaidRoleIndicator = indicator
+end
+
+-- GroupRoleIndicator
+S.oUF.CreateGroupRoleIndicator = function(self, unit, ...)
+    local anchor = CreateFrame("Frame", nil, self)
+    anchor:SetAllPoints()
+    anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
+
+    local indicator = anchor:CreateTexture(nil, "ARTWORK")
+    indicator:SetSize(12, 12)
+    indicator:SetPoint("CENTER", anchor, "TOPRIGHT", 0, 0)
+    self.GroupRoleIndicator = indicator
+end
+
+-- RaidTargetIndicator
+S.oUF.CreateRaidTargetIndicator = function(self, unit, ...)
+    local size, base = nil, nil
+
+    if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
+        size = 16
+        base = self.Portrait
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+        size = 12
+        base = self.Health
+    elseif unit == "raid" then
+        size = 12
+        base = self.Health
+    end
+
+    local anchor = CreateFrame("Frame", nil, self)
+    anchor:SetAllPoints(base)
+    anchor:SetFrameLevel(base:GetFrameLevel() + 1)
+
+    local raidTargetIndicator = anchor:CreateTexture(nil, "ARTWORK")
+    raidTargetIndicator:SetAlpha(0.75)
+    raidTargetIndicator:SetSize(size, size)
+    raidTargetIndicator:SetPoint("CENTER", anchor, "TOP", 0, 0)
+
+    self.RaidTargetIndicator = raidTargetIndicator
+end
