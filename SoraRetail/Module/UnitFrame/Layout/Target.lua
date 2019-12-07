@@ -17,6 +17,7 @@ local function RegisterStyle(self, unit, ...)
 
     S.oUF.CreateTag(self, unit, ...)
     S.oUF.CreateAuras(self, unit, ...)
+    S.oUF.CreateThreat(self, unit, ...)
     S.oUF.CreateCastbar(self, unit, ...)
     S.oUF.CreatePortrait(self, unit, ...)
 
@@ -32,10 +33,7 @@ local function OnPlayerLogin(self, event, ...)
     oUF:Spawn("target", "oUF_Sora_Target")
 end
 
-local Event = CreateFrame("Frame", nil, UIParent)
-Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript("OnEvent", function(self, event, ...)
-    if event == "PLAYER_LOGIN" then
-        OnPlayerLogin(self, event, ...)
-    end
-end)
+-- EventHandler
+local EventHandler = S.CreateEventHandler()
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.RegisterAllEvents()

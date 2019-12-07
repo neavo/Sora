@@ -3,6 +3,7 @@
 	<Script file = "Init.lua" />	
 
 	<include file = "Lib\Load.xml" />
+	<include file = "Core\Load.xml" />
 
 	<Script file = "Close.lua" />	
 	

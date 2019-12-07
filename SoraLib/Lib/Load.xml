@@ -1,8 +1,5 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 
-	<Script file = "DB.lua" />
-	<Script file = "API.lua" />
-
 	<include file = "oUF\oUF.xml" />
 	<include file = "oUF_Smooth\Load.xml" />
 	<include file = "oUF_Experience\Load.xml" />

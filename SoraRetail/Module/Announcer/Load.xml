@@ -1,0 +1,7 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<script file = "Config.lua" />
+	<Script file = "Announcer.lua" />
+
+</Ui>
+

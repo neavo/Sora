@@ -5,6 +5,7 @@
 	<include file = "Threat\Load.xml" />
 	<include file = "Minimap\Load.xml" />
 	<include file = "UIScaler\Load.xml" />
+	<include file = "Announcer\Load.xml" />
 	<include file = "ActionBar\Load.xml" />
 	<include file = "UnitFrame\Load.xml" />
 	<include file = "AuraTimer\Load.xml" />

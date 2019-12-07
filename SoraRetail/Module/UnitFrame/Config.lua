@@ -24,13 +24,13 @@ C.UnitFrame.Focus.Postion = {"CENTER", UIParent, "CENTER", 0, 192} -- 焦点框�
 C.UnitFrame.Boss = {}
 C.UnitFrame.Boss.Width = 220 -- 首领框体宽度
 C.UnitFrame.Boss.Height = 36 -- 首领框体高度
-C.UnitFrame.Boss.Postion = {"CENTER", UIParent, "CENTER", 0, 384} -- 首领框体位置
+C.UnitFrame.Boss.Postion = {"CENTER", UIParent, "CENTER", 0, 360} -- 首领框体位置
 
 C.UnitFrame.Raid = {}
 C.UnitFrame.Raid.Width = 96 -- 团队框体宽度
 C.UnitFrame.Raid.Height = 30 -- 团队框体高度
-C.UnitFrame.Raid.Postion = {"BOTTOMRIGHT", UIParent, -8, 8} -- 默认模式时，团队框体位置
-C.UnitFrame.Raid.HealerPostion = {"BOTTOM", UIParent, 0, 150} -- 治疗模式时，玩家框体位置
+C.UnitFrame.Raid.Postion = {"BOTTOMRIGHT", UIParent,"BOTTOMRIGHT", -8, 8} -- 默认模式时，团队框体位置
+C.UnitFrame.Raid.HealerPostion = {"BOTTOM", UIParent, "BOTTOM", 0, 150} -- 治疗模式时，玩家框体位置
 C.UnitFrame.Raid.IndicatorFilters = {
         -- 不同职业下，团队框体边角状态监视，请自行添加需要监视的技能ID
         ["DRUID"] = {

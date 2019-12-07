@@ -7,7 +7,8 @@ local fontScale = C.Core.FontScale
 -- Begin
 local function SetFont(font, size, outline)
     font:SetFont(STANDARD_TEXT_FONT, size * fontScale * 0.9, outline)
-    font:SetShadowColor(0, 0, 0, 0)
+    font:SetShadowOffset(1, -1)
+    font:SetShadowColor(0, 0, 0, 0.5)
 end
 
 -- Event

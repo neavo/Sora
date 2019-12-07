@@ -5,5 +5,6 @@
 	<Script file = "Chat.lua"/>
 	<Script file = "ChatBar.lua"/>
 	<Script file = "Channel.lua"/>
+	<Script file = "EasyChannel.lua"/>
 	
 </Ui>

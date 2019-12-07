@@ -147,6 +147,12 @@ local function SetMouseClick()
             end
         },
         {
+            text = ENCOUNTER_JOURNAL,
+            func = function()
+                EJMicroButton:Click()
+            end
+        },
+        {
             text = BLIZZARD_STORE,
             func = function()
                 StoreMicroButton:Click()
@@ -181,7 +187,7 @@ local function SetMouseClick()
             func = function()
                 HelpMicroButton:Click()
             end
-        },
+        }
     }
 
     Minimap:SetScript(

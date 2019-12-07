@@ -17,6 +17,8 @@ local function RegisterStyle(self, unit, ...)
 
     S.oUF.CreateTag(self, unit, ...)
     S.oUF.CreateAuras(self, unit, ...)
+    S.oUF.CreateRunes(self, unit, ...)
+    S.oUF.CreateTotems(self, unit, ...)
     S.oUF.CreateCastbar(self, unit, ...)
     S.oUF.CreatePortrait(self, unit, ...)
     S.oUF.CreateClassPowers(self, unit, ...)
@@ -24,30 +26,30 @@ local function RegisterStyle(self, unit, ...)
     S.oUF.CreateRaidRoleIndicator(self, unit, ...)
     S.oUF.CreateGroupRoleIndicator(self, unit, ...)
     S.oUF.CreateRaidTargetIndicator(self, unit, ...)
-    
-    PlayerPowerBarAlt:SetMovable(true)
-    PlayerPowerBarAlt:SetUserPlaced(true)
-    PlayerPowerBarAlt:SetFrameStrata("HIGH")
-        
-    PlayerPowerBarAlt:SetScript("OnMouseDown", function(self, button, ...)
-        self:StartMoving()
-    end)
-    
-    PlayerPowerBarAlt:SetScript("OnMouseUp", function(self, button, ...)
-        self:StopMovingOrSizing()
-    end)
 end
 
 local function OnPlayerLogin(self, event, ...)
     oUF:RegisterStyle("oUF_Sora_Player", RegisterStyle)
     oUF:SetActiveStyle("oUF_Sora_Player")
     oUF:Spawn("player", "oUF_Sora_Player")
+
+    PlayerPowerBarAlt:SetMovable(true)
+    PlayerPowerBarAlt:SetUserPlaced(true)
+    PlayerPowerBarAlt:SetFrameStrata("HIGH")
+
+    local OnPlayerPowerBarAltMouseUp = function(self, button, ...)
+        self:StopMovingOrSizing()
+    end
+
+    local OnPlayerPowerBarAltMouseDown = function(self, button, ...)
+        self:StartMoving()
+    end
+
+    PlayerPowerBarAlt:SetScript("OnMouseUp", OnPlayerPowerBarAltMouseUp)
+    PlayerPowerBarAlt:SetScript("OnMouseDown", OnPlayerPowerBarAltMouseDown)
 end
 
-local Event = CreateFrame("Frame", nil, UIParent)
-Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript("OnEvent", function(self, event, ...)
-    if event == "PLAYER_LOGIN" then
-        OnPlayerLogin(self, event, ...)
-    end
-end)
+-- EventHandler
+local EventHandler = S.CreateEventHandler()
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.RegisterAllEvents()

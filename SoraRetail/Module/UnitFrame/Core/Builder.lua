@@ -4,6 +4,8 @@ local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
+
+-- Initialize
 S.oUF = {}
 
 -- Power
@@ -12,7 +14,9 @@ S.oUF.CreatePower = function(self, unit, ...)
 
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
         height = 4
-    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+    elseif
+        unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil
+     then
         height = 2
     elseif unit == "raid" then
         height = 2
@@ -44,7 +48,9 @@ S.oUF.CreateHealth = function(self, unit, ...)
 
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
         height = self:GetHeight() - 8
-    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+    elseif
+        unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil
+     then
         height = self:GetHeight() - 4
     elseif unit == "raid" then
         height = self:GetHeight() - 4
@@ -80,44 +86,42 @@ S.oUF.CreateTag = function(self, unit, ...)
         local nameTag = S.MakeText(self.Health, 12)
         nameTag:SetAlpha(0.00)
         nameTag:SetPoint("LEFT", 4, 0)
+        self:Tag(nameTag, "[UnitFrame:Level][UnitFrame:Rare][UnitFrame:Name]")
 
         local powerTag = S.MakeText(self.Power, 10)
         powerTag:SetAlpha(0.00)
         powerTag:SetPoint("RIGHT", -4, 0)
+        self:Tag(powerTag, "[UnitFrame:Power] | [UnitFrame:PerPower]")
 
         local healthTag = S.MakeText(self.Health, 11)
         healthTag:SetAlpha(0.00)
         healthTag:SetPoint("RIGHT", -4, 0)
+        self:Tag(healthTag, "[UnitFrame:Health] | [UnitFrame:PerHealth]")
 
         self.nameTag = nameTag
-        self:Tag(self.nameTag, "[UnitFrame:Level][UnitFrame:Rare][UnitFrame:Color][UnitFrame:Name]|r")
-
         self.powerTag = powerTag
-        self:Tag(self.powerTag, "[UnitFrame:Power] | [UnitFrame:PerPower]")
-
         self.healthTag = healthTag
-        self:Tag(self.healthTag, "[UnitFrame:Color][UnitFrame:Health]|r | [UnitFrame:Color][UnitFrame:PerHealth]|r")
-    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+    elseif
+        unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil
+     then
         local nameTag = S.MakeText(self.Health, 9)
         nameTag:SetPoint("TOPLEFT", 1, -1)
+        self:Tag(nameTag, "[UnitFrame:ShortName]")
 
         local healthTag = S.MakeText(self.Health, 8)
         healthTag:SetPoint("BOTTOMRIGHT", self.Health, 1, -1)
-
-        self:Tag(nameTag, "[UnitFrame:ShortName]")
         self:Tag(healthTag, "[UnitFrame:PerHealth]")
     elseif unit == "raid" then
         local nameTag = S.MakeText(self.Health, 10)
         nameTag:SetPoint("CENTER", 0, 0)
-        
-        self.NameTag = nameTag
-        self:Tag(self.NameTag, "[UnitFrame:Color][name]|r")
-        
+        self:Tag(nameTag, "[UnitFrame:Name]")
+
         local statusTag = S.MakeText(self.Health, 7)
         statusTag:SetPoint("CENTER", 0, -10)
-        
+        self:Tag(statusTag, "[UnitFrame:Status]")
+
+        self.NameTag = nameTag
         self.StatusTag = statusTag
-        self:Tag(self.StatusTag, "[UnitFrame:Color][UnitFrame:Status]|r")
     end
 end
 
@@ -162,6 +166,103 @@ S.oUF.CreateAuras = function(self, unit, ...)
     end
 
     self.Auras = auras
+end
+
+-- Runes
+S.oUF.CreateRunes = function(self, unit, ...)
+    if select(2, UnitClass("player")) ~= "DEATHKNIGHT" then
+        return 0
+    end
+
+    local runes = {}
+    local num, size = 6, (self:GetWidth() - (num - 1) * 4) / num
+
+    for i = 1, num do
+        local rune = CreateFrame("StatusBar", nil, self)
+        rune:SetSize(size, 4)
+        rune:SetStatusBarTexture(DB.Statusbar)
+
+        rune.backgourd = CreateFrame("StatusBar", nil, self)
+        rune.backgourd:SetAllPoints(rune)
+        rune.backgourd:SetFrameLevel(0)
+        rune.backgourd:SetStatusBarTexture(DB.Statusbar)
+        rune.backgourd:SetStatusBarColor(0.12, 0.12, 0.12)
+        rune.backgourd.shadow = S.MakeShadow(rune.backgourd, 2)
+
+        if i == 1 then
+            rune:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
+        else
+            rune:SetPoint("LEFT", runes[i - 1], "RIGHT", 4, 0)
+        end
+
+        runes[i] = rune
+    end
+
+    self.Runes = classPowers
+end
+
+-- Totems
+S.oUF.CreateTotems = function(self, unit, ...)
+    if select(2, UnitClass("player")) ~= "SHAMAN" then
+        return 0
+    end
+
+    local totems = {}
+    local size = self:GetHeight() / 2 - 4
+
+    for i = 1, MAX_TOTEMS do
+        local totem = CreateFrame("Button", nil, self)
+        totem:SetSize(size, size)
+
+        totem.icon = totem:CreateTexture(nil, "OVERLAY")
+        totem.icon:SetAllPoints()
+        totem.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+        totem.cooldown = CreateFrame("Cooldown", nil, totem, "CooldownFrameTemplate")
+        totem.cooldown:SetAllPoints()
+
+        totem.shadow = S.MakeShadow(totem, 2)
+
+        if i == 1 then
+            totem:SetPoint("RIGHT", self, "LEFT", -4, 0)
+        elseif i == 3 then
+            totem:SetPoint("RIGHT", totems[1], "LEFT", -4, 0)
+        else
+            totem:SetPoint("TOP", totems[i - 1], "RIGHT", 0, -4)
+        end
+
+        totems[i] = totem
+    end
+
+    self.Totems = totems
+end
+
+-- Threat
+S.oUF.CreateThreat = function(self, unit, ...)
+    local threat = CreateFrame("StatusBar", nil, self)
+    threat:SetSize(12, 12)
+    threat:SetStatusBarTexture(DB.Statusbar)
+    threat:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 4, 0)
+
+    threat:SetAlpha(0.30)
+    threat:SetStatusBarColor(GetThreatStatusColor(0))
+    threat.shadow = S.MakeShadow(threat, 2)
+
+    local handler = S.CreateTimerHandler()
+    handler.Interval = 1.00
+    handler.OnUpdate = function(handler, elapsed, ...)
+        local alpha = 0.00
+        local isTanking = UnitDetailedThreatSituation("player", unit)
+
+        if UnitAffectingCombat("player") then
+            alpha = isTanking and 1.00 or 0.30
+        end
+
+        threat:SetAlpha(alpha)
+        threat:SetStatusBarColor(GetThreatStatusColor(isTanking and 3.00 or 0.00))
+    end
+
+    self.Threat = threat
 end
 
 -- Castbar
@@ -266,122 +367,112 @@ S.oUF.CreateCastbar = function(self, unit, ...)
 end
 
 -- Portrait
-local function PortraitFadeIn(self, ...)
-    UIFrameFadeIn(self.Portrait, 0.30, 0.00, 0.30)
-    UIFrameFadeOut(self.nameTag, 0.30, 1.00, 0.00)
-    UIFrameFadeOut(self.powerTag, 0.30, 1.00, 0.00)
-    UIFrameFadeOut(self.healthTag, 0.30, 1.00, 0.00)
-end
-
-local function PortraitFadeOut(self, ...)
-    UIFrameFadeIn(self.nameTag, 0.30, 0.00, 1.00)
-    UIFrameFadeIn(self.healthTag, 0.30, 0.00, 1.00)
-    UIFrameFadeIn(self.powerTag, 0.30, 0.00, 1.00)
-    UIFrameFadeOut(self.Portrait, 0.30, 0.30, 0.00)
-end
-
 S.oUF.CreatePortrait = function(self, unit, ...)
     local portrait = CreateFrame("PlayerModel", nil, self)
     portrait:SetAlpha(0.30)
     portrait:SetAllPoints(self.Health)
     portrait:SetFrameLevel(self.Health:GetFrameLevel() + 1)
 
-    self:SetScript(
-        "OnLeave",
-        function(self, event, ...)
-            UnitFrame_OnLeave(self)
+    local function PortraitFadeIn(self, ...)
+        UIFrameFadeIn(self.Portrait, 0.30, 0.00, 0.30)
+        UIFrameFadeOut(self.nameTag, 0.30, 1.00, 0.00)
+        UIFrameFadeOut(self.powerTag, 0.30, 1.00, 0.00)
+        UIFrameFadeOut(self.healthTag, 0.30, 1.00, 0.00)
+    end
 
-            if not UnitAffectingCombat("player") then
-                PortraitFadeIn(self, ...)
-            end
+    local function PortraitFadeOut(self, ...)
+        UIFrameFadeIn(self.nameTag, 0.30, 0.00, 1.00)
+        UIFrameFadeIn(self.healthTag, 0.30, 0.00, 1.00)
+        UIFrameFadeIn(self.powerTag, 0.30, 0.00, 1.00)
+        UIFrameFadeOut(self.Portrait, 0.30, 0.30, 0.00)
+    end
+
+    local OnEnter = function(self, event, ...)
+        UnitFrame_OnEnter(self)
+
+        if not UnitAffectingCombat("player") then
+            PortraitFadeOut(self, ...)
         end
-    )
+    end
 
-    self:SetScript(
-        "OnEnter",
-        function(self, event, ...)
-            UnitFrame_OnEnter(self)
+    local OnLeave = function(self, event, ...)
+        UnitFrame_OnLeave(self)
 
-            if not UnitAffectingCombat("player") then
-                PortraitFadeOut(self, ...)
-            end
+        if not UnitAffectingCombat("player") then
+            PortraitFadeIn(self, ...)
         end
-    )
+    end
 
-    self.handler = CreateFrame("Frame", nil, UIParent)
-    self.handler:RegisterEvent("PLAYER_REGEN_ENABLED")
-    self.handler:RegisterEvent("PLAYER_REGEN_DISABLED")
-    self.handler:SetScript(
-        "OnEvent",
-        function(handler, event, ...)
-            if event == "PLAYER_REGEN_ENABLED" then
-                PortraitFadeIn(self, ...)
-            elseif event == "PLAYER_REGEN_DISABLED" then
-                PortraitFadeOut(self, ...)
-            end
-        end
-    )
+    self:SetScript("OnEnter", OnEnter)
+    self:SetScript("OnLeave", OnLeave)
+
+    local OnPlayerRegenEnabled = function(handler, event, ...)
+        PortraitFadeIn(self, ...)
+    end
+
+    local OnPlayerRegenDisabled = function(handler, event, ...)
+        PortraitFadeOut(self, ...)
+    end
+
+    local EventHandler = S.CreateEventHandler()
+    EventHandler.Event.PLAYER_REGEN_ENABLED = OnPlayerRegenEnabled
+    EventHandler.Event.PLAYER_REGEN_DISABLED = OnPlayerRegenDisabled
+    EventHandler.RegisterAllEvents()
 
     self.Portrait = portrait
 end
 
 -- ClassPowers
--- Only for Player
 S.oUF.CreateClassPowers = function(self, unit, ...)
-    local _, class = UnitClass("player")
-    local classPowers, classPowersNum = {}, class == "DEATHKNIGHT" and 6 or 8
+    local powers = {}
 
-    for i = 1, classPowersNum do
-        local classPower = CreateFrame("StatusBar", nil, self)
-        classPower:SetStatusBarTexture(DB.Statusbar)
+    for i = 1, 8 do
+        local power = CreateFrame("StatusBar", nil, self)
+        power:SetStatusBarTexture(DB.Statusbar)
 
-        classPower.backgourd = CreateFrame("StatusBar", nil, self)
-        classPower.backgourd:SetAllPoints(classPower)
-        classPower.backgourd:SetFrameLevel(0)
-        classPower.backgourd:SetStatusBarTexture(DB.Statusbar)
-        classPower.backgourd:SetStatusBarColor(0.12, 0.12, 0.12)
-        classPower.backgourd.shadow = S.MakeShadow(classPower.backgourd, 2)
+        power.backgourd = CreateFrame("StatusBar", nil, self)
+        power.backgourd:SetAllPoints(power)
+        power.backgourd:SetFrameLevel(0)
+        power.backgourd:SetStatusBarTexture(DB.Statusbar)
+        power.backgourd:SetStatusBarColor(0.12, 0.12, 0.12)
+        power.backgourd.shadow = S.MakeShadow(power.backgourd, 2)
 
-        classPowers[i] = classPower
+        powers[i] = power
     end
 
-    if class == "DEATHKNIGHT" then
-        for i = 1, classPowersNum do
-            if i == 1 then
-                classPowers[i]:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
-            else
-                classPowers[i]:SetPoint("LEFT", classPowers[i - 1], "RIGHT", 4, 0)
+    local PostUpdate = function(powers, cur, max, hasMaxChanged, powerType)
+        if not max or max == 0 then
+            for i = 1, 8 do
+                powers[i]:SetAlpha(0.00)
+                powers[i].backgourd:SetAlpha(0.00)
+            end
+        elseif hasMaxChanged and (max and max > 0) then
+            local width = (self:GetWidth() - (max - 1) * 4) / max
+
+            for i = max + 1, 8 do
+                powers[i]:SetAlpha(0.00)
+                powers[i].backgourd:SetAlpha(0.00)
             end
 
-            classPowers[i]:SetSize((self:GetWidth() - (classPowersNum - 1) * 4) / classPowersNum, 4)
-        end
-
-        self.Runes = classPowers
-    else
-        classPowers.PostUpdate = function(element, cur, max, hasMaxChanged, powerType)
-            if (max and max > 0) and hasMaxChanged then
-                for i = max, 8 do
-                    element[i]:ClearAllPoints()
+            for i = 1, max do
+                if i == 1 then
+                    powers[i]:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
+                else
+                    powers[i]:SetPoint("LEFT", powers[i - 1], "RIGHT", 4, 0)
                 end
 
-                for i = 1, max do
-                    if i == 1 then
-                        element[i]:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
-                    else
-                        element[i]:SetPoint("LEFT", classPowers[i - 1], "RIGHT", 4, 0)
-                    end
-
-                    element[i]:SetSize((self:GetWidth() - (max - 1) * 4) / max, 4)
-                end
+                powers[i]:SetSize(width, 4)
+                powers[i]:SetAlpha(1.00)
+                powers[i].backgourd:SetAlpha(1.00)
             end
         end
-
-        self.ClassPower = classPowers
     end
+
+    self.ClassPower = powers
+    self.ClassPower.PostUpdate = PostUpdate
 end
 
 -- RaidRoleIndicator
--- TODO : Verify
 S.oUF.CreateRaidRoleIndicator = function(self, unit, ...)
     local anchor, indicator = nil, nil
 
@@ -424,7 +515,9 @@ S.oUF.CreateRaidTargetIndicator = function(self, unit, ...)
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
         size = 16
         base = self.Portrait
-    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+    elseif
+        unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil
+     then
         size = 12
         base = self.Health
     elseif unit == "raid" then

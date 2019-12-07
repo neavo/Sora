@@ -5,8 +5,10 @@
 	<Script file = "Focuser.lua" />
 	<Script file = "AutoSell.lua" />
 	<Script file = "AutoRepair.lua" />
+	<Script file = "CombatAlert.lua" />
 	<Script file = "ncHoverBind.lua" />
 	<Script file = "AlreadyKnown.lua" />
 	<Script file = "UIParentFade.lua" />
+	<Script file = "OutRangeColor.lua" />
 
 </Ui>

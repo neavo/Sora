@@ -6,5 +6,5 @@ if not C.NamePlates then
     C.NamePlates = {}
 end
 
-C.NamePlates.Width = 128
-C.NamePlates.Height = 8
+C.NamePlates.Width = 110
+C.NamePlates.Height = 6

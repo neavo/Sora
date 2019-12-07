@@ -67,8 +67,8 @@ function Addon:GetDatabaseDefaults()
 			b = 0,
 			a = 1,
 			-- offsets
-			x = 0,
-			y = 0
+			x = 1,
+			y = -1
 		},
 		-- text positioning
 		anchor = "CENTER",

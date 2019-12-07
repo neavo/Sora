@@ -2,19 +2,9 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Begin
-local function kill(frame)
-    if frame.UnregisterAllEvents then
-        frame:UnregisterAllEvents()
-    end
-
-    frame.Show = function()
-    end
-    frame:Hide()
-end
-
 local function SetOption()
-    kill(ChatFrameMenuButton)
-    kill(QuickJoinToastButton)
+    S.KillFrame(ChatFrameMenuButton)
+    S.KillFrame(QuickJoinToastButton)
 
     BNToastFrame:SetClampedToScreen(true)
     BNToastFrame:SetClampRectInsets(-15, 15, 15, -15)
@@ -52,31 +42,39 @@ local function SetChatFrame()
         ChatFrame:SetFont(STANDARD_TEXT_FONT, (size >= 10 and size <= 18) and size or 12, "OUTLINE")
 
         for j = 1, #CHAT_FRAME_TEXTURES do
-            kill(_G["ChatFrame" .. i .. CHAT_FRAME_TEXTURES[j]])
+            S.KillFrame(_G["ChatFrame" .. i .. CHAT_FRAME_TEXTURES[j]])
         end
 
-        kill(_G["ChatFrame" .. i .. "ButtonFrame"])
+        S.KillFrame(_G["ChatFrame" .. i .. "ButtonFrame"])
 
-        kill(_G["ChatFrame" .. i .. "TabLeft"])
-        kill(_G["ChatFrame" .. i .. "TabRight"])
-        kill(_G["ChatFrame" .. i .. "TabMiddle"])
-        kill(_G["ChatFrame" .. i .. "TabSelectedLeft"])
-        kill(_G["ChatFrame" .. i .. "TabSelectedRight"])
-        kill(_G["ChatFrame" .. i .. "TabSelectedMiddle"])
-        kill(_G["ChatFrame" .. i .. "TabHighlightLeft"])
-        kill(_G["ChatFrame" .. i .. "TabHighlightRight"])
-        kill(_G["ChatFrame" .. i .. "TabHighlightMiddle"])
+        S.KillFrame(_G["ChatFrame" .. i .. "TabLeft"])
+        S.KillFrame(_G["ChatFrame" .. i .. "TabRight"])
+        S.KillFrame(_G["ChatFrame" .. i .. "TabMiddle"])
+        S.KillFrame(_G["ChatFrame" .. i .. "TabSelectedLeft"])
+        S.KillFrame(_G["ChatFrame" .. i .. "TabSelectedRight"])
+        S.KillFrame(_G["ChatFrame" .. i .. "TabSelectedMiddle"])
+        S.KillFrame(_G["ChatFrame" .. i .. "TabHighlightLeft"])
+        S.KillFrame(_G["ChatFrame" .. i .. "TabHighlightRight"])
+        S.KillFrame(_G["ChatFrame" .. i .. "TabHighlightMiddle"])
 
         _G["ChatFrame" .. i .. "TabText"].SetTextColor = function()
         end
-        _G["ChatFrame" .. i .. "TabText"]:SetFont(STANDARD_TEXT_FONT, 12, "THINOUTLINE")
+        _G["ChatFrame" .. i .. "TabText"]:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+        _G["ChatFrame" .. i .. "TabText"]:SetShadowOffset(1, -1)
+        _G["ChatFrame" .. i .. "TabText"]:SetShadowColor(0, 0, 0, 0.5)
 
         local EditBox = _G["ChatFrame" .. i .. "EditBox"]
         local EditBoxHeader = _G["ChatFrame" .. i .. "EditBoxHeader"]
 
         local _, size = ChatFrame:GetFont()
-        EditBox:SetFont(STANDARD_TEXT_FONT, (size >= 10 and size <= 18) and size or 12, "THINOUTLINE")
-        EditBoxHeader:SetFont(STANDARD_TEXT_FONT, (size >= 10 and size <= 18) and size or 12, "THINOUTLINE")
+
+        EditBox:SetFont(STANDARD_TEXT_FONT, (size >= 10 and size <= 18) and size or 12, "OUTLINE")
+        EditBox:SetShadowOffset(1, -1)
+        EditBox:SetShadowColor(0, 0, 0, 0.5)
+
+        EditBoxHeader:SetFont(STANDARD_TEXT_FONT, (size >= 10 and size <= 18) and size or 12, "OUTLINE")
+        EditBoxHeader:SetShadowOffset(1, -1)
+        EditBoxHeader:SetShadowColor(0, 0, 0, 0.5)
 
         EditBox:ClearAllPoints()
         EditBox:EnableMouse(false)
@@ -84,13 +82,13 @@ local function SetChatFrame()
         EditBox:SetPoint("TOPLEFT", ChatFrame, "BOTTOMLEFT", -8, -6)
         EditBox:SetPoint("BOTTOMRIGHT", ChatFrame, "BOTTOMRIGHT", 8, -22)
 
-        kill(_G["ChatFrame" .. i .. "EditBoxMid"])
-        kill(_G["ChatFrame" .. i .. "EditBoxLeft"])
-        kill(_G["ChatFrame" .. i .. "EditBoxRight"])
-        kill(_G["ChatFrame" .. i .. "EditBoxLanguage"])
-        kill(_G["ChatFrame" .. i .. "EditBoxFocusMid"])
-        kill(_G["ChatFrame" .. i .. "EditBoxFocusLeft"])
-        kill(_G["ChatFrame" .. i .. "EditBoxFocusRight"])
+        S.KillFrame(_G["ChatFrame" .. i .. "EditBoxMid"])
+        S.KillFrame(_G["ChatFrame" .. i .. "EditBoxLeft"])
+        S.KillFrame(_G["ChatFrame" .. i .. "EditBoxRight"])
+        S.KillFrame(_G["ChatFrame" .. i .. "EditBoxLanguage"])
+        S.KillFrame(_G["ChatFrame" .. i .. "EditBoxFocusMid"])
+        S.KillFrame(_G["ChatFrame" .. i .. "EditBoxFocusLeft"])
+        S.KillFrame(_G["ChatFrame" .. i .. "EditBoxFocusRight"])
     end
 end
 
@@ -99,14 +97,7 @@ local function OnPlayerLogin(self, event, unit, ...)
     SetChatFrame()
 end
 
--- Event
-local Event = CreateFrame("Frame", nil, UIParent)
-Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript(
-    "OnEvent",
-    function(self, event, unit, ...)
-        if event == "PLAYER_LOGIN" then
-            OnPlayerLogin(self, event, unit, ...)
-        end
-    end
-)
+-- Handler
+local Handler = S.CreateEventHandler()
+Handler.Event.PLAYER_LOGIN = OnPlayerLogin
+Handler:RegisterAllEvents()
