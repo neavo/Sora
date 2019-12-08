@@ -1,12 +1,18 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 
 	<Script file = "Config.lua" />
-	<Script file = "RaidAuras.lua" />
 
 	<Script file = "Core\Tag.lua" />
 	<Script file = "Core\Tester.lua" />
 	<Script file = "Core\Builder.lua" />
-	
+
+	<Script file = "RaidDebuffs\Test.lua" />
+	<Script file = "RaidDebuffs\BFARaid.lua" />
+	<Script file = "RaidDebuffs\BFADungeon.lua" />
+	<Script file = "RaidDebuffs\LegionRaid.lua" />
+	<Script file = "RaidDebuffs\LegionDungeon.lua" />
+
+	<Script file = "Layout\Raid.lua" />
 	<Script file = "Layout\Boss.lua" />
 	<Script file = "Layout\BossTarget.lua" />
 	<Script file = "Layout\Player.lua" />
@@ -15,7 +21,4 @@
 	<Script file = "Layout\TargetTarget.lua" />
 	<Script file = "Layout\Focus.lua" />
 	<Script file = "Layout\FocusTarget.lua" />
-
-	<Script file = "Layout\Raid.lua" />
-
 </Ui>

@@ -29,28 +29,21 @@ C.UnitFrame.Boss.Postion = {"CENTER", UIParent, "CENTER", 0, 360} -- 首领框�
 C.UnitFrame.Raid = {}
 C.UnitFrame.Raid.Width = 96 -- 团队框体宽度
 C.UnitFrame.Raid.Height = 30 -- 团队框体高度
-C.UnitFrame.Raid.Postion = {"BOTTOMRIGHT", UIParent,"BOTTOMRIGHT", -8, 8} -- 默认模式时，团队框体位置
+C.UnitFrame.Raid.Postion = {"BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -8, 8} -- 默认模式时，团队框体位置
 C.UnitFrame.Raid.HealerPostion = {"BOTTOM", UIParent, "BOTTOM", 0, 150} -- 治疗模式时，玩家框体位置
-C.UnitFrame.Raid.IndicatorFilters = {
-        -- 不同职业下，团队框体边角状态监视，请自行添加需要监视的技能ID
-        ["DRUID"] = {
-            -- 回春术，回春术（萌芽），生命绽放，野性成长，愈合，铁木树皮
-            774, 155777, 33763, 48438, 8936, 102342,
-        },
-        ["MONK"] = {},
-        ["MAGE"] = {},
-        ["ROGUE"] = {},
-        ["PRIEST"] = {},
-        ["HUNTER"] = {},
-        ["SHAMAN"] = {
-            61295, 53390
-        },
-        ["WARLOCK"] = {},
-        ["PALADIN"] = {
-            -- 提尔的拯救，无，无，无，圣光道标，信仰道标，无
-            200654, 0, 0, 53563, 156910, 0,
-        },
-        ["WARRIOR"] = {},
-        ["DEATHKNIGHT"] = {},
-        ["DEMONHUNTER"] = {},
-}
+
+-- 不同职业下，团队框体边角状态监视
+-- 请自行添加需要监视的技能ID，最大可监视6个技能ID
+C.UnitFrame.Raid.IndicatorFilters = {}
+C.UnitFrame.Raid.IndicatorFilters.MONK = {119611, 196725, 0, 0, 0, 196725} -- 复苏之雾，无，无，无，无，碧愈疾风
+C.UnitFrame.Raid.IndicatorFilters.MAGE = {774, 155777, 33763, 48438, 8936, 102342} -- 回春术，回春术（萌芽），生命绽放，野性成长，愈合，铁木树皮
+C.UnitFrame.Raid.IndicatorFilters.DRUID = {}
+C.UnitFrame.Raid.IndicatorFilters.ROGUE = {}
+C.UnitFrame.Raid.IndicatorFilters.PRIEST = {}
+C.UnitFrame.Raid.IndicatorFilters.HUNTER = {}
+C.UnitFrame.Raid.IndicatorFilters.SHAMAN = {}
+C.UnitFrame.Raid.IndicatorFilters.WARLOCK = {}
+C.UnitFrame.Raid.IndicatorFilters.PALADIN = {200654, 0, 0, 53563, 156910, 0} -- 提尔的拯救，无，无，无，圣光道标，信仰道标，无
+C.UnitFrame.Raid.IndicatorFilters.WARRIOR = {}
+C.UnitFrame.Raid.IndicatorFilters.DEATHKNIGHT = {}
+C.UnitFrame.Raid.IndicatorFilters.DEMONHUNTER = {}
