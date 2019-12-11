@@ -143,19 +143,25 @@ S.oUF.CreateAuras = function(self, unit, ...)
     auras.disableCooldown = false
     auras.initialAnchor = "TOPLEFT"
 
-    auras.PostCreateIcon = function(self, icon, ...)
-        if not icon._isProcessed then
-            icon.shadow = S.MakeShadow(icon, 2)
+    local PostCreateIcon = function(self, aura, ...)
+        if not aura.__isProcessed then
+            aura.shadow = S.MakeShadow(aura, 2)
 
-            icon.icon:SetAllPoints()
-            icon.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+            aura.icon:SetAllPoints()
+            aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-            icon.count = S.MakeText(icon, 10)
-            icon.count:SetPoint("BOTTOMRIGHT", 3, 0)
+            local anchor = CreateFrame("Frame", nil, aura)
+            anchor:SetAllPoints(aura)
+            anchor:SetFrameLevel(aura.cd:GetFrameLevel() + 1)
 
-            icon._isProcessed = true
+            aura.count = S.MakeText(anchor, 9)
+            aura.count:SetPoint("BOTTOMRIGHT", 3, 0)
+
+            aura.__isProcessed = true
         end
     end
+
+    auras.PostCreateIcon = PostCreateIcon
 
     if unit == "player" then
         auras.numBuffs = 0
@@ -249,6 +255,7 @@ S.oUF.CreateThreat = function(self, unit, ...)
     threat.shadow = S.MakeShadow(threat, 2)
 
     local handler = S.CreateTimerHandler()
+    handler.Register()
     handler.Interval = 1.00
     handler.OnUpdate = function(handler, elapsed, ...)
         local alpha = 0.00
@@ -440,30 +447,31 @@ S.oUF.CreateClassPowers = function(self, unit, ...)
         powers[i] = power
     end
 
+    local lastMax = nil
     local PostUpdate = function(powers, cur, max, hasMaxChanged, powerType)
-        if not max or max == 0 then
-            for i = 1, 8 do
-                powers[i]:SetAlpha(0.00)
-                powers[i].backgourd:SetAlpha(0.00)
-            end
-        elseif hasMaxChanged and (max and max > 0) then
-            local width = (self:GetWidth() - (max - 1) * 4) / max
+        if lastMax == max then
+            return 0
+        else
+            lastMax = max
+        end
 
-            for i = max + 1, 8 do
-                powers[i]:SetAlpha(0.00)
-                powers[i].backgourd:SetAlpha(0.00)
-            end
+        for i = 1, 8 do
+            local power = powers[i]
 
-            for i = 1, max do
+            if not max or i > max then
+                power:Hide()
+                power.backgourd:Hide()
+            else
                 if i == 1 then
-                    powers[i]:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
+                    power:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
                 else
-                    powers[i]:SetPoint("LEFT", powers[i - 1], "RIGHT", 4, 0)
+                    power:SetPoint("LEFT", powers[i - 1], "RIGHT", 4, 0)
                 end
 
-                powers[i]:SetSize(width, 4)
-                powers[i]:SetAlpha(1.00)
-                powers[i].backgourd:SetAlpha(1.00)
+                power:Show()
+                power.backgourd:Show()
+
+                power:SetSize((self:GetWidth() - (max - 1) * 4) / max, 4)
             end
         end
     end

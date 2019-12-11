@@ -1,36 +1,25 @@
 ﻿-- Engine
 local S, C, L, DB = unpack(select(2, ...))
-local _G, tsort, tinsert = _G, table.sort, tinsert
 
 -- Variables
-local lastMsg = nil
-local lastMsgTime = nil
-
 -- Initialize
-local CompletedQuests = {}
-CompletedQuests.Init = false
+local lastMsgTime = nil
+local completedQuests = {}
 
 -- Functions
 local SendMessage = function(msg, sound)
-    if msg == lastMsg and lastMsgTime == time() then
-        return 0
-    else
-        lastMsg = msg
-        lastMsgTime = time()
-    end
-
     if sound then
         PlaySound(SOUNDKIT.RAID_WARNING, "Master")
     end
 
     if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-        SendChatMessage("[Sora's Announcer] " .. msg, "INSTANCE_CHAT")
+        SendChatMessage("[Sora's] " .. msg, "INSTANCE_CHAT")
     elseif IsInRaid() then
-        SendChatMessage("[Sora's Announcer] " .. msg, "RAID")
+        SendChatMessage("[Sora's] " .. msg, "RAID")
     elseif IsInGroup() then
-        SendChatMessage("[Sora's Announcer] " .. msg, "PARTY")
+        SendChatMessage("[Sora's] " .. msg, "PARTY")
     else
-        print("|cff70C0F5[Sora's Announcer]|r " .. msg)
+        print("|cff70C0F5[Sora's]|r " .. msg)
     end
 end
 
@@ -55,97 +44,85 @@ local OnQuestAccepted = function(self, event, questIndex, questId)
         end
     end
 end
-
 -- Quest Progress
-local function GetPattern(pattern)
-    pattern = gsub(pattern, "%(", "%%%1")
-    pattern = gsub(pattern, "%)", "%%%1")
-    pattern = gsub(pattern, "%%%d?$?.", "(.+)")
+local FitPattern = function(p)
+    p = string.gsub(p, "%%s", "(.+)")
+    p = string.gsub(p, "%%d", "(%%d+)")
 
-    return format("^%s$", pattern)
+    return "^" .. p .. "$"
 end
 local QuestPatterns = {
-    ["Found"] = GetPattern(ERR_QUEST_ADD_FOUND_SII),
-    ["Item"] = GetPattern(ERR_QUEST_ADD_ITEM_SII),
-    ["Kill"] = GetPattern(ERR_QUEST_ADD_KILL_SII),
-    ["PKill"] = GetPattern(ERR_QUEST_ADD_PLAYER_KILL_SII),
-    ["ObjectiveComplete"] = GetPattern(ERR_QUEST_OBJECTIVE_COMPLETE_S),
-    ["QuestComplete"] = GetPattern(ERR_QUEST_COMPLETE_S),
-    ["QuestFailed"] = GetPattern(ERR_QUEST_FAILED_S)
+    FitPattern(ERR_QUEST_ADD_ITEM_SII),
+    FitPattern(ERR_QUEST_ADD_KILL_SII),
+    FitPattern(ERR_QUEST_ADD_FOUND_SII),
+    FitPattern(ERR_QUEST_ADD_PLAYER_KILL_SII),
+    FitPattern(ERR_QUEST_FAILED_S),
+    FitPattern(ERR_QUEST_COMPLETE_S),
+    FitPattern(ERR_QUEST_UNKNOWN_COMPLETE),
+    FitPattern(ERR_QUEST_OBJECTIVE_COMPLETE_S)
 }
 local OnUIInfoMessage = function(self, event, errorType, msg)
     for _, pattern in pairs(QuestPatterns) do
         if string.match(msg, pattern) then
-            local _, _, _, cur, max = string.find(msg, "(.*)[:：]%s*([-%d]+)%s*/%s*([-%d]+)%s*$")
-            cur, max = tonumber(cur), tonumber(max)
-
-            if cur and max and max >= 10 then
-                if mod(cur, floor(max / 5)) == 0 then
-                    SendMessage(msg, true)
-                end
-            else
-                SendMessage(msg, true)
-            end
-
-            break
+            SendMessage(msg, true)
+            return
         end
     end
 end
 
 -- Quest Complete
 local OnQuestTurnedIn = function(self, event, questID, xpReward, moneyReward)
-    if QuestUtils_IsQuestWorldQuest(questID) then
-        local link = GetQuestLink(questID)
-
-        if link and not CompletedQuests[questID] then
-            CompletedQuests[questID] = true
-            SendMessage("完成任务：" .. link, true)
-        end
+    local link = GetQuestLink(questID) or completedQuests[questID]
+    
+    if link then
+        SendMessage("完成任务：" .. link, true)
     end
 end
+
 local OnQuestLogUpdate = function(self, event, ...)
     for i = 1, GetNumQuestLogEntries() do
         local _, _, _, _, _, isComplete, _, questID = GetQuestLogTitle(i)
         local link = GetQuestLink(questID)
-        local worldQuest = select(3, GetQuestTagInfo(questID))
 
-        if link and isComplete and not CompletedQuests[questID] and not worldQuest then
-            if CompletedQuests.Init then
-                SendMessage("完成任务：" .. link)
-            end
-            CompletedQuests[questID] = true
+        if isComplete and link then
+            completedQuests[questID] = link
         end
     end
-
-    CompletedQuests.Init = true
 end
 
 -- Dispel、Stolen、Interrupt
 local OnCombarLogEventUnfiltered = function(self, event, ...)
-    local timestamp, eventType, hideCaster, sourceGUID, sourceName = CombatLogGetCurrentEventInfo()
+    local timestamp, event, _, _, sourceName, _, _, _, destName = CombatLogGetCurrentEventInfo()
 
-    if eventType ~= "SPELL_DISPEL" and eventType ~= "SPELL_STOLEN" and eventType ~= "SPELL_INTERRUPT" then
+    if event ~= "SPELL_DISPEL" and event ~= "SPELL_STOLEN" and event ~= "SPELL_INTERRUPT" then
+        return 0
+    end
+
+    local isPlayer =
+        sourceName == UnitName("player") or sourceName == UnitName("pet") or sourceName == UnitName("vehicle")
+    if C.Announcer.OnlyPlayer and not isPlayer then
+        return 0
+    end
+
+    if lastMsgTime == timestamp then
         return 0
     end
 
     local action = ""
-    if eventType == "SPELL_DISPEL" then
+    local spellId, _, _, destSpellId = select(12, CombatLogGetCurrentEventInfo())
+
+    if event == "SPELL_DISPEL" then
         action = " 驱散了 "
-    elseif eventType == "SPELL_STOLEN" then
+    elseif event == "SPELL_STOLEN" then
         action = " 偷取了 "
-    elseif eventType == "SPELL_INTERRUPT" then
+    elseif event == "SPELL_INTERRUPT" then
         action = " 打断了 "
     end
 
-    local spellId, _, _, extraSpellId = select(12, CombatLogGetCurrentEventInfo())
-
-    if C.Announcer.OnlyPlayer then
-        if sourceName == UnitName("player") or sourceName == UnitName("pet") or sourceName == UnitName("vehicle") then
-            SendMessage(sourceName .. " 使用 " .. GetSpellLink(spellId) .. action .. GetSpellLink(extraSpellId))
-        end
-    else
-        SendMessage(sourceName .. " 使用 " .. GetSpellLink(spellId) .. action .. GetSpellLink(extraSpellId))
-    end
+    lastMsgTime = timestamp
+    SendMessage(
+        sourceName .. " 使用 " .. GetSpellLink(spellId) .. action .. destName .. " 的 " .. GetSpellLink(destSpellId)
+    )
 end
 
 -- EventHandler

@@ -85,25 +85,32 @@ S.NamePlates.CreateAuras = function(self, unit, ...)
     auras.disableCooldown = false
     auras.initialAnchor = "BOTTOMLEFT"
 
-    auras.PostCreateIcon = function(self, icon, ...)
-        if not icon._isProcessed then
-            icon.shadow = S.MakeShadow(icon, 2)
+    local PostCreateIcon = function(self, aura, ...)
+        if not aura.__isProcessed then
+            aura.shadow = S.MakeShadow(aura, 2)
 
-            icon.icon:SetAllPoints()
-            icon.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+            aura.icon:SetAllPoints()
+            aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-            icon.count = S.MakeText(icon, 10)
-            icon.count:SetPoint("BOTTOMRIGHT", 3, 0)
+            local anchor = CreateFrame("Frame", nil, aura)
+            anchor:SetAllPoints(aura)
+            anchor:SetFrameLevel(aura.cd:GetFrameLevel() + 1)
 
-            icon._isProcessed = true
+            aura.count = S.MakeText(anchor, 5)
+            aura.count:SetPoint("BOTTOMRIGHT", 3, 0)
+
+            aura.__isProcessed = true
         end
     end
+
+    auras.PostCreateIcon = PostCreateIcon
 
     self.Auras = auras
 end
 
 -- Threat
 local TimerHandler = S.CreateTimerHandler()
+TimerHandler.Register()
 TimerHandler.Interval = 1.00
 TimerHandler.OnUpdate = function(handler, elapsed, ...)
     for i = 1, 40 do
@@ -152,10 +159,10 @@ S.NamePlates.CreateCastbar = function(self, unit, ...)
     castbar.bg:SetTexture(DB.Statusbar)
     castbar.bg:SetVertexColor(0.12, 0.12, 0.12, 0.75)
 
-    castbar.Text = S.MakeText(castbar, 8)
+    castbar.Text = S.MakeText(castbar, 7)
     castbar.Text:SetPoint("LEFT", 2, 0)
 
-    castbar.Time = S.MakeText(castbar, 8)
+    castbar.Time = S.MakeText(castbar, 7)
     castbar.Time:SetPoint("RIGHT", -2, 0)
 
     castbar.Icon = castbar:CreateTexture(nil, "ARTWORK")
@@ -174,11 +181,17 @@ S.NamePlates.CreateCastbar = function(self, unit, ...)
     handler.timer = 0
     handler.fading = false
 
-    castbar.CustomTimeText = function(self, duration)
-        self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
+    local UpdateText = function(self, duration)
+        self.Text:SetText(S.SubString(self.Text:GetText(), 7, "..."))
+
+        if duration < 60 and self.max < 60 then
+            self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
+        else
+            self.Time:SetText(S.FormatTime(duration, true) .. " / " .. S.FormatTime(self.max, true))
+        end
     end
 
-    castbar.PostCastStart = function(self, unit, name, castid, spellid)
+    local CastbarFadeIn = function(self, unit, name, castid, spellid)
         if handler.fading then
             handler.fading = false
             handler:SetScript("OnUpdate", nil)
@@ -194,7 +207,7 @@ S.NamePlates.CreateCastbar = function(self, unit, ...)
         self:SetAlpha(1.00)
     end
 
-    castbar.PostCastFailed = function(self, unit, spellname, castid, spellid)
+    local CastbarFadeOut = function(self, unit, name, castid, spellid)
         if handler.fading then
             handler.fading = false
             handler:SetScript("OnUpdate", nil)
@@ -221,9 +234,14 @@ S.NamePlates.CreateCastbar = function(self, unit, ...)
         handler:SetScript("OnUpdate", HandlerOnUpdate)
     end
 
-    castbar.CustomDelayText = castbar.CustomTimeText
-    castbar.PostChannelStart = castbar.PostCastStart
-    castbar.PostCastInterrupted = castbar.PostCastFailed
+    castbar.CustomTimeText = UpdateText
+    castbar.CustomDelayText = UpdateText
+
+    castbar.PostCastStart = CastbarFadeIn
+    castbar.PostChannelStart = CastbarFadeIn
+
+    castbar.PostCastFailed = CastbarFadeOut
+    castbar.PostCastInterrupted = CastbarFadeOut
 
     self.Castbar = castbar
 end

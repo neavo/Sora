@@ -2,12 +2,8 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Initialize
-if not C.UnitFrame then
-	C.UnitFrame = {}
-end
-if not C.UnitFrame.RaidAuras then
-	C.UnitFrame.RaidAuras = {}
-end
+C.UnitFrame = C.UnitFrame or {}
+C.UnitFrame.RaidAuras = C.UnitFrame.RaidAuras or {}
 
 -- Hack
 local zoneid = 0
@@ -21,5 +17,5 @@ end
 
 -- For Debug
 do
-	-- GridStatusRaidDebuff:DebuffId(zoneid, 119611, 1)
+	-- GridStatusRaidDebuff:DebuffId(zoneid, 269279, 1) -- 灵魂虚弱
 end

@@ -39,16 +39,16 @@ function S.Print(t)
 end
 
 function S.MakeText(parent, size)
-    local Text = parent:CreateFontString(nil, "ARTWORK")
+    local Text = parent:CreateFontString("$parentText", "ARTWORK")
     Text:SetShadowOffset(1, -1)
     Text:SetShadowColor(0, 0, 0, 0.5)
-    Text:SetFont(STANDARD_TEXT_FONT, (C.Core and C.Core.FontScale) and C.Core.FontScale * size or size, "OUTLINE")
+    Text:SetFont(STANDARD_TEXT_FONT, C.Core and C.Core.FontScale * size or size, "OUTLINE")
 
     return Text
 end
 
 function S.MakeBorder(parent, size)
-    local Border = CreateFrame("Frame", nil, parent)
+    local Border = CreateFrame("Frame", "$parentBorder", parent)
     Border:SetFrameLevel(0)
     Border:SetPoint("TOPLEFT", -size, size)
     Border:SetPoint("BOTTOMRIGHT", size, -size)
@@ -59,33 +59,45 @@ function S.MakeBorder(parent, size)
 end
 
 function S.MakeShadow(parent, size)
-    local Shadow = CreateFrame("Frame", nil, parent)
-    Shadow:SetFrameLevel(0)
+    local frameLevel = parent:GetFrameLevel()
+
+    if frameLevel >= 1 then
+        frameLevel = frameLevel - 1
+    end
+
+    local backdrop = {
+        edgeSize = size,
+        edgeFile = DB.GlowTex
+    }
+
+    local Shadow = CreateFrame("Frame", "$parentShadow", parent)
+    Shadow:SetFrameLevel(frameLevel)
     Shadow:SetPoint("TOPLEFT", parent, -size, size)
     Shadow:SetPoint("BOTTOMRIGHT", parent, size, -size)
-    Shadow:SetBackdrop(
-        {
-            edgeSize = size,
-            edgeFile = DB.GlowTex
-        }
-    )
-    Shadow:SetBackdropBorderColor(0, 0, 0, 1)
+    Shadow:SetBackdrop(backdrop)
+    Shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
 
     return Shadow
 end
 
 function S.MakeTextureShadow(parent, anchor, size)
-    local Shadow = CreateFrame("Frame", nil, parent)
-    Shadow:SetFrameLevel(1)
+    local frameLevel = parent:GetFrameLevel()
+
+    if frameLevel >= 1 then
+        frameLevel = frameLevel - 1
+    end
+
+    local backdrop = {
+        edgeSize = size,
+        edgeFile = DB.GlowTex
+    }
+
+    local Shadow = CreateFrame("Frame", "$parentTextureShadow", parent)
+    Shadow:SetFrameLevel(parent:GetFrameLevel() - 1)
     Shadow:SetPoint("TOPLEFT", anchor, -size, size)
     Shadow:SetPoint("BOTTOMRIGHT", anchor, size, -size)
-    Shadow:SetBackdrop(
-        {
-            edgeSize = size,
-            edgeFile = DB.GlowTex
-        }
-    )
-    Shadow:SetBackdropBorderColor(0, 0, 0, 1)
+    Shadow:SetBackdrop(backdrop)
+    Shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
 
     return Shadow
 end
@@ -117,30 +129,17 @@ function S.FormatTime(Time, Short)
     local Hour = floor((Time - Day * 86400) / 3600)
     local Minute = floor((Time - Day * 86400 - Hour * 3600) / 60)
     local Second = floor(Time - Day * 86400 - Hour * 3600 - Minute * 60)
-    if not Short then
-        if Time > 86400 then
-            return Day .. "d " .. Hour .. "m"
-        elseif Time > 3600 then
-            return Hour .. "h " .. Minute .. "m"
-        elseif Time < 3600 and Time > 60 then
-            return Minute .. "m " .. Second .. "s"
-        elseif Time < 60 and Time > 0 then
-            return Second .. "s"
-        else
-            return "N/A"
-        end
+
+    if Time > 86400 then
+        return Day .. "d " .. (Short and "" or Hour .. "h")
+    elseif Time > 3600 then
+        return Hour .. "h " .. (Short and "" or Minute .. "m")
+    elseif Time < 3600 and Time > 60 then
+        return Minute .. "m " .. (Short and "" or Second .. "s")
+    elseif Time < 60 and Time > 0 then
+        return Second .. "s"
     else
-        if Time > 86400 then
-            return Day .. "d"
-        elseif Time > 3600 then
-            return Hour .. "h"
-        elseif Time < 3600 and Time > 60 then
-            return Minute .. "m"
-        elseif Time < 60 and Time > 0 then
-            return Second .. "s"
-        else
-            return "N/A"
-        end
+        return "N/A"
     end
 end
 
@@ -192,7 +191,7 @@ function S.CreateEventHandler()
     local Handler = CreateFrame("Frame")
     Handler.Event = {}
 
-    local RegisterAllEvents = function()
+    local Register = function()
         Handler:UnregisterAllEvents()
 
         for k, v in pairs(Handler.Event) do
@@ -210,7 +209,8 @@ function S.CreateEventHandler()
     end
 
     Handler:SetScript("OnEvent", OnEvent)
-    Handler.RegisterAllEvents = RegisterAllEvents
+    Handler.Register = Register
+    Handler.RegisterAllEvents = Register
 
     return Handler
 end
@@ -232,7 +232,16 @@ function S.CreateTimerHandler()
         end
     end
 
-    Handler:SetScript("OnUpdate", OnUpdate)
+    local Register = function()
+        Handler:SetScript("OnUpdate", OnUpdate)
+    end
+
+    local Unregister = function()
+        Handler:SetScript("OnUpdate", nil)
+    end
+
+    Handler.Register = Register
+    Handler.Unregister = Unregister
 
     return Handler
 end

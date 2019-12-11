@@ -35,11 +35,11 @@ C.UnitFrame.Raid.HealerPostion = {"BOTTOM", UIParent, "BOTTOM", 0, 150} -- 治�
 -- 不同职业下，团队框体边角状态监视
 -- 请自行添加需要监视的技能ID，最大可监视6个技能ID
 C.UnitFrame.Raid.IndicatorFilters = {}
-C.UnitFrame.Raid.IndicatorFilters.MONK = {119611, 196725, 0, 0, 0, 196725} -- 复苏之雾，无，无，无，无，碧愈疾风
-C.UnitFrame.Raid.IndicatorFilters.MAGE = {774, 155777, 33763, 48438, 8936, 102342} -- 回春术，回春术（萌芽），生命绽放，野性成长，愈合，铁木树皮
-C.UnitFrame.Raid.IndicatorFilters.DRUID = {}
+C.UnitFrame.Raid.IndicatorFilters.MONK = {119611, 0, 0, 0, 0, 196725} -- 复苏之雾，无，无，无，无，碧愈疾风
+C.UnitFrame.Raid.IndicatorFilters.MAGE = {}
+C.UnitFrame.Raid.IndicatorFilters.DRUID = {774, 33763, 207386, 102342, 48438, 8936} -- 回春术，生命绽放，无，铁木树皮，野性成长，愈合，
 C.UnitFrame.Raid.IndicatorFilters.ROGUE = {}
-C.UnitFrame.Raid.IndicatorFilters.PRIEST = {}
+C.UnitFrame.Raid.IndicatorFilters.PRIEST = {6788, 0, 0, 0, 0, 0}
 C.UnitFrame.Raid.IndicatorFilters.HUNTER = {}
 C.UnitFrame.Raid.IndicatorFilters.SHAMAN = {}
 C.UnitFrame.Raid.IndicatorFilters.WARLOCK = {}

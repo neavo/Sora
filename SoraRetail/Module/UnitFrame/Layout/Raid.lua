@@ -4,7 +4,6 @@ local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local maxAuras = 64
 local width = C.UnitFrame.Raid.Width
 local height = C.UnitFrame.Raid.Height
 local groupNum, maxColumns, columnSpacing = -1, 6, 8
@@ -25,46 +24,39 @@ local IsHealer = function()
 end
 
 -- RaidDebuff
-local SortPriority = function(l, r)
-	return l.priority < r.priority
-end
-
 local UpdateRaidDebuff = function(self, event, unit, ...)
-	local auras = {}
+	local aura = nil
 
-	for i = 1, maxAuras do
-		local name, texture, count, _, duration, expiration, _, _, _, spellID = UnitAura(unit, i)
+	for k, v in pairs({"HELPFUL", "HARMFUL"}) do
+		for i = 1, 40 do
+			local name, texture, count, _, duration, expiration, _, _, _, spellID = UnitAura(unit, i, v)
 
-		if not spellID then
-			break
-		end
+			if not spellID then
+				break
+			end
 
-		local priority = raidAuras[spellID]
+			local priority = raidAuras[spellID]
 
-		if priority then
-			local aura = {}
-			aura.priority = priority
-			aura.count = count
-			aura.texture = texture
-			aura.duration = duration
-			aura.expiration = expiration
-
-			table.insert(auras, aura)
+			if priority and (not aura or priority > aura.priority) then
+				aura = {}
+				aura.priority = priority
+				aura.count = count
+				aura.texture = texture
+				aura.duration = duration
+				aura.expiration = expiration
+			end
 		end
 	end
 
 	local raidDebuff = self.RaidDebuff
 	local nameTag, statusTag = self.NameTag, self.StatusTag
 
-	if #auras == 0 then
+	if not aura then
 		raidDebuff:Hide()
 
 		nameTag:SetAlpha(1.00)
 		statusTag:SetAlpha(1.00)
 	else
-		table.sort(auras, SortPriority)
-
-		local aura = auras[1]
 		local count, texture, duration, expiration = aura.count, aura.texture, aura.duration, aura.expiration
 
 		raidDebuff.icon:SetTexture(texture)
@@ -82,15 +74,15 @@ local CreateRaidDebuff = function(self, ...)
 	local raidDebuff = CreateFrame("Frame", nil, self.Health)
 	raidDebuff:Hide()
 	raidDebuff:SetSize(20, 20)
-	raidDebuff:SetFrameStrata("HIGH")
 	raidDebuff:SetPoint("CENTER", 0, 0)
+	raidDebuff:SetFrameLevel(self.Health:GetFrameLevel() + 1)
 
 	raidDebuff.cooldown = CreateFrame("Cooldown", "$parentCooldown", raidDebuff, "CooldownFrameTemplate")
 	raidDebuff.cooldown:SetAllPoints()
 
 	raidDebuff.icon = raidDebuff:CreateTexture(nil, "OVERLAY")
 	raidDebuff.icon:SetAllPoints()
-	raidDebuff.shadow = S.MakeShadow(raidDebuff, 2)
+	raidDebuff.shadow = S.MakeShadow(raidDebuff, 1)
 
 	raidDebuff.count = S.MakeText(raidDebuff, 8)
 	raidDebuff.count:SetPoint("BOTTOMRIGHT", raidDebuff, "BOTTOMRIGHT", 1, 1)
@@ -116,7 +108,7 @@ local OnIndicatorUpdate = function(self, elapsed, ...)
 			return 0
 		end
 
-		if expiration > 0 and durationLeft < duration * 0.30 then
+		if expiration > 0 and durationLeft < 3.00 then
 			self.icon:SetVertexColor(1.00, 0.00, 0.00)
 		else
 			self.icon:SetVertexColor(1.00, 1.00, 1.00)
@@ -126,28 +118,30 @@ end
 
 local UpdateAuraIndicator = function(self, event, unit, ...)
 	local _, class = UnitClass("player")
+	local indicators = self.Indicators
+	local filters = indicatorFilters[class]
 
-	for i = 1, maxAuras do
-		local indicators = self.Indicators
-		local filters = indicatorFilters[class]
-		local _, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i)
+	for k, v in pairs({"HELPFUL", "HARMFUL"}) do
+		for i = 1, 40 do
+			local name, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i, v)
 
-		if not filters or #filters == 0 or not spellID or caster ~= "player" then
-			break
-		end
+			if not filters or #filters == 0 or not spellID or caster ~= "player" then
+				break
+			end
 
-		for k, indicator in pairs(indicators) do
-			local filter = filters[k]
+			for k, indicator in pairs(indicators) do
+				local filter = filters[k]
 
-			if filter == spellID then
-				indicator:Show()
-				indicator.icon:SetTexture(texture)
+				if filter == spellID then
+					indicator:Show()
+					indicator.icon:SetTexture(texture)
 
-				indicator.duration = duration
-				indicator.expiration = expiration
+					indicator.duration = duration
+					indicator.expiration = expiration
 
-				indicator.timer = 0
-				indicator:SetScript("OnUpdate", OnIndicatorUpdate)
+					indicator.timer = 0
+					indicator:SetScript("OnUpdate", OnIndicatorUpdate)
+				end
 			end
 		end
 	end
@@ -160,20 +154,20 @@ local CreateAuraIndicator = function(self, ...)
 		local indicator = CreateFrame("Frame", nil, self)
 		indicator:Hide()
 		indicator:SetSize(8, 8)
-		indicator:SetFrameLevel(self.Health:GetFrameLevel() + 254)
+		indicator:SetFrameLevel(self.Health:GetFrameLevel() + 1)
 
 		indicator.icon = indicator:CreateTexture(nil, "OVERLAY")
 		indicator.icon:SetAllPoints()
-		indicator.shadow = S.MakeShadow(indicator, 2)
+		indicator.shadow = S.MakeShadow(indicator, 1)
 
 		if i == 1 then
-			indicator:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMLEFT", 2.5, 2.0)
+			indicator:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMLEFT", 2, 0)
 		elseif i == 4 then
-			indicator:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMRIGHT", -2.5, 2.0)
+			indicator:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMRIGHT", -2, 0)
 		elseif i == 2 or i == 3 then
-			indicator:SetPoint("LEFT", indicators[i - 1], "RIGHT", 2.0, 0.0)
+			indicator:SetPoint("LEFT", indicators[i - 1], "RIGHT", 2, 0)
 		elseif i == 5 or i == 6 then
-			indicator:SetPoint("RIGHT", indicators[i - 1], "LEFT", -2.0, 0.0)
+			indicator:SetPoint("RIGHT", indicators[i - 1], "LEFT", -2, 0)
 		end
 
 		indicators[i] = indicator
@@ -293,12 +287,11 @@ local RegisterStyle = function(self, unit, ...)
 	CreateAuraIndicator(self, ...)
 	CreateThreatIndicator(self, ...)
 	CreateReadyCheckIndicator(self, ...)
-
-	SetAnchor(self, ...)
-	SetCompactRaidFrame(self, ...)
 end
 
 local OnPlayerLogin = function(self, event, ...)
+	SetCompactRaidFrame(self, ...)
+
 	oUF:RegisterStyle("oUF_Sora_Raid", RegisterStyle)
 	oUF:SetActiveStyle("oUF_Sora_Raid")
 
@@ -345,6 +338,10 @@ local OnPlayerLogin = function(self, event, ...)
 end
 
 local OnGroupRosterUpdate = function(self, event, ...)
+	if UnitAffectingCombat("player") then
+		return 0
+	end
+
 	local newNum = ceil(GetNumGroupMembers() / 5)
 
 	if groupNum > 0 and groupNum ~= newNum then
@@ -355,6 +352,18 @@ local OnGroupRosterUpdate = function(self, event, ...)
 end
 
 local OnPlayerTalentUpdate = function(self, event, ...)
+	if UnitAffectingCombat("player") then
+		return 0
+	end
+
+	SetAnchor(self, ...)
+end
+
+local OnPlayerEnteringWorld = function(self, event, ...)
+	if UnitAffectingCombat("player") then
+		return 0
+	end
+
 	SetAnchor(self, ...)
 end
 
@@ -363,4 +372,5 @@ local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
 EventHandler.Event.GROUP_ROSTER_UPDATE = OnGroupRosterUpdate
 EventHandler.Event.PLAYER_TALENT_UPDATE = OnPlayerTalentUpdate
-EventHandler.RegisterAllEvents()
+EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
+EventHandler.Register()

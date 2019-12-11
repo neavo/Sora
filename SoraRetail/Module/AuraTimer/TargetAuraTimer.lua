@@ -4,107 +4,159 @@ local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local _, class = UnitClass("player")
-local spacing, iconSize, barWidth = nil, nil, nil
+local auras = {}
+local anchor = nil
+local spacing, iconSize, barWidth, maxLines = 4, nil, nil, 8
+local whitelist = C.AuraTimer.WhiteList.Target
 
 -- Begin
-local function SetAuras(self, ...)
-    local auras = CreateFrame("Frame", nil, self)
-    auras:SetAllPoints()
-    
-    auras.num = 8
-    auras.size = iconSize
-    auras.spacing = spacing
-    auras["growth-y"] = "UP"
-    auras["growth-x"] = "RIGHT"
-    auras.disableCooldown = true
-    auras.initialAnchor = "TOPLEFT"
-    
-    auras.PostUpdateIcon = function(self, unit, icon, index, offest, ...)
-        icon.nameText:SetText(icon.name)
-        icon.bar:SetMinMaxValues(0, icon.duration)
-        
-        icon:SetScript("OnUpdate", function(self, elapsed, ...)
-            local expires = self.expiration - GetTime()
-            
-            if expires > 0 and expires < 60 then
-                self.bar:SetValue(expires)
-                self.timeText:SetText(("%.1f"):format(expires))
-            end
-        end)
+local OnEnter = function(self)
+    if not self:IsVisible() then
+        return
     end
-    
-    auras.PostCreateIcon = function(self, icon, ...)
-        if not icon.isProcessed then
-            icon.icon:SetAllPoints()
-            icon.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-            
-            icon.count = S.MakeText(icon, 10)
-            icon.count:SetPoint("BOTTOMRIGHT", 3, 0)
-            
-            icon.bar = CreateFrame("StatusBar", nil, icon)
-            icon.bar:SetSize(barWidth, iconSize / 3)
-            icon.bar:SetStatusBarTexture(DB.Statusbar)
-            icon.bar:SetPoint("BOTTOMLEFT", icon, "BOTTOMRIGHT", spacing, 0)
-            icon.bar:SetStatusBarColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b)
-            
-            icon.bar.bg = icon.bar:CreateTexture(nil, "BACKGROUND")
-            icon.bar.bg:SetTexture(DB.Statusbar)
-            icon.bar.bg:SetAllPoints()
-            icon.bar.bg:SetVertexColor(0.12, 0.12, 0.12)
-            
-            icon.timeText = S.MakeText(icon.bar, 10)
-            icon.timeText:SetPoint("RIGHT", 0, 6)
-            
-            icon.nameText = S.MakeText(icon.bar, 10)
-            icon.nameText:SetPoint("CENTER", -10, 6)
-            
-            icon.shadow = S.MakeShadow(icon, 2)
-            icon.bar.shadow = S.MakeShadow(icon.bar, 2)
-            
-            icon.isProcessed = true
+
+    GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+    GameTooltip:SetUnitAura(unpack(self.tooltipData))
+end
+
+local OnLeave = function(self)
+    GameTooltip:Hide()
+end
+
+local OnAuraUpdate = function(self, elapsed, ...)
+    if not self:IsVisible() then
+        self:SetScript("OnUpdate", nil)
+    else
+        local timeLeft = self.expiration - GetTime()
+
+        self.bar:SetValue(timeLeft)
+        self.timeText:SetText(("%.1f"):format(timeLeft))
+    end
+end
+
+local UpdateAuras = function(unit)
+    local data, datas = nil, {}
+
+    for k, v in pairs({"HELPFUL", "HARMFUL"}) do
+        for i = 1, 40 do
+            local name, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i, v)
+
+            if caster == "player" and ((duration > 0 and duration < 60) or whitelist[spellID]) then
+                data = {}
+                data.name = name
+                data.count = count
+                data.caster = caster
+                data.texture = texture
+                data.spellID = spellID
+                data.duration = duration
+                data.expiration = expiration
+                data.tooltipData = {unit, i, v}
+
+                table.insert(datas, data)
+            end
         end
     end
-    
-	auras.CustomFilter = function(self, unit, button, name, _, count, _, duration, expiration, caster, _, _, spellID, _, _, _, _, _, _, _, _)
-		local flag = false
-        
-        if caster == "player" and ((duration > 0 and duration < 60) or C.AuraTimer.WhiteList.Target[spellID]) then			
-            flag = true
-            button.name = name
-            button.duration = duration
-            button.expiration = expiration
-		end
-		
-		return flag
-	end
 
-    self.Auras = auras
-end
+    for k, v in pairs(auras) do
+        data = datas[k]
 
-local function RegisterStyle(self, ...)
-    spacing = 4
-    iconSize = (oUF_Sora_Target:GetWidth() - 4 * 7) / 8
-    barWidth = oUF_Sora_Target:GetWidth() - iconSize - spacing
-    
-    self:SetSize(iconSize, iconSize)
-    self:SetPoint("BOTTOMLEFT", oUF_Sora_Target, "TOPLEFT", 0, 12)
-    
-    SetAuras(self, ...)
-end
+        if not data then
+            v:Hide()
+        else
+            v.tooltipData = data.tooltipData
 
-local function OnPlayerLogin(self, event, ...)
-    oUF:RegisterStyle("oUF_Sora_TargetAuraTimer", RegisterStyle)
-    oUF:SetActiveStyle("oUF_Sora_TargetAuraTimer")
-    
-    oUF:Spawn("target", "oUF_Sora_TargetAuraTimer")
-end
+            v:Show()
+            v.bar:SetMinMaxValues(0, data.duration)
+            v.icon:SetTexture(data.texture)
+            v.count:SetText(data.count > 0 and data.count or nil)
+            v.nameText:SetText(data.name)
 
--- Event
-local Event = CreateFrame("Frame", nil, UIParent)
-Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript("OnEvent", function(self, event, unit, ...)
-    if event == "PLAYER_LOGIN" then
-        OnPlayerLogin(self, event, ...)
+            v.expiration = data.expiration
+            v:SetScript("OnUpdate", OnAuraUpdate)
+        end
     end
-end)
+end
+
+local CreateAuras = function()
+    local _, class = UnitClass("player")
+
+    for i = 1, 8 * maxLines do
+        local aura = CreateFrame("Frame", nil, anchor)
+        aura:Hide()
+        aura:SetSize(iconSize, iconSize)
+
+        aura.icon = aura:CreateTexture("$parentIcon", "OVERLAY")
+        aura.icon:SetAllPoints()
+
+        aura.count = S.MakeText(aura, 8)
+        aura.count:SetPoint("BOTTOMRIGHT", aura, "BOTTOMRIGHT", 1, 1)
+
+        aura.bar = CreateFrame("StatusBar", nil, aura)
+        aura.bar:SetSize(barWidth, iconSize / 3)
+        aura.bar:SetStatusBarTexture(DB.Statusbar)
+        aura.bar:SetPoint("BOTTOMLEFT", aura, "BOTTOMRIGHT", spacing, 0)
+        aura.bar:SetStatusBarColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b)
+
+        aura.bar.bg = aura.bar:CreateTexture(nil, "BACKGROUND")
+        aura.bar.bg:SetTexture(DB.Statusbar)
+        aura.bar.bg:SetAllPoints()
+        aura.bar.bg:SetVertexColor(0.12, 0.12, 0.12)
+
+        aura.timeText = S.MakeText(aura.bar, 10)
+        aura.timeText:SetPoint("RIGHT", 0, 6)
+
+        aura.nameText = S.MakeText(aura.bar, 10)
+        aura.nameText:SetPoint("CENTER", -10, 6)
+
+        aura.shadow = S.MakeShadow(aura, 2)
+        aura.bar.shadow = S.MakeShadow(aura.bar, 2)
+
+        if i == 1 then
+            aura:SetPoint("BOTTOMLEFT")
+        else
+            aura:SetPoint("BOTTOM", auras[i - 1], "TOP", 0, spacing)
+        end
+
+        aura:SetScript("OnEnter", OnEnter)
+        aura:SetScript("OnLeave", OnLeave)
+
+        table.insert(auras, aura)
+    end
+end
+
+local OnUnitAura = function(self, event, unit, ...)
+    if unit == "target" then
+        UpdateAuras("target")
+    end
+end
+
+local OnUnitTarget = function(self, event, unit, ...)
+    if unit == "player" then
+        UpdateAuras("target")
+    end
+end
+
+local OnPlayerLogin = function(self, event, ...)
+    iconSize = (oUF_Sora_Player:GetWidth() - spacing * (8 - 1)) / 8
+    barWidth = oUF_Sora_Target:GetWidth() - iconSize - spacing
+
+    anchor = CreateFrame("Frame", "$parentAnchor", UIParent)
+    anchor:SetPoint("BOTTOM", oUF_Sora_Target, "TOP", 0, 12)
+    anchor:SetSize(oUF_Sora_Target:GetWidth(), iconSize * maxLines + spacing * (maxLines - 1))
+
+    CreateAuras()
+end
+
+local OnPlayerEnteringWorld = function(self, event, isInitialLogin, isReloadingUi)
+    if isInitialLogin or isReloadingUi then
+        UpdateAuras("target")
+    end
+end
+
+-- EventHandler
+local EventHandler = S.CreateEventHandler()
+EventHandler.Event.UNIT_AURA = OnUnitAura
+EventHandler.Event.UNIT_TARGET = OnUnitTarget
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
+EventHandler.Register()
