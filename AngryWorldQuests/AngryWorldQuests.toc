@@ -1,0 +1,15 @@
+## Interface: 80000
+## Title: Angry World Quests
+## Notes: Adds World Quests to the quest list
+## Author: Ermad
+## SavedVariables: AngryWorldQuests_Config
+## SavedVariablesPerCharacter: AngryWorldQuests_CharacterConfig
+## X-Packaged-Version: v0.20.6
+
+Core.lua
+
+Config.lua
+Locale.lua
+
+QuestFrame.lua
+Data.lua
