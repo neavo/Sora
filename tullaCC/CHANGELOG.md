@@ -1,6 +1,7 @@
 # tullaCC
 
-## [8.2.5](https://github.com/tullamods/tullaCC/tree/8.2.5) (2019-09-24)
-[Full Changelog](https://github.com/tullamods/tullaCC/compare/8.2.3...8.2.5)
+## [8.2.6](https://github.com/tullamods/tullaCC/tree/8.2.6) (2019-12-14)
+[Full Changelog](https://github.com/tullamods/tullaCC/compare/8.2.6-beta4...8.2.6)
 
-- updated toc for 8.2.5  
+- add release workflow  
+- add release workflow  
