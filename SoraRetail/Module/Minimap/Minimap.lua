@@ -26,75 +26,40 @@ local function SetBlzFrame()
     MiniMapTrackingBackground:SetAlpha(0.00)
 
     -- Random Group icon
+    QueueStatusMinimapButton:SetScale(0.90)
     QueueStatusMinimapButton:ClearAllPoints()
-    QueueStatusMinimapButtonBorder:SetAlpha(0)
     QueueStatusMinimapButton:SetFrameStrata("MEDIUM")
-    QueueStatusMinimapButton:SetPoint("TOP", Minimap, "TOP", 0, 6)
-
-    -- Instance Difficulty flag
-    MiniMapInstanceDifficulty:ClearAllPoints()
-    MiniMapInstanceDifficulty:SetScale(0.01)
-    MiniMapInstanceDifficulty:SetAlpha(0.00)
-    MiniMapInstanceDifficulty:SetFrameStrata("LOW")
-
-    -- Guild Instance Difficulty flag
-    GuildInstanceDifficulty:ClearAllPoints()
-    GuildInstanceDifficulty:SetScale(0.01)
-    GuildInstanceDifficulty:SetAlpha(0.00)
-    GuildInstanceDifficulty:SetFrameStrata("LOW")
+    QueueStatusMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 4)
+    QueueStatusMinimapButtonBorder:SetAlpha(0.00)
 
     -- Mail icon
+    MiniMapMailFrame:SetScale(0.90)
     MiniMapMailFrame:ClearAllPoints()
     MiniMapMailFrame:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -2, 4)
 
-    -- Invites Icon
-    GameTimeCalendarInvitesTexture:ClearAllPoints()
-    GameTimeCalendarInvitesTexture:SetParent(Minimap)
-    GameTimeCalendarInvitesTexture:SetPoint("TOPRIGHT")
-
     -- Garrison
-    GarrisonLandingPageMinimapButton:ClearAllPoints()
     GarrisonLandingPageMinimapButton:SetScale(0.55)
+    GarrisonLandingPageMinimapButton:ClearAllPoints()
     GarrisonLandingPageMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 2, -4)
-
-    if FeedbackUIButton then
-        FeedbackUIButton:ClearAllPoints()
-        FeedbackUIButton:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 6, -6)
-        FeedbackUIButton:SetScale(0.80)
-    end
-
-    if StreamingIcon then
-        StreamingIcon:ClearAllPoints()
-        StreamingIcon:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 8, 8)
-        StreamingIcon:SetScale(0.80)
-    end
 end
 
 local function HideBlzFrame()
-    local BlzFrame = {
-        "GameTimeFrame",
-        "MinimapBorderTop",
-        "MinimapNorthTag",
-        "MinimapBorder",
-        "MinimapZoneTextButton",
-        "MinimapZoomOut",
-        "MinimapZoomIn",
-        "MiniMapVoiceChatFrame",
-        "MiniMapWorldMapButton",
-        "MiniMapMailBorder"
-    }
-
-    for i in pairs(BlzFrame) do
-        if _G[BlzFrame[i]] then
-            _G[BlzFrame[i]]:Hide()
-            _G[BlzFrame[i]].Show = function()
-            end
-        end
-    end
+    S.KillFrame(StreamingIcon)
+    S.KillFrame(GuildInstanceDifficulty)
+    S.KillFrame(MiniMapInstanceDifficulty)
+    S.KillFrame(GameTimeCalendarInvitesTexture)
+    S.KillFrame(GameTimeFrame)
+    S.KillFrame(MinimapBorderTop)
+    S.KillFrame(MinimapNorthTag)
+    S.KillFrame(MinimapBorder)
+    S.KillFrame(MinimapZoneTextButton)
+    S.KillFrame(MinimapZoomOut)
+    S.KillFrame(MinimapZoomIn)
+    S.KillFrame(MiniMapWorldMapButton)
+    S.KillFrame(MiniMapMailBorder)
 end
 
 local function SetMouseClick()
-    local CALENDAR = "日历"
     local frame = CreateFrame("Frame", "SoraMinimapRightClickMenu", UIParent, "UIDropDownMenuTemplate")
 
     local menus = {
@@ -177,12 +142,6 @@ local function SetMouseClick()
             end
         },
         {
-            text = CALENDAR,
-            func = function()
-                GameTimeFrame:Click()
-            end
-        },
-        {
             text = HELP_BUTTON,
             func = function()
                 HelpMicroButton:Click()
@@ -190,31 +149,29 @@ local function SetMouseClick()
         }
     }
 
-    Minimap:SetScript(
-        "OnMouseUp",
-        function(self, btn)
-            if btn ~= "RightButton" then
-                Minimap_OnClick(self)
-            else
-                EasyMenu(menus, frame, "cursor", 0, 0, "MENU", 2)
-            end
+    local OnMouseUp = function(self, btn, ...)
+        if btn ~= "RightButton" then
+            Minimap_OnClick(self)
+        else
+            EasyMenu(menus, frame, "cursor", 0, 0, "MENU", 2)
         end
-    )
+    end
+
+    Minimap:SetScript("OnMouseUp", OnMouseUp)
 end
 
 local function SetMouseScroll()
-    Minimap:EnableMouseWheel(true)
-    Minimap:SetScript(
-        "OnMouseWheel",
-        function(self, z, ...)
-            local c = Minimap:GetZoom()
-            if z > 0 and c < 5 then
-                Minimap:SetZoom(c + 1)
-            elseif z < 0 and c > 0 then
-                Minimap:SetZoom(c - 1)
-            end
+    local OnMouseWheel = function(self, z, ...)
+        local c = Minimap:GetZoom()
+        if z > 0 and c < 5 then
+            Minimap:SetZoom(c + 1)
+        elseif z < 0 and c > 0 then
+            Minimap:SetZoom(c - 1)
         end
-    )
+    end
+
+    Minimap:EnableMouseWheel(true)
+    Minimap:SetScript("OnMouseWheel", OnMouseWheel)
 end
 
 local function OnPlayerLogin(self, event, unit, ...)
@@ -225,13 +182,7 @@ local function OnPlayerLogin(self, event, unit, ...)
     SetMouseScroll()
 end
 
-local Event = CreateFrame("Frame", nil, UIParent)
-Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript(
-    "OnEvent",
-    function(self, event, unit, ...)
-        if event == "PLAYER_LOGIN" then
-            OnPlayerLogin(self, event, unit, ...)
-        end
-    end
-)
+-- EventHandler
+local EventHandler = S.CreateEventHandler()
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.Register()

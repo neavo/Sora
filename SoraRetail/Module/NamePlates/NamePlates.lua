@@ -4,7 +4,7 @@ local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-S.NamePlates = {}
+S.NamePlates = S.NamePlates or {}
 local width, height = C.NamePlates.Width, C.NamePlates.Height
 
 -- Power
@@ -109,10 +109,7 @@ S.NamePlates.CreateAuras = function(self, unit, ...)
 end
 
 -- Threat
-local TimerHandler = S.CreateTimerHandler()
-TimerHandler.Register()
-TimerHandler.Interval = 1.00
-TimerHandler.OnUpdate = function(handler, elapsed, ...)
+local function OnTicker(ticker)
     for i = 1, 40 do
         local nameplate = _G["oUF_Sora_NamePlate" .. i]
 
@@ -129,6 +126,7 @@ TimerHandler.OnUpdate = function(handler, elapsed, ...)
         end
     end
 end
+C_Timer.NewTicker(1.00, OnTicker)
 
 S.NamePlates.CreateThreat = function(self, unit, ...)
     local threat = CreateFrame("StatusBar", nil, self)

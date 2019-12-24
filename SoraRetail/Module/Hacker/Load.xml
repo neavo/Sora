@@ -1,0 +1,7 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	
+	<Script file = "TinyInspect.lua"/>
+	<Script file = "TinyTooltip.lua"/>
+	<Script file = "AuroraClassic.lua"/>
+	
+</Ui>

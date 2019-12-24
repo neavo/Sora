@@ -34,11 +34,7 @@ local function OnPlayerLogin(self, event, ...)
     end
 end
 
--- Event
-local Event = CreateFrame("Frame")
-Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript("OnEvent", function(self, event, ...)
-    if event == "PLAYER_LOGIN" then
-        OnPlayerLogin(self, event, ...)
-    end
-end)
+-- Handler
+local EventHandler = S.CreateEventHandler()
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.Register()

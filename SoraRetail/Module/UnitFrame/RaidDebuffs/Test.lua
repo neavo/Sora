@@ -17,5 +17,5 @@ end
 
 -- For Debug
 do
-	-- GridStatusRaidDebuff:DebuffId(zoneid, 269279, 1) -- 灵魂虚弱
+	-- GridStatusRaidDebuff:DebuffId(zoneid, 295378, 1) -- 灵魂虚弱
 end

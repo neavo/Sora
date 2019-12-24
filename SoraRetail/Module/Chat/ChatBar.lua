@@ -1,9 +1,10 @@
 ﻿-- Engine
-local S, _, _, DB = unpack(select(2, ...))
+local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local Channel = {"/s ", "/y ", "/p ", "/g ", "/raid ", "/1 ", "/2 "}
-local Color = {
+local size = 15
+local channels = {"/s ", "/y ", "/p ", "/g ", "/raid ", "/1 ", "/2 "}
+local colors = {
 	{255 / 255, 255 / 255, 255 / 255},
 	{255 / 255, 64 / 255, 64 / 255},
 	{170 / 255, 170 / 255, 255 / 255},
@@ -15,59 +16,70 @@ local Color = {
 }
 
 -- Begin
-local function SetChatbar()
+local function CreateChatbar()
 	local preBtn = nil
-	local btnSize = 18
 
 	local parent = CreateFrame("Frame", nil, UIParent)
-	parent:SetSize(btnSize * 9, btnSize)
-	parent:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 84, 4)
+	parent:SetSize(size * 9, size)
+	parent:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 84, 6)
+
+	local function OnEnter(self, ...)
+		if InCombatLockdown() then
+			self:SetAlpha(1.00)
+		else
+			UIFrameFadeIn(self, 0.25, 0.25, 1.00)
+		end
+	end
+
+	local function OnLeave(self, ...)
+		if InCombatLockdown() then
+			self:SetAlpha(0.25)
+		else
+			UIFrameFadeOut(self, 0.25, 1.00, 0.25)
+		end
+	end
 
 	for i = 1, 9 do
 		local btn = nil
 
 		if i <= 7 then
+			local function OnMouseUp(self, btn, ...)
+				ChatFrame_OpenChat(channels[i])
+			end
+
 			btn = CreateFrame("Button", nil, parent)
-			btn:SetScript("OnClick", function(self, event, ...)
-				ChatFrame_OpenChat(Channel[i], chatFrame)
-			end)
+			btn:SetSize(size, size)
+			btn:SetScript("OnMouseUp", OnMouseUp)
 		elseif i == 8 then
 			btn = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
+			btn:SetSize(size, size)
 			btn:SetAttribute("*type*", "macro")
 			btn:SetAttribute("macrotext", "/roll")
 		else
 			btn = _G["ChatFrameChannelButton"]
 			btn:ClearAllPoints()
+			btn:SetSize(size + 2, size + 2)
 		end
 
 		btn:SetAlpha(0.25)
-		btn:SetSize(btnSize, btnSize)
+		btn:SetScript("OnEnter", OnEnter)
+		btn:SetScript("OnLeave", OnLeave)
 
-		btn:SetScript("OnEnter", function(self, event, ...)
-			if not UnitAffectingCombat("player") then
-				UIFrameFadeIn(self, 0.25, 0.25, 1.00)
-			end
-		end)
-		btn:SetScript("OnLeave", function(self, event, ...)
-			if not UnitAffectingCombat("player") then
-				UIFrameFadeOut(self, 0.25, 1.00, 0.25)
-			end
-		end)
+		if i <= 8 then
+			btn.backgourd = CreateFrame("StatusBar", nil, btn)
+			btn.backgourd:SetAllPoints()
+			btn.backgourd:SetFrameLevel(UIParent:GetFrameLevel() + 2)
+			btn.backgourd:SetStatusBarTexture(DB.Statusbar)
+			btn.backgourd:SetStatusBarColor(unpack(colors[i]))
 
-		if i <=8 then
-			btn:SetBackdrop({
-				bgFile = DB.Statusbar,
-				edgeFile = DB.GlowTex,
-				insets = {left = 2, right = 2, top = 2, bottom = 2}, edgeSize = 2
-			})
-			btn:SetBackdropColor(unpack(Color[i]))
-			btn:SetBackdropBorderColor(0, 0, 0, 1)
+			btn.backgourd.shadow = S.MakeShadow(btn.backgourd, 2)
+			btn.backgourd.shadow:SetFrameLevel(UIParent:GetFrameLevel() + 1)
 		end
 
 		if i == 1 then
 			btn:SetPoint("TOP", parent, "TOP", 0, 0)
 		else
-			btn:SetPoint("RIGHT", preBtn, "LEFT", 0, 0)
+			btn:SetPoint("RIGHT", preBtn, "LEFT", -4, 0)
 		end
 
 		preBtn = btn
@@ -75,14 +87,10 @@ local function SetChatbar()
 end
 
 local function OnPlayerLogin(self, event, ...)
-	SetChatbar()
+	CreateChatbar()
 end
 
--- Event
-local Event = CreateFrame("Frame", nil, UIParent)
-Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript("OnEvent",function(self, event, ...)
-	if event == "PLAYER_LOGIN" then
-		OnPlayerLogin(self, event, ...)
-	end
-end)
+-- Handler
+local EventHandler = S.CreateEventHandler()
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.Register()

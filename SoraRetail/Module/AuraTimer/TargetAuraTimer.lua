@@ -68,7 +68,7 @@ local UpdateAuras = function(unit)
             v:Show()
             v.bar:SetMinMaxValues(0, data.duration)
             v.icon:SetTexture(data.texture)
-            v.count:SetText(data.count > 0 and data.count or nil)
+            v.count:SetText(data.count > 1 and data.count or nil)
             v.nameText:SetText(data.name)
 
             v.expiration = data.expiration
@@ -85,11 +85,12 @@ local CreateAuras = function()
         aura:Hide()
         aura:SetSize(iconSize, iconSize)
 
-        aura.icon = aura:CreateTexture("$parentIcon", "OVERLAY")
+        aura.icon = aura:CreateTexture("$parentIcon", "ARTWORK")
         aura.icon:SetAllPoints()
+        aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-        aura.count = S.MakeText(aura, 8)
-        aura.count:SetPoint("BOTTOMRIGHT", aura, "BOTTOMRIGHT", 1, 1)
+        aura.count = S.MakeText(aura, 9)
+        aura.count:SetPoint("BOTTOMRIGHT", aura, "BOTTOMRIGHT", 1, -1)
 
         aura.bar = CreateFrame("StatusBar", nil, aura)
         aura.bar:SetSize(barWidth, iconSize / 3)
@@ -109,7 +110,10 @@ local CreateAuras = function()
         aura.nameText:SetPoint("CENTER", -10, 6)
 
         aura.shadow = S.MakeShadow(aura, 2)
+        aura.shadow:SetFrameLevel(0)
+
         aura.bar.shadow = S.MakeShadow(aura.bar, 2)
+        aura.bar.shadow:SetFrameLevel(0)
 
         if i == 1 then
             aura:SetPoint("BOTTOMLEFT")
@@ -147,16 +151,9 @@ local OnPlayerLogin = function(self, event, ...)
     CreateAuras()
 end
 
-local OnPlayerEnteringWorld = function(self, event, isInitialLogin, isReloadingUi)
-    if isInitialLogin or isReloadingUi then
-        UpdateAuras("target")
-    end
-end
-
 -- EventHandler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.UNIT_AURA = OnUnitAura
 EventHandler.Event.UNIT_TARGET = OnUnitTarget
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
 EventHandler.Register()

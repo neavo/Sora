@@ -14,11 +14,11 @@ local function RegisterStyle(self, unit, ...)
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
 
-    S.oUF.CreatePower(self,unit, ...)
-    S.oUF.CreateHealth(self,unit, ...)
+    S.UnitFrame.CreatePower(self,unit, ...)
+    S.UnitFrame.CreateHealth(self,unit, ...)
 
-    S.oUF.CreateTag(self,unit, ...)
-    S.oUF.CreateRaidTargetIndicator(self,unit, ...)
+    S.UnitFrame.CreateTag(self,unit, ...)
+    S.UnitFrame.CreateRaidTargetIndicator(self,unit, ...)
 end
 
 local function OnPlayerLogin(self, event, ...)
@@ -30,4 +30,4 @@ end
 -- EventHandler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler.RegisterAllEvents()
+EventHandler.Register()

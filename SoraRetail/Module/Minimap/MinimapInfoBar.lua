@@ -7,15 +7,113 @@ local S, C, L, DB = unpack(select(2, ...))
 local anchors = {}
 local width, height, space = C.MiniMap.Width, C.MiniMap.LineHeight, C.MiniMap.LineHeight
 
+-- Initialize
+local r, g, b = nil, nil, nil
+do
+    local _, class = UnitClass("player")
+    r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+end
+
 -- Common
 local function OnLeave(self, event, ...)
     GameTooltip:Hide()
 end
 
--- Ping、Clock、Addon
+-- Clocl
+local function UpdateClock(self, ...)
+    anchors.clock.text:SetText(GameTime_GetLocalTime(true))
+end
+
+local function CreateClock(self, ...)
+    GameTimeFrame:Hide()
+    TimeManagerClockButton:Hide()
+
+    local clock = S.CreateButton(Minimap)
+    clock:SetSize(48, 16)
+    clock:SetPoint("TOP", Minimap, 0, -4)
+
+    clock.text = S.MakeText(clock, 12)
+    clock.text:SetAllPoints()
+
+    local function OnEnter(self, ...)
+        local doubleLineColor = {0.75, 0.90, 1.00, 1.00, 1.00, 1.00}
+
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+        GameTooltip:ClearLines()
+
+        GameTooltip:AddLine(date "%A, %B %d", 0.40, 0.78, 1.00)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_REALMTIME, GameTime_GetGameTime(true), unpack(doubleLineColor))
+        GameTooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_LOCALTIME, GameTime_GetLocalTime(true), unpack(doubleLineColor))
+
+        GameTooltip:Show()
+    end
+
+    local function OnLeave(self, ...)
+        GameTooltip:Hide()
+    end
+
+    local function OnMouseUp(self, btn, ...)
+        GameTimeFrame:Click()
+    end
+
+    clock:HookScript("OnLeave", OnLeave)
+    clock:HookScript("OnEnter", OnEnter)
+    clock:HookScript("OnMouseUp", OnMouseUp)
+
+    anchors.clock = clock
+end
+
+-- FPS、Ping、Addon
 local addons = {}
 
-local UpdatePing = function(self, ...)
+local function UpdateFPS(self, ...)
+    local value = GetFramerate()
+
+    local fps = anchors.First.fps
+    fps:SetValue(value)
+    fps.text:SetText(("%dFPS"):format(value))
+end
+
+local function CreateFPS(self, ...)
+    local anchor = anchors.First
+
+    local fps = CreateFrame("StatusBar", nil, anchor)
+    fps:SetSize((width - 4 * 2) / 3, height)
+    fps:SetPoint("BOTTOMLEFT")
+    fps:SetMinMaxValues(0, 144)
+    fps:SetStatusBarTexture(DB.Statusbar)
+    fps:SetStatusBarColor(0.00, 0.40, 1.00)
+
+    fps.text = S.MakeText(fps, 10)
+    fps.text:SetText("N/A")
+    fps.text:SetPoint("CENTER", 0, 5)
+
+    fps.shadow = S.MakeShadow(fps, 2)
+    fps.bg = fps:CreateTexture(nil, "BACKGROUND")
+    fps.bg:SetTexture(DB.Statusbar)
+    fps.bg:SetAllPoints()
+    fps.bg:SetVertexColor(0.12, 0.12, 0.12)
+
+    local function OnEnter(self, ...)
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+        GameTooltip:ClearLines()
+
+        local value = GetFramerate()
+        GameTooltip:AddLine("帧数：", 0.40, 0.78, 1.00)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddDoubleLine("帧数：", ("%.2fFPS"):format(value), 1.00, 1.00, 1.00, 1.00, 1.00, 1.00)
+
+        GameTooltip:Show()
+    end
+
+    fps:SetScript("OnLeave", OnLeave)
+    fps:SetScript("OnEnter", OnEnter)
+
+    anchor.fps = fps
+end
+
+local function UpdatePing(self, ...)
     local ping = anchors.First.ping
     local _, _, latencyHome, latencyWorld = GetNetStats()
     local value = (latencyHome > latencyWorld) and latencyHome or latencyWorld
@@ -23,20 +121,18 @@ local UpdatePing = function(self, ...)
     ping:SetValue(value)
     ping.text:SetText(value .. "ms")
 
-    if value > 499 then
+    local minValue, maxValue = ping:GetMinMaxValues()
+
+    if value > maxValue * 0.50 then
         ping:SetStatusBarColor(1.00, 0.00, 0.00)
-    elseif value > 249 then
+    elseif value > maxValue * 0.25 then
         ping:SetStatusBarColor(1.00, 1.00, 0.00)
     else
         ping:SetStatusBarColor(0.00, 0.40, 1.00)
     end
 end
 
-local UpdateClock = function(self, ...)
-    anchors.First.clock.text:SetText(GameTime_GetLocalTime(true))
-end
-
-local UpdateAddon = function(self, ...)
+local function UpdateAddon(self, ...)
     UpdateAddOnMemoryUsage()
     local addonCount = GetNumAddOns()
 
@@ -84,12 +180,12 @@ local UpdateAddon = function(self, ...)
     end
 end
 
-local CreatePing = function(self, ...)
+local function CreatePing(self, ...)
     local anchor = anchors.First
 
     local ping = CreateFrame("StatusBar", nil, anchor)
-    ping:SetPoint("BOTTOMLEFT")
-    ping:SetMinMaxValues(0, 1000)
+    ping:SetPoint("BOTTOM")
+    ping:SetMinMaxValues(0, 200)
     ping:SetStatusBarTexture(DB.Statusbar)
     ping:SetStatusBarColor(0.00, 0.40, 1.00)
     ping:SetSize((width - 4 * 2) / 3, height)
@@ -104,75 +200,26 @@ local CreatePing = function(self, ...)
     ping.bg:SetAllPoints()
     ping.bg:SetVertexColor(0.12, 0.12, 0.12)
 
-    local OnPingEnter = function(self, ...)
+    local function OnEnter(self, ...)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
         GameTooltip:ClearLines()
 
         local _, _, latencyHome, latencyWorld = GetNetStats()
         GameTooltip:AddLine("延迟：", 0.40, 0.78, 1.00)
         GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine("本地延迟：", latencyHome, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00)
-        GameTooltip:AddDoubleLine("世界延迟：", latencyWorld, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00)
+        GameTooltip:AddDoubleLine("本地延迟：", latencyHome .. "ms", 1.00, 1.00, 1.00, 1.00, 1.00, 1.00)
+        GameTooltip:AddDoubleLine("世界延迟：", latencyWorld .. "ms", 1.00, 1.00, 1.00, 1.00, 1.00, 1.00)
 
         GameTooltip:Show()
     end
 
     ping:SetScript("OnLeave", OnLeave)
-    ping:SetScript("OnEnter", OnPingEnter)
+    ping:SetScript("OnEnter", OnEnter)
 
     anchor.ping = ping
 end
 
-local CreateClock = function(self, ...)
-    local anchor = anchors.First
-
-    GameTimeFrame:Hide()
-    TimeManagerClockButton:Hide()
-
-    local clock = CreateFrame("Frame", nil, anchor)
-    clock:SetPoint("BOTTOM")
-    clock:SetSize((width - 4 * 2) / 3, height + space)
-
-    clock.text = S.MakeText(clock, 14)
-    clock.text:SetAllPoints()
-
-    local OnClockEnter = function(self, ...)
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:ClearLines()
-
-        GameTooltip:AddLine(date "%A, %B %d", 0.40, 0.78, 1.00)
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine(
-            TIMEMANAGER_TOOLTIP_LOCALTIME,
-            GameTime_GetLocalTime(true),
-            0.75,
-            0.90,
-            1.00,
-            1.00,
-            1.00,
-            1.00
-        )
-        GameTooltip:AddDoubleLine(
-            TIMEMANAGER_TOOLTIP_REALMTIME,
-            GameTime_GetGameTime(true),
-            0.75,
-            0.90,
-            1.00,
-            1.00,
-            1.00,
-            1.00
-        )
-
-        GameTooltip:Show()
-    end
-
-    clock:SetScript("OnLeave", OnLeave)
-    clock:SetScript("OnEnter", OnClockEnter)
-
-    anchor.clock = clock
-end
-
-local CreateAddon = function(self, ...)
+local function CreateAddon(self, ...)
     local anchor = anchors.First
 
     local addon = CreateFrame("StatusBar", nil, anchor)
@@ -192,7 +239,7 @@ local CreateAddon = function(self, ...)
     addon.bg:SetAllPoints()
     addon.bg:SetVertexColor(0.12, 0.12, 0.12)
 
-    local OnAddonEnter = function(self, ...)
+    local function OnAddonEnter(self, ...)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
         GameTooltip:ClearLines()
 
@@ -230,7 +277,7 @@ local CreateAddon = function(self, ...)
     anchor.addon = addon
 end
 
-local CreateFirstLine = function(self, ...)
+local function CreateFirstLine(self, ...)
     anchors.First = CreateFrame("Frame", nil, self)
     anchors.First:SetSize(width, height * 2 + space)
 
@@ -242,15 +289,15 @@ end
 -- Gold、Item
 local solts = {1, 3, 5, 6, 7, 8, 9, 10, 16, 17}
 
-local UpdateGold = function(self, ...)
+local function UpdateGold(self, ...)
     local money = floor(GetMoney() / 100 / 100)
 
     local gold = anchors.Second.gold
     gold:SetValue(money)
-    gold.text:SetText(("%d|cffffd700G|r"):format(money))
+    gold.text:SetText(("%s|cffffd700G|r"):format(S.FormatInteger(money)))
 end
 
-local UpdateItem = function(self, ...)
+local function UpdateItem(self, ...)
     local item = anchors.Second.item
     local maxDurability, currDurability = 0, 0
 
@@ -279,13 +326,13 @@ local UpdateItem = function(self, ...)
     item.text:SetText(("%d%%"):format(value))
 end
 
-local CreateGold = function(self, ...)
+local function CreateGold(self, ...)
     local anchor = anchors.Second
 
     local gold = CreateFrame("StatusBar", nil, anchor)
+    gold:SetSize((width - 4) / 2, height)
     gold:SetPoint("BOTTOMLEFT")
     gold:SetMinMaxValues(0, 999999)
-    gold:SetSize((width - 4) / 2, height)
     gold:SetStatusBarTexture(DB.Statusbar)
     gold:SetStatusBarColor(0.00, 0.40, 1.00)
 
@@ -329,13 +376,13 @@ local CreateGold = function(self, ...)
     anchor.gold = gold
 end
 
-local CreateItem = function(self, ...)
+local function CreateItem(self, ...)
     local anchor = anchors.Second
 
     local item = CreateFrame("StatusBar", nil, anchor)
+    item:SetSize((width - 4) / 2, height)
     item:SetPoint("BOTTOMRIGHT")
     item:SetMinMaxValues(0, 100)
-    item:SetSize((width - 4) / 2, height)
     item:SetStatusBarTexture(DB.Statusbar)
     item:SetStatusBarColor(0.00, 0.40, 1.00)
 
@@ -349,7 +396,7 @@ local CreateItem = function(self, ...)
     item.bg:SetAllPoints()
     item.bg:SetVertexColor(0.12, 0.12, 0.12)
 
-    local OnItemBarEnter = function(self, ...)
+    local function OnItemBarEnter(self, ...)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
         GameTooltip:ClearLines()
 
@@ -380,16 +427,17 @@ local CreateItem = function(self, ...)
     anchor.item = item
 end
 
-local CreateSecondLine = function(self, ...)
+local function CreateSecondLine(self, ...)
     anchors.Second = CreateFrame("Frame", nil, self)
     anchors.Second:SetSize(width, height * 2 + space)
 
+    CreateFPS(self, ...)
     CreateGold(self, ...)
     CreateItem(self, ...)
 end
 
 -- Experience
-local CreateExperienceLine = function(self, ...)
+local function CreateExperienceLine(self, ...)
     local anchor = CreateFrame("Frame", nil, self)
     anchor:SetSize(width, height * 2 + space)
 
@@ -399,7 +447,7 @@ local CreateExperienceLine = function(self, ...)
     experience:SetSize(width, height)
     experience:SetStatusBarTexture(DB.Statusbar)
 
-    local OnExperienceUpdateTooltip = function(self, event, ...)
+    local function OnExperienceUpdateTooltip(self, event, ...)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
         GameTooltip:ClearLines()
 
@@ -446,7 +494,7 @@ local CreateExperienceLine = function(self, ...)
 end
 
 -- Reputation
-local CreateReputationLine = function(self, ...)
+local function CreateReputationLine(self, ...)
     local anchor = CreateFrame("Frame", nil, self)
     anchor:SetSize(width, height * 2 + space)
 
@@ -456,7 +504,7 @@ local CreateReputationLine = function(self, ...)
     reputation:SetSize(width, height)
     reputation:SetStatusBarTexture(DB.Statusbar)
 
-    local OnReputationUpdateTooltip = function(self, event, ...)
+    local function OnReputationUpdateTooltip(self, event, ...)
         local name, standingID, min, max, cur, factionID = GetWatchedFactionInfo()
         local _, desc = GetFactionInfoByID(factionID)
 
@@ -499,7 +547,7 @@ local CreateReputationLine = function(self, ...)
 end
 
 -- Artifact Power、Azerite Item
-local CreateArtifactPowerLine = function(self, ...)
+local function CreateArtifactPowerLine(self, ...)
     local anchor = CreateFrame("Frame", nil, self)
     anchor:SetSize(width, height * 2 + space)
 
@@ -530,7 +578,7 @@ local CreateArtifactPowerLine = function(self, ...)
 end
 
 -- Begin
-local UpdateAnchors = function(self, ...)
+local function UpdateAnchors(self, ...)
     local lines = {}
 
     table.insert(lines, anchors.First)
@@ -557,7 +605,7 @@ local UpdateAnchors = function(self, ...)
     end
 end
 
-local RegisterStyle = function(self, ...)
+local function RegisterStyle(self, ...)
     self:SetSize(width, height)
     self:SetPoint("TOP", Minimap, "BOTTOM", 0, 0)
 
@@ -568,30 +616,30 @@ local RegisterStyle = function(self, ...)
     CreateArtifactPowerLine(self, ...)
 end
 
-local OnPlayerLogin = function(self, event, ...)
+-- Event
+local function OnPlayerLogin(self, event, ...)
     oUF:RegisterStyle("oUF_Sora_InfoBar", RegisterStyle)
     oUF:SetActiveStyle("oUF_Sora_InfoBar")
     oUF:Spawn("player", "oUF_Sora_InfoBar")
+
+    local function OnTicker(ticker)
+        UpdateAnchors()
+
+        if not anchors.First then
+            return 0
+        end
+
+        UpdateFPS(self)
+        UpdateGold(self)
+        UpdateItem(self)
+        UpdatePing(self)
+        UpdateClock(self)
+        UpdateAddon(self)
+    end
+    C_Timer.NewTicker(5.00, OnTicker)
 end
 
--- EventHandler
+-- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
 EventHandler.Register()
-
-local TimerHandler = S.CreateTimerHandler()
-TimerHandler.Register()
-TimerHandler.Interval = 5.00
-TimerHandler.OnUpdate = function(self, elapsed, ...)
-    UpdateAnchors()
-
-    if not anchors.First then
-        return 0
-    end
-
-    UpdateGold(self, ...)
-    UpdateItem(self, ...)
-    UpdatePing(self, ...)
-    UpdateClock(self, ...)
-    UpdateAddon(self, ...)
-end

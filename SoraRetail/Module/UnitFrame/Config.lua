@@ -24,7 +24,7 @@ C.UnitFrame.Focus.Postion = {"CENTER", UIParent, "CENTER", 0, 192} -- 焦点框�
 C.UnitFrame.Boss = {}
 C.UnitFrame.Boss.Width = 220 -- 首领框体宽度
 C.UnitFrame.Boss.Height = 36 -- 首领框体高度
-C.UnitFrame.Boss.Postion = {"CENTER", UIParent, "CENTER", 0, 360} -- 首领框体位置
+C.UnitFrame.Boss.Postion = {"CENTER", UIParent, "CENTER", 0, 350} -- 首领框体位置
 
 C.UnitFrame.Raid = {}
 C.UnitFrame.Raid.Width = 96 -- 团队框体宽度

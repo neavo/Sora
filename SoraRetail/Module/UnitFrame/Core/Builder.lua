@@ -6,10 +6,10 @@ local S, C, L, DB = unpack(select(2, ...))
 -- Variables
 
 -- Initialize
-S.oUF = {}
+S.UnitFrame = S.UnitFrame or {}
 
 -- Power
-S.oUF.CreatePower = function(self, unit, ...)
+S.UnitFrame.CreatePower = function(self, unit, ...)
     local height = nil
 
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
@@ -43,7 +43,7 @@ S.oUF.CreatePower = function(self, unit, ...)
 end
 
 -- Health
-S.oUF.CreateHealth = function(self, unit, ...)
+S.UnitFrame.CreateHealth = function(self, unit, ...)
     local height = nil
 
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
@@ -81,7 +81,7 @@ S.oUF.CreateHealth = function(self, unit, ...)
 end
 
 -- Tag
-S.oUF.CreateTag = function(self, unit, ...)
+S.UnitFrame.CreateTag = function(self, unit, ...)
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
         local nameTag = S.MakeText(self.Health, 12)
         nameTag:SetAlpha(0.00)
@@ -126,7 +126,7 @@ S.oUF.CreateTag = function(self, unit, ...)
 end
 
 -- Auras
-S.oUF.CreateAuras = function(self, unit, ...)
+S.UnitFrame.CreateAuras = function(self, unit, ...)
     local spacing = 4
     local size = (self:GetWidth() - 4 * 8) / 9
 
@@ -143,7 +143,7 @@ S.oUF.CreateAuras = function(self, unit, ...)
     auras.disableCooldown = false
     auras.initialAnchor = "TOPLEFT"
 
-    local PostCreateIcon = function(self, aura, ...)
+    local function PostCreateIcon(self, aura, ...)
         if not aura.__isProcessed then
             aura.shadow = S.MakeShadow(aura, 2)
 
@@ -163,19 +163,19 @@ S.oUF.CreateAuras = function(self, unit, ...)
 
     auras.PostCreateIcon = PostCreateIcon
 
-    if unit == "player" then
-        auras.numBuffs = 0
-        auras.numDebuffs = 27
-    else
+    if unit ~= "player" then
         auras.numBuffs = 9
-        auras.numDebuffs = 18
+        auras.numTotal = 27
+    else
+        auras.numBuffs = 0
+        auras.numTotal = 27
     end
 
     self.Auras = auras
 end
 
 -- Runes
-S.oUF.CreateRunes = function(self, unit, ...)
+S.UnitFrame.CreateRunes = function(self, unit, ...)
     if select(2, UnitClass("player")) ~= "DEATHKNIGHT" then
         return 0
     end
@@ -207,44 +207,108 @@ S.oUF.CreateRunes = function(self, unit, ...)
     self.Runes = classPowers
 end
 
--- Totems
-S.oUF.CreateTotems = function(self, unit, ...)
+S.UnitFrame.CreateTotems = function(self, unit, ...)
     if select(2, UnitClass("player")) ~= "SHAMAN" then
         return 0
     end
 
     local totems = {}
-    local size = self:GetHeight() / 2 - 4
+    local colors = {
+        {0.81, 0.26, 0.10}, -- Fire
+        {0.80, 0.72, 0.29}, -- Earth
+        {0.17, 0.50, 1.00}, -- Water
+        {0.17, 0.73, 0.80} -- Air
+    }
+
+    local size = self:GetHeight() - 4 - 4
+
+    local function UpdateTooltip(self)
+        GameTooltip:SetTotem(self.i)
+    end
 
     for i = 1, MAX_TOTEMS do
         local totem = CreateFrame("Button", nil, self)
         totem:SetSize(size, size)
 
-        totem.icon = totem:CreateTexture(nil, "OVERLAY")
+        totem.icon = totem:CreateTexture(nil, "ARTWORK")
         totem.icon:SetAllPoints()
         totem.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-        totem.cooldown = CreateFrame("Cooldown", nil, totem, "CooldownFrameTemplate")
-        totem.cooldown:SetAllPoints()
+        totem.bar = CreateFrame("StatusBar", nil, totem)
+        totem.bar:SetSize(size, 4)
+        totem.bar:SetPoint("BOTTOM", totem, "TOP", 0, 4)
+        totem.bar:SetStatusBarTexture(DB.Statusbar)
+        totem.bar:SetStatusBarColor(unpack(colors[i]))
 
+        totem.bar.backgourd = CreateFrame("StatusBar", nil, totem.bar)
+        totem.bar.backgourd:SetFrameLevel(0)
+        totem.bar.backgourd:SetAllPoints(totem.bar)
+        totem.bar.backgourd:SetStatusBarTexture(DB.Statusbar)
+        totem.bar.backgourd:SetStatusBarColor(0.12, 0.12, 0.12)
+
+        totem.UpdateTooltip = UpdateTooltip
         totem.shadow = S.MakeShadow(totem, 2)
+        totem.bar.backgourd.shadow = S.MakeShadow(totem.bar.backgourd, 2)
 
         if i == 1 then
-            totem:SetPoint("RIGHT", self, "LEFT", -4, 0)
-        elseif i == 3 then
-            totem:SetPoint("RIGHT", totems[1], "LEFT", -4, 0)
+            totem:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -4, 0)
         else
-            totem:SetPoint("TOP", totems[i - 1], "RIGHT", 0, -4)
+            totem:SetPoint("RIGHT", totems[i - 1], "LEFT", -4, 0)
         end
 
         totems[i] = totem
     end
 
+    local function OnUpdate(self, elapsed, ...)
+        if self.expiration - GetTime() > 0 then
+            self.bar:SetValue(self.expiration - GetTime())
+        end
+    end
+
+    local function Override(self, event, ...)
+        local datas = {}
+
+        for i = 1, MAX_TOTEMS do
+            local haveTotem, name, start, duration, icon = GetTotemInfo(i)
+
+            if haveTotem and duration > 0 and start + duration - GetTime() > 0 then
+                local data = {}
+                data.i = i
+                data.icon = icon
+                data.name = name
+                data.start = start
+                data.duration = duration
+
+                table.insert(datas, data)
+            end
+        end
+
+        for i = 1, MAX_TOTEMS do
+            local data = datas[i]
+            local totem = totems[i]
+
+            if not data then
+                totem:Hide()
+                totem:SetScript("OnUpdate", nil)
+            else
+                totem.i = data.i
+                totem.expiration = data.start + data.duration
+
+                totem.icon:SetTexture(data.icon)
+                totem.bar:SetMinMaxValues(0, data.duration)
+
+                totem:Show()
+                totem:SetScript("OnUpdate", OnUpdate)
+            end
+        end
+    end
+
     self.Totems = totems
+    self.Totems.Override = Override
 end
 
 -- Threat
-S.oUF.CreateThreat = function(self, unit, ...)
+S.UnitFrame.CreateThreat = function(self, unit, ...)
     local threat = CreateFrame("StatusBar", nil, self)
     threat:SetSize(12, 12)
     threat:SetStatusBarTexture(DB.Statusbar)
@@ -254,10 +318,7 @@ S.oUF.CreateThreat = function(self, unit, ...)
     threat:SetStatusBarColor(GetThreatStatusColor(0))
     threat.shadow = S.MakeShadow(threat, 2)
 
-    local handler = S.CreateTimerHandler()
-    handler.Register()
-    handler.Interval = 1.00
-    handler.OnUpdate = function(handler, elapsed, ...)
+    local function OnTicker(ticker)
         local alpha = 0.00
         local isTanking = UnitDetailedThreatSituation("player", unit)
 
@@ -268,12 +329,13 @@ S.oUF.CreateThreat = function(self, unit, ...)
         threat:SetAlpha(alpha)
         threat:SetStatusBarColor(GetThreatStatusColor(isTanking and 3.00 or 0.00))
     end
+    C_Timer.NewTicker(1.00, OnTicker)
 
     self.Threat = threat
 end
 
 -- Castbar
-S.oUF.CreateCastbar = function(self, unit, ...)
+S.UnitFrame.CreateCastbar = function(self, unit, ...)
     local spacing, barHeight = self.Auras.spacing, self.Auras.size
 
     local castbar = CreateFrame("StatusBar", nil, self)
@@ -314,12 +376,27 @@ S.oUF.CreateCastbar = function(self, unit, ...)
         castbar:SetSize(self:GetWidth() - barHeight - barHeight * 3 - spacing * 2, barHeight)
     end
 
+    castbar.CustomTimeText = function(self, duration)
+        self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
+    end
+
     local handler = CreateFrame("Frame", nil, UIParent)
     handler.timer = 0
     handler.fading = false
 
-    castbar.CustomTimeText = function(self, duration)
-        self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
+    local function OnUpdate(handler, elasped, ...)
+        handler.fading = true
+        handler.timer = handler.timer + elasped
+
+        if handler.timer >= 0.30 then
+            self.Castbar:Hide()
+
+            handler.fading = false
+            handler:SetScript("OnUpdate", nil)
+        else
+            self.Castbar:Show()
+            self.Castbar:SetAlpha(1.00 * (1 - handler.timer / 0.30))
+        end
     end
 
     castbar.PostCastStart = function(self, unit, name, castid, spellid)
@@ -349,21 +426,7 @@ S.oUF.CreateCastbar = function(self, unit, ...)
         self:SetStatusBarColor(1.00, 0.05, 0.00)
 
         handler.timer = 0.00
-        handler:SetScript(
-            "OnUpdate",
-            function(handler, elasped, ...)
-                handler.fading = true
-                handler.timer = handler.timer + elasped
-
-                if handler.timer > 0.30 then
-                    handler.fading = false
-                    handler:SetScript("OnUpdate", nil)
-                else
-                    self:Show()
-                    self:SetAlpha(1.00 * (1 - handler.timer / 0.30))
-                end
-            end
-        )
+        handler:SetScript("OnUpdate", OnUpdate)
     end
 
     castbar.CustomDelayText = castbar.CustomTimeText
@@ -374,7 +437,7 @@ S.oUF.CreateCastbar = function(self, unit, ...)
 end
 
 -- Portrait
-S.oUF.CreatePortrait = function(self, unit, ...)
+S.UnitFrame.CreatePortrait = function(self, unit, ...)
     local portrait = CreateFrame("PlayerModel", nil, self)
     portrait:SetAlpha(0.30)
     portrait:SetAllPoints(self.Health)
@@ -394,7 +457,7 @@ S.oUF.CreatePortrait = function(self, unit, ...)
         UIFrameFadeOut(self.Portrait, 0.30, 0.30, 0.00)
     end
 
-    local OnEnter = function(self, event, ...)
+    local function OnEnter(self, event, ...)
         UnitFrame_OnEnter(self)
 
         if not UnitAffectingCombat("player") then
@@ -402,7 +465,7 @@ S.oUF.CreatePortrait = function(self, unit, ...)
         end
     end
 
-    local OnLeave = function(self, event, ...)
+    local function OnLeave(self, event, ...)
         UnitFrame_OnLeave(self)
 
         if not UnitAffectingCombat("player") then
@@ -413,24 +476,24 @@ S.oUF.CreatePortrait = function(self, unit, ...)
     self:SetScript("OnEnter", OnEnter)
     self:SetScript("OnLeave", OnLeave)
 
-    local OnPlayerRegenEnabled = function(handler, event, ...)
+    local function OnPlayerRegenEnabled(handler, event, ...)
         PortraitFadeIn(self, ...)
     end
 
-    local OnPlayerRegenDisabled = function(handler, event, ...)
+    local function OnPlayerRegenDisabled(handler, event, ...)
         PortraitFadeOut(self, ...)
     end
 
     local EventHandler = S.CreateEventHandler()
     EventHandler.Event.PLAYER_REGEN_ENABLED = OnPlayerRegenEnabled
     EventHandler.Event.PLAYER_REGEN_DISABLED = OnPlayerRegenDisabled
-    EventHandler.RegisterAllEvents()
+    EventHandler.Register()
 
     self.Portrait = portrait
 end
 
 -- ClassPowers
-S.oUF.CreateClassPowers = function(self, unit, ...)
+S.UnitFrame.CreateClassPowers = function(self, unit, ...)
     local powers = {}
 
     for i = 1, 8 do
@@ -448,7 +511,7 @@ S.oUF.CreateClassPowers = function(self, unit, ...)
     end
 
     local lastMax = nil
-    local PostUpdate = function(powers, cur, max, hasMaxChanged, powerType)
+    local function PostUpdate(powers, cur, max, hasMaxChanged, powerType)
         if lastMax == max then
             return 0
         else
@@ -481,7 +544,7 @@ S.oUF.CreateClassPowers = function(self, unit, ...)
 end
 
 -- RaidRoleIndicator
-S.oUF.CreateRaidRoleIndicator = function(self, unit, ...)
+S.UnitFrame.CreateRaidRoleIndicator = function(self, unit, ...)
     local anchor, indicator = nil, nil
 
     anchor = CreateFrame("Frame", nil, self)
@@ -505,7 +568,7 @@ S.oUF.CreateRaidRoleIndicator = function(self, unit, ...)
 end
 
 -- GroupRoleIndicator
-S.oUF.CreateGroupRoleIndicator = function(self, unit, ...)
+S.UnitFrame.CreateGroupRoleIndicator = function(self, unit, ...)
     local anchor = CreateFrame("Frame", nil, self)
     anchor:SetAllPoints()
     anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
@@ -517,7 +580,7 @@ S.oUF.CreateGroupRoleIndicator = function(self, unit, ...)
 end
 
 -- RaidTargetIndicator
-S.oUF.CreateRaidTargetIndicator = function(self, unit, ...)
+S.UnitFrame.CreateRaidTargetIndicator = function(self, unit, ...)
     local size, base = nil, nil
 
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then

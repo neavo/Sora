@@ -39,64 +39,84 @@ function S.Print(t)
 end
 
 function S.MakeText(parent, size)
-    local Text = parent:CreateFontString("$parentText", "ARTWORK")
-    Text:SetShadowOffset(1, -1)
-    Text:SetShadowColor(0, 0, 0, 0.5)
-    Text:SetFont(STANDARD_TEXT_FONT, C.Core and C.Core.FontScale * size or size, "OUTLINE")
+    local fontString = nil
 
-    return Text
+    if not parent.GetDrawLayer then
+        fontString = parent:CreateFontString("$parentText", "ARTWORK")
+    elseif parent:GetDrawLayer() == "BACKGROUND" then
+        fontString = parent:GetParent():CreateFontString("$parentText", "BORDER")
+    elseif parent:GetDrawLayer() == "BORDER" then
+        fontString = parent:GetParent():CreateFontString("$parentText", "ARTWORK")
+    else
+        fontString = parent:GetParent():CreateFontString("$parentText", "OVERLAY")
+    end
+
+    fontString:SetTextColor(0.90, 0.90, 0.90)
+    fontString:SetShadowOffset(1, -1)
+    fontString:SetShadowColor(0.00, 0.00, 0.00, 0.50)
+    fontString:SetFont(STANDARD_TEXT_FONT, size, "OUTLINE")
+
+    return fontString
 end
 
 function S.MakeBorder(parent, size)
     local Border = CreateFrame("Frame", "$parentBorder", parent)
     Border:SetFrameLevel(0)
-    Border:SetPoint("TOPLEFT", -size, size)
-    Border:SetPoint("BOTTOMRIGHT", size, -size)
-    Border:SetBackdropBorderColor(0, 0, 0, size)
-    Border:SetBackdrop({edgeFile = DB.Solid, edgesize = size})
+    Border:SetPoint("TOPLEFT", parent, -size, size)
+    Border:SetPoint("BOTTOMRIGHT", parent, size, -size)
+    Border:SetBackdrop({edgeFile = DB.Border, edgeSize = size})
+    Border:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
 
     return Border
 end
 
 function S.MakeShadow(parent, size)
-    local frameLevel = parent:GetFrameLevel()
-
-    if frameLevel >= 1 then
-        frameLevel = frameLevel - 1
-    end
-
-    local backdrop = {
-        edgeSize = size,
-        edgeFile = DB.GlowTex
-    }
-
     local Shadow = CreateFrame("Frame", "$parentShadow", parent)
-    Shadow:SetFrameLevel(frameLevel)
+    Shadow:SetFrameLevel(0)
     Shadow:SetPoint("TOPLEFT", parent, -size, size)
     Shadow:SetPoint("BOTTOMRIGHT", parent, size, -size)
-    Shadow:SetBackdrop(backdrop)
+    Shadow:SetBackdrop({edgeFile = DB.GlowTex, edgeSize = size})
     Shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
 
     return Shadow
 end
 
-function S.MakeTextureShadow(parent, anchor, size)
-    local frameLevel = parent:GetFrameLevel()
+function S.CreateButton(parent)
+    local _, class = UnitClass("player")
+    local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
 
-    if frameLevel >= 1 then
-        frameLevel = frameLevel - 1
+    local frame = CreateFrame("Frame", nil, parent)
+    frame:SetFrameLevel(parent:GetFrameLevel() + 2)
+
+    frame.bg = frame:CreateTexture(nil, "BORDER")
+    frame.bg:SetAllPoints()
+    frame.bg:SetTexture(DB.Backdrop)
+    frame.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+
+    frame.shadow = S.MakeShadow(frame, 2)
+    frame.shadow:SetFrameLevel(parent:GetFrameLevel() + 1)
+
+    local function OnEnter(self, ...)
+        self.bg:SetVertexColor(r / 4, g / 4, b / 4, 1.00)
+        self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
     end
 
-    local backdrop = {
-        edgeSize = size,
-        edgeFile = DB.GlowTex
-    }
+    local function OnLeave(self, ...)
+        self.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+        self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+    end
 
+    frame:SetScript("OnLeave", OnLeave)
+    frame:SetScript("OnEnter", OnEnter)
+
+    return frame
+end
+
+function S.MakeTextureShadow(parent, anchor, size)
     local Shadow = CreateFrame("Frame", "$parentTextureShadow", parent)
-    Shadow:SetFrameLevel(parent:GetFrameLevel() - 1)
     Shadow:SetPoint("TOPLEFT", anchor, -size, size)
     Shadow:SetPoint("BOTTOMRIGHT", anchor, size, -size)
-    Shadow:SetBackdrop(backdrop)
+    Shadow:SetBackdrop({edgeFile = DB.GlowTex, edgeSize = size})
     Shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
 
     return Shadow
@@ -211,37 +231,6 @@ function S.CreateEventHandler()
     Handler:SetScript("OnEvent", OnEvent)
     Handler.Register = Register
     Handler.RegisterAllEvents = Register
-
-    return Handler
-end
-
-function S.CreateTimerHandler()
-    local Handler = CreateFrame("Frame")
-    Handler.timer = 0.00
-
-    local OnUpdate = function(self, elapsed, ...)
-        if not self.Interval or not self.OnUpdate then
-            return 0
-        end
-
-        self.timer = self.timer + elapsed
-        if self.timer > self.Interval then
-            self.timer = 0.00
-
-            self.OnUpdate(self, elapsed, ...)
-        end
-    end
-
-    local Register = function()
-        Handler:SetScript("OnUpdate", OnUpdate)
-    end
-
-    local Unregister = function()
-        Handler:SetScript("OnUpdate", nil)
-    end
-
-    Handler.Register = Register
-    Handler.Unregister = Unregister
 
     return Handler
 end

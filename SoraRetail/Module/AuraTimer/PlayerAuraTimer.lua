@@ -73,14 +73,15 @@ local CreateAuras = function()
 
 		aura.icon = aura:CreateTexture("$parentIcon", "OVERLAY")
 		aura.icon:SetAllPoints()
+		aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 		aura.shadow = S.MakeShadow(aura, 2)
 
 		local countParent = CreateFrame("Frame", nil, aura)
 		countParent:SetAllPoints()
 		countParent:SetFrameLevel(aura.cooldown:GetFrameLevel() + 1)
 
-		aura.count = S.MakeText(countParent, 8)
-		aura.count:SetPoint("BOTTOMRIGHT", aura, "BOTTOMRIGHT", 1, 1)
+		aura.count = S.MakeText(countParent, 9)
+        aura.count:SetPoint("BOTTOMRIGHT", aura, "BOTTOMRIGHT", 1, -1)
 
 		if i == 1 then
 			aura:SetPoint("BOTTOMLEFT")

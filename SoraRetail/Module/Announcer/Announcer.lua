@@ -12,6 +12,11 @@ local SendMessage = function(msg, sound)
         PlaySound(SOUNDKIT.RAID_WARNING, "Master")
     end
 
+    if C.Announcer.AlertForPlayer then
+        print("|cff70C0F5[Sora's]|r " .. msg)
+        return 0
+    end
+
     if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
         SendChatMessage("[Sora's] " .. msg, "INSTANCE_CHAT")
     elseif IsInRaid() then
@@ -73,7 +78,7 @@ end
 -- Quest Complete
 local OnQuestTurnedIn = function(self, event, questID, xpReward, moneyReward)
     local link = GetQuestLink(questID) or completedQuests[questID]
-    
+
     if link then
         SendMessage("完成任务：" .. link, true)
     end

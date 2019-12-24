@@ -1,22 +1,22 @@
-lightweight tag ed11a05fc663333845ce7b7c593418cc847b7047 v1.9.1
-Author:	GitHub <noreply@github.com>
-Date:	Sat Nov 9 15:17:57 2019 +0100
+lightweight tag a74bf03e062661036071de45c08c1ba91d9ff5b4 v1.9.3
+Author:	MarkW <17293527+Numynum@users.noreply.github.com>
+Date:	Fri Dec 20 07:18:41 2019 +0100
 
-commit ed11a05fc663333845ce7b7c593418cc847b7047
-Author: MarkW <17293527+Numynum@users.noreply.github.com>
-Date:   Sat Nov 9 15:17:57 2019 +0100
+commit a74bf03e062661036071de45c08c1ba91d9ff5b4
+Author: zaCade <zaCade@hotmail.com>
+Date:   Fri Dec 20 07:18:41 2019 +0100
 
-    added support for azerite item&essence frames (#4)
-
-commit 7df7e105fe2eb8ff11bc0e5f7265ba2f443c3040
-Author: fuba <41425685+fubaBfA@users.noreply.github.com>
-Date:   Fri Sep 27 14:07:25 2019 +0200
-
-    added some Classic Frames & Code Cleanup
-
-commit 7df7e105fe2eb8ff11bc0e5f7265ba2f443c3040
-Author: fuba <41425685+fubaBfA@users.noreply.github.com>
-Date:   Fri Sep 27 14:07:25 2019 +0200
-
-    added some Classic Frames & Code Cleanup
+    Fix OrderHallMissionFrame, Add BFAMissionFrame, Update .toc (#7)
+    
+    * Clean up code, add more frames.
+    
+    Cleaned up the code, and added frames i got from https://github.com/Suraf/BlizzMove, and fixed some issues like the code for the objective tracker.
+    
+            modified:   BlizzMove.lua
+    
+            modified:   BlizzMove.lua
+            modified:   Handle.lua
+            modified:   BlizzMove.lua
+    
+    * Fix OrderHallMissionFrame, Add BFAMissionFrame, Update .toc
 

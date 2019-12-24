@@ -7,3 +7,4 @@ if not C.Announcer then
 end
 
 C.Announcer.OnlyPlayer = false
+C.Announcer.AlertForPlayer = false

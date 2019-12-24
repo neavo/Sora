@@ -19,14 +19,14 @@ local function RegisterStyle(self, unit, ...)
     self:RegisterForClicks("AnyUp")
     self:SetSize(C.UnitFrame.Boss.Width, C.UnitFrame.Boss.Height)
 
-    S.oUF.CreatePower(self, unit, ...)
-    S.oUF.CreateHealth(self, unit, ...)
+    S.UnitFrame.CreatePower(self, unit, ...)
+    S.UnitFrame.CreateHealth(self, unit, ...)
 
-    S.oUF.CreateTag(self, unit, ...)
-    S.oUF.CreateAuras(self, unit, ...)
-    S.oUF.CreateThreat(self, unit, ...)
-    S.oUF.CreateCastbar(self, unit, ...)
-    S.oUF.CreatePortrait(self, unit, ...)
+    S.UnitFrame.CreateTag(self, unit, ...)
+    S.UnitFrame.CreateAuras(self, unit, ...)
+    S.UnitFrame.CreateThreat(self, unit, ...)
+    S.UnitFrame.CreateCastbar(self, unit, ...)
+    S.UnitFrame.CreatePortrait(self, unit, ...)
 end
 
 
@@ -46,4 +46,4 @@ end
 -- EventHandler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler.RegisterAllEvents()
+EventHandler.Register()

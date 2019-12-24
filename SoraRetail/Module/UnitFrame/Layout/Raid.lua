@@ -4,13 +4,17 @@ local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
+local oUFAnchor = nil
 local width = C.UnitFrame.Raid.Width
 local height = C.UnitFrame.Raid.Height
-local groupNum, maxColumns, columnSpacing = -1, 6, 8
+local oldRows, maxColumns, columnSpacing = -1, 6, 8
 local raidAuras, indicatorFilters = C.UnitFrame.RaidAuras, C.UnitFrame.Raid.IndicatorFilters
 
+-- Initialize
+S.UnitFrame.Raid = S.UnitFrame.Raid or {}
+
 -- Common
-local IsHealer = function()
+local function IsHealer()
 	local _, class = UnitClass("player")
 	local specialization = GetSpecialization()
 
@@ -24,7 +28,7 @@ local IsHealer = function()
 end
 
 -- RaidDebuff
-local UpdateRaidDebuff = function(self, event, unit, ...)
+local function UpdateRaidDebuff(self, event, unit, ...)
 	local aura = nil
 
 	for k, v in pairs({"HELPFUL", "HARMFUL"}) do
@@ -60,7 +64,7 @@ local UpdateRaidDebuff = function(self, event, unit, ...)
 		local count, texture, duration, expiration = aura.count, aura.texture, aura.duration, aura.expiration
 
 		raidDebuff.icon:SetTexture(texture)
-		raidDebuff.count:SetText((count and count > 0) and count or "")
+		raidDebuff.count:SetText(count > 1 and count or "")
 		raidDebuff.cooldown:SetCooldown(expiration - duration, duration)
 
 		raidDebuff:Show()
@@ -70,28 +74,36 @@ local UpdateRaidDebuff = function(self, event, unit, ...)
 	end
 end
 
-local CreateRaidDebuff = function(self, ...)
+local function CreateRaidDebuff(self, ...)
 	local raidDebuff = CreateFrame("Frame", nil, self.Health)
 	raidDebuff:Hide()
 	raidDebuff:SetSize(20, 20)
 	raidDebuff:SetPoint("CENTER", 0, 0)
 	raidDebuff:SetFrameLevel(self.Health:GetFrameLevel() + 1)
 
-	raidDebuff.cooldown = CreateFrame("Cooldown", "$parentCooldown", raidDebuff, "CooldownFrameTemplate")
-	raidDebuff.cooldown:SetAllPoints()
-
 	raidDebuff.icon = raidDebuff:CreateTexture(nil, "OVERLAY")
 	raidDebuff.icon:SetAllPoints()
-	raidDebuff.shadow = S.MakeShadow(raidDebuff, 1)
+	raidDebuff.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-	raidDebuff.count = S.MakeText(raidDebuff, 8)
-	raidDebuff.count:SetPoint("BOTTOMRIGHT", raidDebuff, "BOTTOMRIGHT", 1, 1)
+	raidDebuff.cooldown = CreateFrame("Cooldown", "$parentCooldown", raidDebuff, "CooldownFrameTemplate")
+	raidDebuff.cooldown:SetAllPoints()
+	raidDebuff.cooldown:SetFrameLevel(self.Health:GetFrameLevel() + 2)
+
+	raidDebuff.border = S.MakeBorder(raidDebuff, 1)
+	raidDebuff.border:SetFrameLevel(self.Health:GetFrameLevel() + 1)
+
+	local parent = CreateFrame("Frame", nil, raidDebuff)
+	parent:SetAllPoints()
+	parent:SetFrameLevel(self.Health:GetFrameLevel() + 3)
+
+	raidDebuff.count = S.MakeText(parent, 7)
+	raidDebuff.count:SetPoint("BOTTOMRIGHT", raidDebuff, "BOTTOMRIGHT", 2, -1)
 
 	self.RaidDebuff = raidDebuff
 end
 
 -- AuraIndicator
-local OnIndicatorUpdate = function(self, elapsed, ...)
+local function OnIndicatorUpdate(self, elapsed, ...)
 	self.timer = self.timer + elapsed
 
 	if self.timer > 0.50 then
@@ -116,7 +128,7 @@ local OnIndicatorUpdate = function(self, elapsed, ...)
 	end
 end
 
-local UpdateAuraIndicator = function(self, event, unit, ...)
+local function UpdateAuraIndicator(self, event, unit, ...)
 	local _, class = UnitClass("player")
 	local indicators = self.Indicators
 	local filters = indicatorFilters[class]
@@ -147,18 +159,20 @@ local UpdateAuraIndicator = function(self, event, unit, ...)
 	end
 end
 
-local CreateAuraIndicator = function(self, ...)
+local function CreateAuraIndicator(self, ...)
 	local indicators = {}
 
 	for i = 1, 6 do
 		local indicator = CreateFrame("Frame", nil, self)
 		indicator:Hide()
-		indicator:SetSize(8, 8)
-		indicator:SetFrameLevel(self.Health:GetFrameLevel() + 1)
+		indicator:SetSize(9, 9)
 
 		indicator.icon = indicator:CreateTexture(nil, "OVERLAY")
 		indicator.icon:SetAllPoints()
-		indicator.shadow = S.MakeShadow(indicator, 1)
+		indicator.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+		indicator.border = S.MakeBorder(indicator, 1)
+		indicator.border:SetFrameLevel(indicator:GetFrameLevel() + 1)
 
 		if i == 1 then
 			indicator:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMLEFT", 2, 0)
@@ -177,12 +191,12 @@ local CreateAuraIndicator = function(self, ...)
 end
 
 -- ThreatIndicator
-local CreateThreatIndicator = function(self, ...)
+local function CreateThreatIndicator(self, ...)
 	local anchor = CreateFrame("Frame", nil, self)
 	anchor:SetAllPoints()
 	anchor:SetFrameLevel(self.Health:GetFrameLevel() + 255)
 
-	local PostUpdate = function(indicator, unit, status, r, g, b)
+	local function PostUpdate(indicator, unit, status, r, g, b)
 		local alpha = 1.00
 
 		if status and status > 1 then
@@ -202,7 +216,7 @@ local CreateThreatIndicator = function(self, ...)
 end
 
 -- ReadyCheckIndicator
-local CreateReadyCheckIndicator = function(self, ...)
+local function CreateReadyCheckIndicator(self, ...)
 	local anchor = CreateFrame("Frame", nil, self.Health)
 	anchor:SetAllPoints()
 	anchor:SetFrameLevel(self.Health:GetFrameLevel() + 1)
@@ -214,54 +228,41 @@ local CreateReadyCheckIndicator = function(self, ...)
 	self.ReadyCheckIndicator = indicator
 end
 
-local SetAnchor = function(self, ...)
-	if not oUF_Sora_Raid_Anchor then
+-- Begin
+local function SetAnchor(self, newRows, ...)
+	if not oUFAnchor then
 		return 0
 	end
 
-	oUF_Sora_Raid_Anchor:ClearAllPoints()
+	if InCombatLockdown() then
+		return 0
+	end
+
+	if oldRows > 0 and oldRows == newRows then
+		return 0
+	end
+
+	oldRows = newRows
+	oUFAnchor:ClearAllPoints()
 
 	if not IsHealer() then
-		oUF_Sora_Raid_Anchor:SetPoint(unpack(C.UnitFrame.Raid.Postion))
-	elseif groupNum < 0 or groupNum >= 6 then
-		oUF_Sora_Raid_Anchor:SetPoint(unpack(C.UnitFrame.Raid.HealerPostion))
+		oUFAnchor:SetPoint(unpack(C.UnitFrame.Raid.Postion))
+	elseif oldRows < 6 then
+		oUFAnchor:SetPoint(unpack(C.UnitFrame.Raid.HealerPostion))
 	else
 		local point, relativeTo, relativePoint, xOfs, yOfs = unpack(C.UnitFrame.Raid.HealerPostion)
-		yOfs = yOfs - height * (maxColumns - groupNum - 1) - columnSpacing * (maxColumns - 1 - groupNum - 1)
+		yOfs = yOfs - height * (maxColumns - oldRows - 1) - columnSpacing * (maxColumns - 1 - oldRows - 1)
 
-		oUF_Sora_Raid_Anchor:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs)
+		oUFAnchor:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs)
 	end
 end
 
-local SetCompactRaidFrame = function(self, ...)
-	local HideCompactRaidFrame = function()
-		if UnitAffectingCombat("player") then
-			return
-		end
-
-		local isShown = CompactRaidFrameManager_GetSetting("IsShown")
-		if isShown and isShown ~= "0" then
-			CompactRaidFrameManager_SetSetting("IsShown", "0")
-		end
-
-		S.KillFrame(CompactRaidFrameManager)
-	end
-
-	if CompactRaidFrameManager_UpdateShown then
-		hooksecurefunc("CompactRaidFrameManager_UpdateShown", HideCompactRaidFrame)
-	end
-
-	CompactRaidFrameManager:HookScript("OnShow", HideCompactRaidFrame)
-	CompactRaidFrameContainer:UnregisterAllEvents()
-end
-
--- Begin
-local RegisterStyle = function(self, unit, ...)
+local function RegisterStyle(self, unit, ...)
 	self.Range = {}
 	self.Range.insideAlpha = 1.00
 	self.Range.outsideAlpha = 0.40
 
-	local OnUnitAura = function(self, event, unit, ...)
+	local function OnUnitAura(self, event, unit, ...)
 		if self.unit ~= unit then
 			return
 		end
@@ -275,13 +276,13 @@ local RegisterStyle = function(self, unit, ...)
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
 	self:SetScript("OnLeave", UnitFrame_OnLeave)
 
-	S.oUF.CreatePower(self, unit, ...)
-	S.oUF.CreateHealth(self, unit, ...)
+	S.UnitFrame.CreatePower(self, unit, ...)
+	S.UnitFrame.CreateHealth(self, unit, ...)
 
-	S.oUF.CreateTag(self, unit, ...)
-	S.oUF.CreateRaidRoleIndicator(self, unit, ...)
-	S.oUF.CreateGroupRoleIndicator(self, unit, ...)
-	S.oUF.CreateRaidTargetIndicator(self, unit, ...)
+	S.UnitFrame.CreateTag(self, unit, ...)
+	S.UnitFrame.CreateRaidRoleIndicator(self, unit, ...)
+	S.UnitFrame.CreateGroupRoleIndicator(self, unit, ...)
+	S.UnitFrame.CreateRaidTargetIndicator(self, unit, ...)
 
 	CreateRaidDebuff(self, ...)
 	CreateAuraIndicator(self, ...)
@@ -289,14 +290,15 @@ local RegisterStyle = function(self, unit, ...)
 	CreateReadyCheckIndicator(self, ...)
 end
 
-local OnPlayerLogin = function(self, event, ...)
-	SetCompactRaidFrame(self, ...)
+local function OnPlayerLogin(self, event, ...)
+	S.KillFrame(CompactRaidFrameManager)
+	S.KillFrame(CompactRaidFrameContainer)
 
 	oUF:RegisterStyle("oUF_Sora_Raid", RegisterStyle)
 	oUF:SetActiveStyle("oUF_Sora_Raid")
 
-	local anchor = CreateFrame("Frame", "oUF_Sora_Raid_Anchor", UIParent)
-	anchor:SetSize(width * 5 + 4 * columnSpacing, height * maxColumns + columnSpacing * (maxColumns - 1))
+	oUFAnchor = CreateFrame("Frame", nil, UIParent)
+	oUFAnchor:SetSize(width * 5 + 4 * columnSpacing, height * maxColumns + columnSpacing * (maxColumns - 1))
 
 	do
 		local oUFArguments = {}
@@ -326,45 +328,29 @@ local OnPlayerLogin = function(self, event, ...)
 		table.insert(oUFArguments, "showPlayer")
 		table.insert(oUFArguments, true)
 		table.insert(oUFArguments, "groupBy")
-		table.insert(oUFArguments, "GROUP")
+		table.insert(oUFArguments, "ASSIGNEDROLE")
 		table.insert(oUFArguments, "groupingOrder")
-		table.insert(oUFArguments, "1,2,3,4,5,6,7,8")
+		table.insert(oUFArguments, "TANK,HEALER,DAMAGER,NONE")
 		table.insert(oUFArguments, "sortMethod")
 		table.insert(oUFArguments, "INDEX")
 		table.insert(oUFArguments, "oUF-initialConfigFunction")
 		table.insert(oUFArguments, ([[ self:SetWidth(%d) self:SetHeight(%d) ]]):format(width, height))
-		oUF:SpawnHeader(unpack(oUFArguments)):SetPoint("TOPLEFT", anchor, "TOPLEFT", 0, 0)
+		oUF:SpawnHeader(unpack(oUFArguments)):SetPoint("TOPLEFT", oUFAnchor, "TOPLEFT", 0, 0)
 	end
 end
 
-local OnGroupRosterUpdate = function(self, event, ...)
-	if UnitAffectingCombat("player") then
-		return 0
-	end
-
-	local newNum = ceil(GetNumGroupMembers() / 5)
-
-	if groupNum > 0 and groupNum ~= newNum then
-		SetAnchor(self, ...)
-	end
-
-	groupNum = newNum
+local function OnGroupRosterUpdate(self, event, ...)
+	SetAnchor(self, ceil(GetNumGroupMembers() / 5))
 end
 
-local OnPlayerTalentUpdate = function(self, event, ...)
-	if UnitAffectingCombat("player") then
-		return 0
-	end
-
-	SetAnchor(self, ...)
+local function OnPlayerTalentUpdate(self, event, ...)
+	oldRows = -1
+	SetAnchor(self, ceil(GetNumGroupMembers() / 5))
 end
 
-local OnPlayerEnteringWorld = function(self, event, ...)
-	if UnitAffectingCombat("player") then
-		return 0
-	end
-
-	SetAnchor(self, ...)
+local function OnPlayerEnteringWorld(self, event, ...)
+	oldRows = -1
+	SetAnchor(self, ceil(GetNumGroupMembers() / 5))
 end
 
 -- Handler

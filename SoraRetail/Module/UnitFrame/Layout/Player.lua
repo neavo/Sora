@@ -12,20 +12,20 @@ local function RegisterStyle(self, unit, ...)
     self:SetPoint(unpack(C.UnitFrame.Player.Postion))
     self:SetSize(C.UnitFrame.Player.Width, C.UnitFrame.Player.Height)
 
-    S.oUF.CreatePower(self, unit, ...)
-    S.oUF.CreateHealth(self, unit, ...)
+    S.UnitFrame.CreatePower(self, unit, ...)
+    S.UnitFrame.CreateHealth(self, unit, ...)
 
-    S.oUF.CreateTag(self, unit, ...)
-    S.oUF.CreateAuras(self, unit, ...)
-    S.oUF.CreateRunes(self, unit, ...)
-    S.oUF.CreateTotems(self, unit, ...)
-    S.oUF.CreateCastbar(self, unit, ...)
-    S.oUF.CreatePortrait(self, unit, ...)
-    S.oUF.CreateClassPowers(self, unit, ...)
+    S.UnitFrame.CreateTag(self, unit, ...)
+    S.UnitFrame.CreateAuras(self, unit, ...)
+    S.UnitFrame.CreateRunes(self, unit, ...)
+    S.UnitFrame.CreateTotems(self, unit, ...)
+    S.UnitFrame.CreateCastbar(self, unit, ...)
+    S.UnitFrame.CreatePortrait(self, unit, ...)
+    S.UnitFrame.CreateClassPowers(self, unit, ...)
 
-    S.oUF.CreateRaidRoleIndicator(self, unit, ...)
-    S.oUF.CreateGroupRoleIndicator(self, unit, ...)
-    S.oUF.CreateRaidTargetIndicator(self, unit, ...)
+    S.UnitFrame.CreateRaidRoleIndicator(self, unit, ...)
+    S.UnitFrame.CreateGroupRoleIndicator(self, unit, ...)
+    S.UnitFrame.CreateRaidTargetIndicator(self, unit, ...)
 end
 
 local function OnPlayerLogin(self, event, ...)
@@ -37,11 +37,11 @@ local function OnPlayerLogin(self, event, ...)
     PlayerPowerBarAlt:SetUserPlaced(true)
     PlayerPowerBarAlt:SetFrameStrata("HIGH")
 
-    local OnPlayerPowerBarAltMouseUp = function(self, button, ...)
+    local function OnPlayerPowerBarAltMouseUp(self, button, ...)
         self:StopMovingOrSizing()
     end
 
-    local OnPlayerPowerBarAltMouseDown = function(self, button, ...)
+    local function OnPlayerPowerBarAltMouseDown(self, button, ...)
         self:StartMoving()
     end
 
@@ -52,4 +52,4 @@ end
 -- EventHandler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler.RegisterAllEvents()
+EventHandler.Register()

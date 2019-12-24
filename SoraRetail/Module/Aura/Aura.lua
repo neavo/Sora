@@ -1,12 +1,13 @@
 ﻿-- Engine
 local S, C, L, DB = unpack(select(2, ...))
-local _G, tsort, tinsert = _G, table.sort, tinsert
 
 -- Variables
+local perRow, maxRow = 12, 3
 local BuffAnchor, DebuffAnchor = nil, nil
+local size, spacing, postion = C.Aura.Size, C.Aura.Spacing, C.Aura.Postion
 
 -- Begin
-local function HookAuraButtonUpdateDuration(self, timeLeft, ...)
+local HookAuraButtonUpdateDuration = function(self, timeLeft, ...)
     if timeLeft then
         if timeLeft < BUFF_DURATION_WARNING_TIME then
             self.duration:SetTextColor(1.00, 0.00, 0.00)
@@ -16,76 +17,71 @@ local function HookAuraButtonUpdateDuration(self, timeLeft, ...)
     end
 end
 
-local function UpdateBuffAnchors(self, ...)
-    local auras = {}
-    
-    for i = 1, BUFF_MAX_DISPLAY do
-        local aura = _G["BuffButton" .. i]
-        
-        if aura and aura:IsShown() then
-            table.insert(auras, aura)
-        end
-    end
-
-    for k, v in pairs(auras) do
-        v:ClearAllPoints()
-        v:SetSize(C.Aura.Size, C.Aura.Size)
-        
-        if k == 1 then
-            v:SetPoint("TOPRIGHT", BuffAnchor, 0, 0)
-        elseif k % 12 == 1 then
-            v:SetPoint("TOP", auras[k - 12], "BOTTOM", 0, -C.Aura.Space)
-        else
-            v:SetPoint("RIGHT", auras[k - 1], "LEFT", -C.Aura.Space, 0)
-        end
-    end
-end
-
-local function UpdateDebuffAnchors(buttonName, index, ...)
-    local auras = {}
-    
+local HookDebuffButtonUpdateAnchors = function(name, index, ...)
     for i = 1, DEBUFF_MAX_DISPLAY do
         local aura = _G["DebuffButton" .. i]
-        
-        if aura and aura:IsShown() then
-            table.insert(auras, aura)
+
+        if not aura then
+            return 0
         end
-    end
-	
-    for k, v in pairs(auras) do
-        v:ClearAllPoints()
-        v:SetSize(C.Aura.Size, C.Aura.Size)
-        
-        if k == 1 then
-            v:SetPoint("TOPRIGHT", DebuffAnchor, 0, 0)
-        elseif k % 8 == 1 then
-            v:SetPoint("TOP", auras[k - 8], "BOTTOM", 0, -C.Aura.Space)
+
+        aura:ClearAllPoints()
+        aura:SetSize(size, size)
+
+        if i == 1 then
+            aura:SetPoint("TOPRIGHT", DebuffAnchor, 0, 0)
+        elseif mod(i, 8) == 1 then
+            aura:SetPoint("TOP", _G["DebuffButton" .. (i - perRow)], "BOTTOM", 0, -spacing)
         else
-            v:SetPoint("RIGHT", auras[k - 1], "LEFT", -C.Aura.Space, 0)
+            aura:SetPoint("RIGHT", _G["DebuffButton" .. (i - 1)], "LEFT", -spacing, 0)
         end
+
+        aura.duration:SetShadowOffset(1, -1)
+        aura.duration:SetShadowColor(0, 0, 0, 0.5)
+        aura.duration:SetFont(DB.AuraFont, 12, "OUTLINE")
     end
 end
 
-local function OnPlayerLogin(self, event, ...)
+local HookBuffFrameUpdateAllBuffAnchors = function(self, ...)
+    for i = 1, BUFF_MAX_DISPLAY do
+        local aura = _G["BuffButton" .. i]
+
+        if not aura then
+            return 0
+        end
+
+        aura:ClearAllPoints()
+        aura:SetSize(size, size)
+
+        if i == 1 then
+            aura:SetPoint("TOPRIGHT", BuffAnchor, 0, 0)
+        elseif mod(i, perRow) == 1 then
+            aura:SetPoint("TOP", _G["BuffButton" .. (i - perRow)], "BOTTOM", 0, -spacing)
+        else
+            aura:SetPoint("RIGHT", _G["BuffButton" .. (i - 1)], "LEFT", -spacing, 0)
+        end
+
+        aura.duration:SetShadowOffset(1, -1)
+        aura.duration:SetShadowColor(0, 0, 0, 0.5)
+        aura.duration:SetFont(DB.AuraFont, 12, "OUTLINE")
+    end
+end
+
+local OnPlayerLogin = function(self, event, ...)
     BuffAnchor = CreateFrame("Frame", nil, UIParent)
-    BuffAnchor:SetPoint(unpack(C.Aura.Postion))
-    BuffAnchor:SetSize(C.Aura.Size * 12 + C.Aura.Size * 11, C.Aura.Size * 3 + C.Aura.Space * 2)
-    
+    BuffAnchor:SetPoint(unpack(postion))
+    BuffAnchor:SetSize(size * perRow + spacing * (perRow - 1), size * maxRow + spacing * (maxRow - 1))
+
     DebuffAnchor = CreateFrame("Frame", nil, UIParent)
-    DebuffAnchor:SetSize(C.Aura.Size * 8 + C.Aura.Size * 7, C.Aura.Size * 2 + C.Aura.Space)
-    DebuffAnchor:SetPoint("TOPRIGHT", BuffAnchor, "BOTTOMRIGHT", 0, -C.Aura.Space)
-	
-	hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", UpdateBuffAnchors)
-    hooksecurefunc("DebuffButton_UpdateAnchors", UpdateDebuffAnchors)
-    
+    DebuffAnchor:SetSize(size * perRow + spacing * (perRow - 1), size * maxRow + spacing * (maxRow - 1))
+    DebuffAnchor:SetPoint("TOPRIGHT", BuffAnchor, "BOTTOMRIGHT", 0, -spacing)
+
     hooksecurefunc("AuraButton_UpdateDuration", HookAuraButtonUpdateDuration)
+    hooksecurefunc("DebuffButton_UpdateAnchors", HookDebuffButtonUpdateAnchors)
+    hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", HookBuffFrameUpdateAllBuffAnchors)
 end
 
--- Event
-local Event = CreateFrame("Frame", nil, UIParent)
-Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript("OnEvent", function(self, event, ...)
-    if event == "PLAYER_LOGIN" then
-        OnPlayerLogin(self, event, ...)
-    end
-end)
+-- Handler
+local EventHandler = S.CreateEventHandler()
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.Register()

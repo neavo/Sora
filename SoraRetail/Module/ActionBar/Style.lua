@@ -50,19 +50,19 @@ local function OnPlayerLogin(self, event, ...)
 			texCoord = {0.08, 0.92, 0.08, 0.92}
 		},
 		name = {
-			font = {STANDARD_TEXT_FONT, 10, "THINOUTLINE"},
+			font = {STANDARD_TEXT_FONT, 10, "OUTLINE"},
 			points = {
 				{"BOTTOM", 0, 1}
 			}
 		},
 		count = {
-			font = {STANDARD_TEXT_FONT, 12, "THINOUTLINE"},
+			font = {STANDARD_TEXT_FONT, 12, "OUTLINE"},
 			points = {
 				{"TOPLEFT", 0, 0}
 			}
 		},
 		hotkey = {
-			font = {STANDARD_TEXT_FONT, 12, "THINOUTLINE"},
+			font = {STANDARD_TEXT_FONT, 12, "OUTLINE"},
 			points = {
 				{"TOPRIGHT", 0, -1}
 			}
@@ -73,14 +73,7 @@ local function OnPlayerLogin(self, event, ...)
 	rButtonTemplate:StyleExtraActionButton(style)
 end
 
--- Event
-local Event = CreateFrame("Frame")
-Event:RegisterEvent("PLAYER_LOGIN")
-Event:SetScript(
-	"OnEvent",
-	function(self, event, ...)
-		if event == "PLAYER_LOGIN" then
-			OnPlayerLogin(self, event, ...)
-		end
-	end
-)
+-- EventHandler
+local EventHandler = S.CreateEventHandler()
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.Register()
