@@ -3,7 +3,7 @@ local S, C, L, DB = unpack(select(2, ...))
 
 -- Begin
 local function OnTicker(ticker)
-    if InCombatLockdown("player") then
+    if InCombatLockdown() then
         UIParent:SetAlpha(1.00)
     else
         UIFrameFadeIn(UIParent, 1.00, 0.00, 1.00)
@@ -12,7 +12,7 @@ end
 
 -- Event
 local function OnPlayerEnteringWorld(self, event, ...)
-    if InCombatLockdown("player") then
+    if InCombatLockdown() then
         return 0
     end
 

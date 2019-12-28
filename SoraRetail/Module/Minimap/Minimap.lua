@@ -60,108 +60,36 @@ local function HideBlzFrame()
 end
 
 local function SetMouseClick()
-    local frame = CreateFrame("Frame", "SoraMinimapRightClickMenu", UIParent, "UIDropDownMenuTemplate")
+    local menu = S.CreateEasyMenu()
+    menu.NewLine(CHARACTER_BUTTON, ToggleCharacter, {"PaperDollFrame"})
+    menu.NewLine(SPELLBOOK_ABILITIES_BUTTON, SpellbookMicroButton.Click, {SpellbookMicroButton})
+    menu.NewLine(TALENTS_BUTTON, TalentMicroButton.Click, {TalentMicroButton})
+    menu.NewLine(ACHIEVEMENT_BUTTON, AchievementMicroButton.Click, {AchievementMicroButton})
+    menu.NewLine(QUESTLOG_BUTTON, QuestLogMicroButton.Click, {QuestLogMicroButton})
+    menu.NewLine(GUILD, GuildMicroButton.Click, {GuildMicroButton})
+    menu.NewLine(LFG_TITLE, LFDMicroButton.Click, {LFDMicroButton})
+    menu.NewLine(MOUNTS_AND_PETS, CollectionsMicroButton.Click, {CollectionsMicroButton})
+    menu.NewLine(ENCOUNTER_JOURNAL, EJMicroButton.Click, {EJMicroButton})
+    menu.NewLine(BLIZZARD_STORE, StoreMicroButton.Click, {StoreMicroButton})
+    menu.NewLine(MAINMENU_BUTTON, ToggleFrame, {GameMenuFrame})
+    menu.NewLine(INVTYPE_BAG, ToggleAllBags)
+    menu.NewLine(SOCIAL_BUTTON, ToggleFriendsFrame, {1})
+    menu.NewLine(HELP_BUTTON, HelpMicroButton.Click, {HelpMicroButton})
 
-    local menus = {
-        {
-            text = CHARACTER_BUTTON,
-            func = function()
-                CharacterMicroButton:Click()
-            end
-        },
-        {
-            text = SPELLBOOK_ABILITIES_BUTTON,
-            func = function()
-                SpellbookMicroButton:Click()
-            end
-        },
-        {
-            text = TALENTS_BUTTON,
-            func = function()
-                TalentMicroButton:Click()
-            end
-        },
-        {
-            text = ACHIEVEMENT_BUTTON,
-            func = function()
-                AchievementMicroButton:Click()
-            end
-        },
-        {
-            text = QUESTLOG_BUTTON,
-            func = function()
-                QuestLogMicroButton:Click()
-            end
-        },
-        {
-            text = GUILD,
-            func = function()
-                GuildMicroButton:Click()
-            end
-        },
-        {
-            text = LFG_TITLE,
-            func = function()
-                LFDMicroButton:Click()
-            end
-        },
-        {
-            text = MOUNTS_AND_PETS,
-            func = function()
-                CollectionsMicroButton:Click()
-            end
-        },
-        {
-            text = ENCOUNTER_JOURNAL,
-            func = function()
-                EJMicroButton:Click()
-            end
-        },
-        {
-            text = BLIZZARD_STORE,
-            func = function()
-                StoreMicroButton:Click()
-            end
-        },
-        {
-            text = MAINMENU_BUTTON,
-            func = function()
-                MainMenuMicroButton:Click()
-            end
-        },
-        {
-            text = INVTYPE_BAG,
-            func = function()
-                ToggleAllBags:Click()
-            end
-        },
-        {
-            text = SOCIAL_BUTTON,
-            func = function()
-                ToggleFriendsFrame(1)
-            end
-        },
-        {
-            text = HELP_BUTTON,
-            func = function()
-                HelpMicroButton:Click()
-            end
-        }
-    }
-
-    local OnMouseUp = function(self, btn, ...)
-        if btn ~= "RightButton" then
-            Minimap_OnClick(self)
+    local function OnMouseDown(self, btn, ...)
+        if btn == "RightButton" then
+            menu.Show()
         else
-            EasyMenu(menus, frame, "cursor", 0, 0, "MENU", 2)
+            Minimap_OnClick(self)
         end
     end
 
-    Minimap:SetScript("OnMouseUp", OnMouseUp)
+    Minimap:SetScript("OnMouseUp", nil)
+    Minimap:SetScript("OnMouseDown", OnMouseDown)
 end
 
 local function SetMouseScroll()
-    local OnMouseWheel = function(self, z, ...)
+    local function OnMouseWheel(self, z, ...)
         local c = Minimap:GetZoom()
         if z > 0 and c < 5 then
             Minimap:SetZoom(c + 1)

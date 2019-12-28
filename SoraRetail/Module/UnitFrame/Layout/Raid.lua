@@ -7,7 +7,7 @@ local S, C, L, DB = unpack(select(2, ...))
 local oUFAnchor = nil
 local width = C.UnitFrame.Raid.Width
 local height = C.UnitFrame.Raid.Height
-local oldRows, maxColumns, columnSpacing = -1, 6, 8
+local maxColumns, columnSpacing = 6, 8
 local raidAuras, indicatorFilters = C.UnitFrame.RaidAuras, C.UnitFrame.Raid.IndicatorFilters
 
 -- Initialize
@@ -15,16 +15,7 @@ S.UnitFrame.Raid = S.UnitFrame.Raid or {}
 
 -- Common
 local function IsHealer()
-	local _, class = UnitClass("player")
-	local specialization = GetSpecialization()
-
-	local result =
-		(class == "MONK" and specialization == 2) or (class == "DRUID" and specialization == 4) or
-		(class == "SHAMAN" and specialization == 3) or
-		(class == "PALADIN" and specialization == 1) or
-		(class == "PRIEST" and (specialization == 1 or specialization == 2))
-
-	return result
+	return select(5, GetSpecializationInfo(GetSpecialization())) == "HEALER"
 end
 
 -- RaidDebuff
@@ -130,21 +121,24 @@ end
 
 local function UpdateAuraIndicator(self, event, unit, ...)
 	local _, class = UnitClass("player")
+
 	local indicators = self.Indicators
 	local filters = indicatorFilters[class]
+
+	if not filters or #filters == 0 then
+		return 0
+	end
 
 	for k, v in pairs({"HELPFUL", "HARMFUL"}) do
 		for i = 1, 40 do
 			local name, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i, v)
 
-			if not filters or #filters == 0 or not spellID or caster ~= "player" then
+			if not spellID or caster ~= "player" then
 				break
 			end
 
 			for k, indicator in pairs(indicators) do
-				local filter = filters[k]
-
-				if filter == spellID then
+				if spellID == filters[k] then
 					indicator:Show()
 					indicator.icon:SetTexture(texture)
 
@@ -160,12 +154,13 @@ local function UpdateAuraIndicator(self, event, unit, ...)
 end
 
 local function CreateAuraIndicator(self, ...)
+	local size = 9
 	local indicators = {}
 
-	for i = 1, 6 do
+	for i = 1, 8 do
 		local indicator = CreateFrame("Frame", nil, self)
 		indicator:Hide()
-		indicator:SetSize(9, 9)
+		indicator:SetSize(size, size)
 
 		indicator.icon = indicator:CreateTexture(nil, "OVERLAY")
 		indicator.icon:SetAllPoints()
@@ -177,11 +172,13 @@ local function CreateAuraIndicator(self, ...)
 		if i == 1 then
 			indicator:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMLEFT", 2, 0)
 		elseif i == 4 then
-			indicator:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMRIGHT", -2, 0)
-		elseif i == 2 or i == 3 then
+			indicator:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMRIGHT", -(2 * 3 + size * (3 - 1)), 0)
+		elseif i == 7 then
+			indicator:SetPoint("BOTTOM", indicators[1], "TOP", 0, 2)
+		elseif i == 8 then
+			indicator:SetPoint("BOTTOM", indicators[6], "TOP", 0, 2)
+		else
 			indicator:SetPoint("LEFT", indicators[i - 1], "RIGHT", 2, 0)
-		elseif i == 5 or i == 6 then
-			indicator:SetPoint("RIGHT", indicators[i - 1], "LEFT", -2, 0)
 		end
 
 		indicators[i] = indicator
@@ -229,31 +226,20 @@ local function CreateReadyCheckIndicator(self, ...)
 end
 
 -- Begin
-local function SetAnchor(self, newRows, ...)
+local function SetAnchor(self, ...)
 	if not oUFAnchor then
 		return 0
 	end
 
-	if InCombatLockdown() then
-		return 0
-	end
+	-- if InCombatLockdown() then
+	-- end
 
-	if oldRows > 0 and oldRows == newRows then
-		return 0
-	end
-
-	oldRows = newRows
 	oUFAnchor:ClearAllPoints()
 
-	if not IsHealer() then
-		oUFAnchor:SetPoint(unpack(C.UnitFrame.Raid.Postion))
-	elseif oldRows < 6 then
+	if IsHealer() then
 		oUFAnchor:SetPoint(unpack(C.UnitFrame.Raid.HealerPostion))
 	else
-		local point, relativeTo, relativePoint, xOfs, yOfs = unpack(C.UnitFrame.Raid.HealerPostion)
-		yOfs = yOfs - height * (maxColumns - oldRows - 1) - columnSpacing * (maxColumns - 1 - oldRows - 1)
-
-		oUFAnchor:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs)
+		oUFAnchor:SetPoint(unpack(C.UnitFrame.Raid.DefaultPostion))
 	end
 end
 
@@ -339,24 +325,17 @@ local function OnPlayerLogin(self, event, ...)
 	end
 end
 
-local function OnGroupRosterUpdate(self, event, ...)
-	SetAnchor(self, ceil(GetNumGroupMembers() / 5))
-end
-
 local function OnPlayerTalentUpdate(self, event, ...)
-	oldRows = -1
-	SetAnchor(self, ceil(GetNumGroupMembers() / 5))
+	SetAnchor(self, ...)
 end
 
 local function OnPlayerEnteringWorld(self, event, ...)
-	oldRows = -1
-	SetAnchor(self, ceil(GetNumGroupMembers() / 5))
+	SetAnchor(self, ...)
 end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler.Event.GROUP_ROSTER_UPDATE = OnGroupRosterUpdate
 EventHandler.Event.PLAYER_TALENT_UPDATE = OnPlayerTalentUpdate
 EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
 EventHandler.Register()

@@ -167,11 +167,53 @@ local function CreatePossessExitBar(self, event, ...)
 	)
 end
 
-local function OnPlayerLogin(self, event, ...)
-	-- ZoneAbilityFrame:SetMovable(true)
-	-- ZoneAbilityFrame:SetUserPlaced(true)
-	-- ZoneAbilityFrame:SetFrameStrata("HIGH")
+local function OnMultiActionBarUpdateGridVisibility()
+	if InCombatLockdown() then
+		return
+	end
 
+	local buttons = {}
+	local buttonNames = {
+		"ActionButton",
+		"MultiBarBottomLeftButton",
+		"MultiBarBottomRightButton",
+		"MultiBarRightButton",
+		"MultiBarLeftButton"
+	}
+
+	for k, v in pairs(buttonNames) do
+		for i = 1, NUM_ACTIONBAR_BUTTONS do
+			local button = _G[v .. i]
+
+			if not button then
+				break
+			end
+
+			table.insert(buttons, button)
+		end
+	end
+
+	for k, v in pairs(buttons) do
+		ActionButton_ShowGrid(v, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+		v:SetAttribute("showgrid", tonumber(GetCVar("alwaysShowActionBars")))
+	end
+end
+
+local function FixMultiActionBarUpdateGridVisibility(self, event, ...)
+	hooksecurefunc("MultiActionBar_UpdateGridVisibility", OnMultiActionBarUpdateGridVisibility)
+
+	do
+		C_Timer.NewTicker(0.10, OnMultiActionBarUpdateGridVisibility, 1)
+	end
+end
+
+local function OnCVarUpdate(self, event, key, value)
+	if key == "ALWAYS_SHOW_MULTIBARS_TEXT" then
+		C_Timer.NewTicker(0.10, OnMultiActionBarUpdateGridVisibility, 1)
+	end
+end
+
+local function OnPlayerLogin(self, event, ...)
 	CreateMainBar(self, event, ...)
 	CreateSideBar(self, event, ...)
 	CreateFunctionBar(self, event, ...)
@@ -182,9 +224,17 @@ local function OnPlayerLogin(self, event, ...)
 	CreateExtraBar(self, event, ...)
 	CreatePossessExitBar(self, event, ...)
 	CreateVehicleExitBar(self, event, ...)
+
+	FixMultiActionBarUpdateGridVisibility(self, event, ...)
+end
+
+local function OnPlayerEnteringWorld(self, event, ...)
+	MultiActionBar_UpdateGridVisibility()
 end
 
 -- EventHandler
 local EventHandler = S.CreateEventHandler()
+EventHandler.Event.CVAR_UPDATE = OnCVarUpdate
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
 EventHandler.Register()

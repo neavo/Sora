@@ -63,7 +63,7 @@ local function UpdateAllThreats()
     UpdateThreat("targettarget", mobiUnit)
     UpdateThreat("vehicletarget", mobiUnit)
 
-    for i = 1, 5 do
+    for i = 1, 4 do
         UpdateThreat("party" .. i, mobiUnit)
         UpdateThreat("partypet" .. i, mobiUnit)
         UpdateThreat("partypet" .. i .. "target", mobiUnit)
@@ -124,6 +124,11 @@ local function UpdateAllThreatBars()
     end
 end
 
+local function OnTicker(ticker)
+    UpdateAllThreats()
+    UpdateAllThreatBars()
+end
+
 local function OnPlayerLogin(self, event, ...)
     bars = {}
 
@@ -153,29 +158,11 @@ local function OnPlayerLogin(self, event, ...)
 
         table.insert(bars, bar)
     end
+
+    C_Timer.NewTicker(1.00, OnTicker)
 end
 
 -- Handler
-local Handler = CreateFrame("Frame", nil, nil)
-
-Handler.timer = 0.00
-Handler.OnEvent = function(self, event, ...)
-    if event == "PLAYER_LOGIN" then
-        OnPlayerLogin(self, event, ...)
-    end
-end
-Handler.OnUpdate = function(self, elapsed, ...)
-    self.timer = self.timer + elapsed
-
-    if self.timer > 1.00 then
-        self.timer = 0.00
-        if bars then
-            UpdateAllThreats()
-            UpdateAllThreatBars()
-        end
-    end
-end
-
-Handler:RegisterEvent("PLAYER_LOGIN")
-Handler:SetScript("OnEvent", Handler.OnEvent)
-Handler:SetScript("OnUpdate", Handler.OnUpdate)
+local EventHandler = S.CreateEventHandler()
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler:RegisterAllEvents()

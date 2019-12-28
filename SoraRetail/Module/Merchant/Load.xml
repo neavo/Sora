@@ -1,0 +1,7 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<script file = "AutoSell.lua" />
+	<Script file = "AutoRepair.lua" />
+
+</Ui>
+

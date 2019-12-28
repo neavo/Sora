@@ -20,12 +20,12 @@ local function RegisterStyle(self, unit, ...)
     S.UnitFrame.CreateThreat(self, unit, ...)
     S.UnitFrame.CreateCastbar(self, unit, ...)
     S.UnitFrame.CreatePortrait(self, unit, ...)
+    S.UnitFrame.CreateQuickMark(self, unit, ...)
 
     S.UnitFrame.CreateRaidRoleIndicator(self, unit, ...)
     S.UnitFrame.CreateGroupRoleIndicator(self, unit, ...)
     S.UnitFrame.CreateRaidTargetIndicator(self, unit, ...)
 end
-
 
 local function OnPlayerLogin(self, event, ...)
     oUF:RegisterStyle("oUF_Sora_Target", RegisterStyle)

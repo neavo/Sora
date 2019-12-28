@@ -5,7 +5,7 @@ local S, C, L, DB = unpack(select(2, ...))
 local function OnPlayerLogin(self, event, ...)
 	local style = {
 		backdrop = {
-			bgFile = DB.Statusbar,
+			bgFile = DB.Backdrop,
 			title = false,
 			edgeSize = 2,
 			edgeFile = DB.GlowTex,

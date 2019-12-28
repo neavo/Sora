@@ -4,6 +4,7 @@
 
 	<include file = "Lib\Load.xml" />
 	<include file = "Core\Load.xml" />
+	<include file = "Widget\Load.xml" />
 
 	<Script file = "Close.lua" />	
 	

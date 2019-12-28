@@ -8,6 +8,18 @@ local S, C, L, DB = unpack(select(2, ...))
 -- Initialize
 S.UnitFrame = S.UnitFrame or {}
 
+-- Common
+local function IsCaster()
+    local _, class = UnitClass("player")
+    local specialization = GetSpecialization()
+
+    return select(5, GetSpecializationInfo(specialization)) == "HEALER" or (class == "MAGE") or
+        (class == "DRUID" and specialization == 1) or
+        (class == "PRIEST") or
+        (class == "SHAMAN" and specialization == 1) or
+        (class == "WARLOCK")
+end
+
 -- Power
 S.UnitFrame.CreatePower = function(self, unit, ...)
     local height = nil
@@ -207,6 +219,7 @@ S.UnitFrame.CreateRunes = function(self, unit, ...)
     self.Runes = classPowers
 end
 
+-- Totems
 S.UnitFrame.CreateTotems = function(self, unit, ...)
     if select(2, UnitClass("player")) ~= "SHAMAN" then
         return 0
@@ -322,7 +335,7 @@ S.UnitFrame.CreateThreat = function(self, unit, ...)
         local alpha = 0.00
         local isTanking = UnitDetailedThreatSituation("player", unit)
 
-        if UnitAffectingCombat("player") then
+        if InCombatLockdown() then
             alpha = isTanking and 1.00 or 0.30
         end
 
@@ -336,12 +349,11 @@ end
 
 -- Castbar
 S.UnitFrame.CreateCastbar = function(self, unit, ...)
-    local spacing, barHeight = self.Auras.spacing, self.Auras.size
+    local spacing, size = self.Auras.spacing, self.Auras.size
 
     local castbar = CreateFrame("StatusBar", nil, self)
     castbar:SetFrameLevel(self.Health:GetFrameLevel() + 255)
     castbar:SetStatusBarTexture(DB.Statusbar)
-    castbar:SetSize(self:GetWidth() - barHeight - spacing, barHeight)
 
     castbar.shadow = S.MakeShadow(castbar, 2)
     castbar.bg = castbar:CreateTexture(nil, "BACKGROUND")
@@ -357,53 +369,75 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
 
     castbar.Icon = castbar:CreateTexture(nil, "ARTWORK")
     castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-    castbar.Icon:SetSize(castbar:GetHeight(), castbar:GetHeight())
     castbar.Icon.Shadow = S.MakeTextureShadow(castbar, castbar.Icon, 2)
 
     castbar.SafeZone = castbar:CreateTexture(nil, "BORDER")
     castbar.SafeZone:SetAlpha(0.25)
     castbar.SafeZone:SetAllPoints()
 
-    if unit == "player" then
-        castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -spacing)
-        castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
-    elseif unit == "target" or unit == "focus" then
-        castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -spacing)
-        castbar.Icon:SetPoint("RIGHT", castbar, "LEFT", -spacing, 0)
-    else
-        castbar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", barHeight * 3 + spacing, spacing)
-        castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
-        castbar:SetSize(self:GetWidth() - barHeight - barHeight * 3 - spacing * 2, barHeight)
-    end
+    local function SetAnchor(self, ...)
+        if unit == "player" and IsCaster() then
+            local raidWidth = C.UnitFrame.Raid.Width or 96
 
-    castbar.CustomTimeText = function(self, duration)
-        self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
-    end
+            castbar:ClearAllPoints()
+            castbar:SetSize(raidWidth * 5 + 8 * (5 - 1) - (24 + spacing), 24)
+            castbar:SetPoint("BOTTOM", UIParent, "BOTTOM", -(24 + spacing) / 2, 140)
 
-    local handler = CreateFrame("Frame", nil, UIParent)
-    handler.timer = 0
-    handler.fading = false
+            castbar.Icon:ClearAllPoints()
+            castbar.Icon:SetSize(castbar:GetHeight(), castbar:GetHeight())
+            castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
+        elseif unit == "player" and not IsCaster() then
+            castbar:ClearAllPoints()
+            castbar:SetSize(self:GetWidth() - size - spacing, size)
+            castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -spacing)
 
-    local function OnUpdate(handler, elasped, ...)
-        handler.fading = true
-        handler.timer = handler.timer + elasped
+            castbar.Icon:ClearAllPoints()
+            castbar.Icon:SetSize(castbar:GetHeight(), castbar:GetHeight())
+            castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
+        elseif unit == "target" or unit == "focus" then
+            castbar:ClearAllPoints()
+            castbar:SetSize(self:GetWidth() - size - spacing, size)
+            castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -spacing)
 
-        if handler.timer >= 0.30 then
-            self.Castbar:Hide()
-
-            handler.fading = false
-            handler:SetScript("OnUpdate", nil)
+            castbar.Icon:ClearAllPoints()
+            castbar.Icon:SetSize(castbar:GetHeight(), castbar:GetHeight())
+            castbar.Icon:SetPoint("RIGHT", castbar, "LEFT", -spacing, 0)
         else
-            self.Castbar:Show()
-            self.Castbar:SetAlpha(1.00 * (1 - handler.timer / 0.30))
+            castbar:ClearAllPoints()
+            castbar:SetSize(self:GetWidth() - size - size * 3 - spacing * 2, size)
+            castbar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", size * 3 + spacing, spacing)
+
+            castbar.Icon:ClearAllPoints()
+            castbar.Icon:SetSize(castbar:GetHeight(), castbar:GetHeight())
+            castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
         end
     end
 
-    castbar.PostCastStart = function(self, unit, name, castid, spellid)
-        if handler.fading then
-            handler.fading = false
-            handler:SetScript("OnUpdate", nil)
+    local function OnPlayerTalentUpdate(_, event, ...)
+        SetAnchor(self, ...)
+    end
+
+    local function OnPlayerEnteringWorld(_, event, ...)
+        SetAnchor(self, ...)
+    end
+
+    local EventHandler = S.CreateEventHandler()
+    EventHandler.Event.PLAYER_TALENT_UPDATE = OnPlayerTalentUpdate
+    EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
+    EventHandler.Register()
+
+    local OnTimeUpdate = function(self, duration)
+        self.Text:SetText(S.SubString(self.Text:GetText(), 7, "..."))
+
+        if duration < 60 and self.max < 60 then
+            self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
+        else
+            self.Time:SetText(S.FormatTime(duration, true) .. " / " .. S.FormatTime(self.max, true))
         end
+    end
+
+    local function OnCastStart(self, unit, name, castid, spellid)
+        UIFrameFadeRemoveFrame(self)
 
         if self.notInterruptible then
             self:SetStatusBarColor(1.00, 0.50, 0.50)
@@ -411,27 +445,25 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
             self:SetStatusBarColor(0.37, 0.71, 1.00)
         end
 
-        self:Show()
         self:SetAlpha(1.00)
     end
 
-    castbar.PostCastFailed = function(self, unit, spellname, castid, spellid)
-        if handler.fading then
-            handler.fading = false
-            handler:SetScript("OnUpdate", nil)
-        end
+    local function OnCastStopped(self, unit, spellname, castid, spellid)
+        UIFrameFadeRemoveFrame(self)
 
-        self:Show()
         self:SetAlpha(1.00)
         self:SetStatusBarColor(1.00, 0.05, 0.00)
 
-        handler.timer = 0.00
-        handler:SetScript("OnUpdate", OnUpdate)
+        self.holdTime = 0.30
+        UIFrameFadeOut(self, 0.30, 1.00, 0.00)
     end
 
-    castbar.CustomDelayText = castbar.CustomTimeText
-    castbar.PostChannelStart = castbar.PostCastStart
-    castbar.PostCastInterrupted = castbar.PostCastFailed
+    castbar.CustomTimeText = OnTimeUpdate
+    castbar.CustomDelayText = OnTimeUpdate
+    castbar.PostCastStart = OnCastStart
+    castbar.PostCastFailed = OnCastStopped
+    castbar.PostChannelStart = OnCastStart
+    castbar.PostCastInterrupted = OnCastStopped
 
     self.Castbar = castbar
 end
@@ -490,6 +522,51 @@ S.UnitFrame.CreatePortrait = function(self, unit, ...)
     EventHandler.Register()
 
     self.Portrait = portrait
+end
+
+-- QuickMark
+local function HasMarkRight()
+    local inSolo = not IsInGroup()
+    local inParty = IsInGroup() and not IsInRaid()
+    local isGroupLeader = UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")
+
+    return inSolo or inParty or isGroupLeader
+end
+
+S.UnitFrame.CreateQuickMark = function(self, unit, ...)
+    local function getText(r, g, b, i)
+        return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255) ..
+            _G["RAID_TARGET_" .. i] .. " " .. ICON_LIST[i] .. "12|t"
+    end
+
+    local menu = S.CreateEasyMenu()
+    menu.NewLine(RAID_TARGET_NONE, SetRaidTarget, {unit, 0})
+    menu.NewLine(getText(1.00, 0.92, 0.00, 1), SetRaidTarget, {unit, 1})
+    menu.NewLine(getText(0.98, 0.57, 0.00, 2), SetRaidTarget, {unit, 2})
+    menu.NewLine(getText(0.83, 0.22, 0.90, 3), SetRaidTarget, {unit, 3})
+    menu.NewLine(getText(0.04, 0.95, 0.00, 4), SetRaidTarget, {unit, 4})
+    menu.NewLine(getText(0.70, 0.82, 0.88, 5), SetRaidTarget, {unit, 5})
+    menu.NewLine(getText(0.00, 0.71, 1.00, 6), SetRaidTarget, {unit, 6})
+    menu.NewLine(getText(1.00, 0.24, 0.17, 7), SetRaidTarget, {unit, 7})
+    menu.NewLine(getText(0.98, 0.98, 0.98, 8), SetRaidTarget, {unit, 8})
+
+    local function OnDoubleClick(self, btn, ...)
+        if btn == "LeftButton" and HasMarkRight() and UnitExists(unit) then
+            local ricon = GetRaidTargetIndex(unit)
+
+            for i = 1, 8 do
+                if ricon == i then
+                    menu.Set(i + 1, "checked", true)
+                else
+                    menu.Set(i + 1, "checked", false)
+                end
+            end
+
+            menu.Show()
+        end
+    end
+
+    self:HookScript("OnDoubleClick", OnDoubleClick)
 end
 
 -- ClassPowers

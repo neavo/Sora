@@ -56,7 +56,7 @@ local UpdateAuras = function(unit)
 
 			v:Show()
 			v.icon:SetTexture(data.texture)
-			v.count:SetText(data.count > 0 and data.count or nil)
+			v.count:SetText(data.count > 1 and data.count or nil)
 			v.cooldown:SetCooldown(data.expiration - data.duration, data.duration)
 		end
 	end

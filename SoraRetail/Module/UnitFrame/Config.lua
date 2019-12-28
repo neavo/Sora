@@ -29,21 +29,21 @@ C.UnitFrame.Boss.Postion = {"CENTER", UIParent, "CENTER", 0, 350} -- 首领框�
 C.UnitFrame.Raid = {}
 C.UnitFrame.Raid.Width = 96 -- 团队框体宽度
 C.UnitFrame.Raid.Height = 30 -- 团队框体高度
-C.UnitFrame.Raid.Postion = {"BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -8, 8} -- 默认模式时，团队框体位置
-C.UnitFrame.Raid.HealerPostion = {"BOTTOM", UIParent, "BOTTOM", 0, 150} -- 治疗模式时，玩家框体位置
+C.UnitFrame.Raid.HealerPostion = {"BOTTOM", UIParent, "BOTTOM", 0, 170} -- 治疗模式时，玩家框体位置
+C.UnitFrame.Raid.DefaultPostion = {"BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -8, 8} -- 默认模式时，团队框体位置
 
 -- 不同职业下，团队框体边角状态监视
--- 请自行添加需要监视的技能ID，最大可监视6个技能ID
+-- 请自行添加需要监视的技能ID，最大可监视8个技能ID
 C.UnitFrame.Raid.IndicatorFilters = {}
-C.UnitFrame.Raid.IndicatorFilters.MONK = {119611, 0, 0, 0, 0, 196725} -- 复苏之雾，无，无，无，无，碧愈疾风
+C.UnitFrame.Raid.IndicatorFilters.MONK = {}
 C.UnitFrame.Raid.IndicatorFilters.MAGE = {}
-C.UnitFrame.Raid.IndicatorFilters.DRUID = {774, 33763, 207386, 102342, 48438, 8936} -- 回春术，生命绽放，无，铁木树皮，野性成长，愈合，
+C.UnitFrame.Raid.IndicatorFilters.DRUID = {774, 33763, 207386, 102351, 48438, 8936, 102342, 157982} -- 回春术，生命绽放，春暖花开，塞纳里奥结界，野性成长，愈合，铁木树皮，宁静
 C.UnitFrame.Raid.IndicatorFilters.ROGUE = {}
-C.UnitFrame.Raid.IndicatorFilters.PRIEST = {6788, 0, 0, 0, 0, 0}
+C.UnitFrame.Raid.IndicatorFilters.PRIEST = {}
 C.UnitFrame.Raid.IndicatorFilters.HUNTER = {}
 C.UnitFrame.Raid.IndicatorFilters.SHAMAN = {}
 C.UnitFrame.Raid.IndicatorFilters.WARLOCK = {}
-C.UnitFrame.Raid.IndicatorFilters.PALADIN = {200654, 0, 0, 53563, 156910, 0} -- 提尔的拯救，无，无，无，圣光道标，信仰道标，无
+C.UnitFrame.Raid.IndicatorFilters.PALADIN = {}
 C.UnitFrame.Raid.IndicatorFilters.WARRIOR = {}
 C.UnitFrame.Raid.IndicatorFilters.DEATHKNIGHT = {}
 C.UnitFrame.Raid.IndicatorFilters.DEMONHUNTER = {}

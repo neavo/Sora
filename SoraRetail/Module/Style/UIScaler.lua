@@ -3,7 +3,7 @@ local S, C, L, DB = unpack(select(2, ...))
 
 -- Begin
 local function OnPlayerLogin(self, event, ...)
-    if InCombatLockdown("player") then
+    if InCombatLockdown() then
         return 0
     end
 

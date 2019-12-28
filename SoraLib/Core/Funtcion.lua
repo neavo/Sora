@@ -81,11 +81,21 @@ function S.MakeShadow(parent, size)
     return Shadow
 end
 
+function S.MakeTextureShadow(parent, anchor, size)
+    local Shadow = CreateFrame("Frame", "$parentTextureShadow", parent)
+    Shadow:SetPoint("TOPLEFT", anchor, -size, size)
+    Shadow:SetPoint("BOTTOMRIGHT", anchor, size, -size)
+    Shadow:SetBackdrop({edgeFile = DB.GlowTex, edgeSize = size})
+    Shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+
+    return Shadow
+end
+
 function S.CreateButton(parent)
     local _, class = UnitClass("player")
     local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
 
-    local frame = CreateFrame("Frame", nil, parent)
+    local frame = CreateFrame("Button", nil, parent)
     frame:SetFrameLevel(parent:GetFrameLevel() + 2)
 
     frame.bg = frame:CreateTexture(nil, "BORDER")
@@ -112,14 +122,42 @@ function S.CreateButton(parent)
     return frame
 end
 
-function S.MakeTextureShadow(parent, anchor, size)
-    local Shadow = CreateFrame("Frame", "$parentTextureShadow", parent)
-    Shadow:SetPoint("TOPLEFT", anchor, -size, size)
-    Shadow:SetPoint("BOTTOMRIGHT", anchor, size, -size)
-    Shadow:SetBackdrop({edgeFile = DB.GlowTex, edgeSize = size})
-    Shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+function S.CreateEasyMenu()
+    local hanlder = {}
+    local menuList = {}
+    local menuFrame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate")
 
-    return Shadow
+    local font = CreateFont("MenuListFont")
+    font:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+    font:SetTextColor(0.90, 0.90, 0.90)
+    font:SetShadowColor(0.00, 0.00, 0.00, 0.50)
+    font:SetShadowOffset(1, -1)
+
+    local function Set(i, k, v)
+        menuList[i][k] = v
+    end
+
+    local function Show()
+        EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 2)
+    end
+
+    local function NewLine(text, func, args)
+        local function funcWithArgs()
+            if not args then
+                func()
+            else
+                func(unpack(args))
+            end
+        end
+
+        table.insert(menuList, {text = text, fontObject = font, func = funcWithArgs})
+    end
+
+    hanlder.Set = Set
+    hanlder.Show = Show
+    hanlder.NewLine = NewLine
+
+    return hanlder
 end
 
 function S.FormatInteger(int)

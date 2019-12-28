@@ -28,8 +28,16 @@ local function ProcessButtons()
 
     local container = CreateFrame("Frame", nil, Minimap)
     container:Hide()
-    container:SetSize(size * 5 + space * 4, size * 3 + space * 2)
-    container:SetPoint("TOPLEFT", anchor, "BOTTOMRIGHT", -space, -space)
+    container:SetSize(size * 8 + space * (8 - 1), size * 2 + space * (2 - 1))
+    container:SetPoint("TOPLEFT", anchor, "BOTTOMRIGHT", space, -space)
+
+    container.bg = container:CreateTexture(nil, "BORDER")
+    container.bg:SetAllPoints()
+    container.bg:SetTexture(DB.Backdrop)
+    container.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+
+    container.shadow = S.MakeShadow(container, 2)
+    container.shadow:SetFrameLevel(container:GetFrameLevel() + 1)
 
     local switch = S.CreateButton(Minimap)
     switch:SetSize(size - 8, size - 8)
@@ -40,9 +48,9 @@ local function ProcessButtons()
     switch.text:SetText("△")
 
     local function OnEnter(self, ...)
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+        GameTooltip:SetOwner(self, "ANCHOR_TOP")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine("点击切换", 0.75, 0.90, 1.00)
+        GameTooltip:AddLine(self.toggle and "点击收起" or "点击展开", 0.75, 0.90, 1.00)
         GameTooltip:Show()
     end
 
@@ -50,26 +58,38 @@ local function ProcessButtons()
         GameTooltip:Hide()
     end
 
-    local function OnMouseUp(self, key, ...)
-        if self.toggle then
-            container:Hide()
-            self.text:SetText("△")
-        else
-            container:Show()
-            self.text:SetText("▽")
+    local function OnButtonClick(self, key, ...)
+        if not switch.toggle then
+            return 0
         end
 
-        self.toggle = not self.toggle
+        container:Hide()
+        switch.text:SetText("△")
+
+        switch.toggle = not switch.toggle
+    end
+
+    local function OnSwitchClick(self, key, ...)
+        if switch.toggle then
+            container:Hide()
+            switch.text:SetText("△")
+        else
+            container:Show()
+            switch.text:SetText("▽")
+        end
+
+        switch.toggle = not switch.toggle
     end
 
     switch.toggle = false
     switch:HookScript("OnEnter", OnEnter)
     switch:HookScript("OnLeave", OnLeave)
-    switch:HookScript("OnMouseUp", OnMouseUp)
+    switch:HookScript("OnClick", OnSwitchClick)
 
     for k, v in ipairs(buttons) do
         v:ClearAllPoints()
         v:SetSize(size, size)
+        v:HookScript("OnClick", OnButtonClick)
 
         if k == 1 then
             v:SetPoint("TOP", anchor, "TOP", 0, space)

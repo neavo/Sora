@@ -21,6 +21,7 @@ local function RegisterStyle(self, unit, ...)
     S.UnitFrame.CreateTotems(self, unit, ...)
     S.UnitFrame.CreateCastbar(self, unit, ...)
     S.UnitFrame.CreatePortrait(self, unit, ...)
+    S.UnitFrame.CreateQuickMark(self, unit, ...)
     S.UnitFrame.CreateClassPowers(self, unit, ...)
 
     S.UnitFrame.CreateRaidRoleIndicator(self, unit, ...)

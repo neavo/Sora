@@ -11,20 +11,21 @@ local function RegisterStyle(self, unit, ...)
     self:SetPoint("BOTTOMLEFT", _G[self:GetName():gsub("Target", "")], "TOPLEFT", 0, 4)
 
     self:RegisterForClicks("AnyUp")
-	self:SetScript("OnEnter", UnitFrame_OnEnter)
+    self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
 
     S.UnitFrame.CreatePower(self, unit, ...)
     S.UnitFrame.CreateHealth(self, unit, ...)
 
     S.UnitFrame.CreateTag(self, unit, ...)
+    S.UnitFrame.CreateQuickMark(self, unit, ...)
     S.UnitFrame.CreateRaidTargetIndicator(self, unit, ...)
 end
 
 local function OnPlayerLogin(self, event, ...)
     oUF:RegisterStyle("oUF_Sora_BossTarget", RegisterStyle)
     oUF:SetActiveStyle("oUF_Sora_BossTarget")
-    
+
     for i = 1, 5 do
         oUF:Spawn("boss" .. i .. "target", "oUF_Sora_Boss" .. i .. "Target")
     end

@@ -27,6 +27,7 @@ local function RegisterStyle(self, unit, ...)
     S.UnitFrame.CreateThreat(self, unit, ...)
     S.UnitFrame.CreateCastbar(self, unit, ...)
     S.UnitFrame.CreatePortrait(self, unit, ...)
+    S.UnitFrame.CreateQuickMark(self, unit, ...)
 end
 
 
