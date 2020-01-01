@@ -1,5 +1,0 @@
-﻿## Interface: 80000
-## Title: |cff70C0F5Sora's|r Lib
-## Author: Neavo
-
-Load.xml

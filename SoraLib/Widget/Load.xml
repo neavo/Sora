@@ -1,7 +1,0 @@
-﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
-
-	<Script file = "EditBox.lua" />
-	<Script file = "CheckBox.lua" />
-	<Script file = "DropDown.lua" />
-
-</Ui>

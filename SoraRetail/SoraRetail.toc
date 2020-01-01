@@ -1,6 +1,0 @@
-﻿## Interface: 80000
-## Title: |cff70C0F5Sora's|r Retail
-## Author: Neavo
-## RequiredDeps: SoraLib
-
-Load.xml

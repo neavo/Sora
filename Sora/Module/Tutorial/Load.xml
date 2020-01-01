@@ -1,0 +1,12 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	
+	<Script file = "Core.lua"/>
+
+	<Script file = "Plugin\CVar.lua"/>
+	<Script file = "Plugin\AdiBags.lua"/>
+	<Script file = "Plugin\Quester.lua"/>
+	<Script file = "Plugin\TinyInspect.lua"/>
+	<Script file = "Plugin\TinyTooltip.lua"/>
+	<Script file = "Plugin\AuroraClassic.lua"/>
+	
+</Ui>

@@ -1,8 +1,0 @@
-﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
-	
-	<Script file = "CVar.lua"/>
-	<Script file = "Font.lua"/>
-	<Script file = "UIScaler.lua"/>
-	<Script file = "UIParentFade.lua"/>
-	
-</Ui>
