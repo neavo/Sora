@@ -282,7 +282,6 @@ function S.CreateEventHandler()
 
     Handler:SetScript("OnEvent", OnEvent)
     Handler.Register = Register
-    Handler.RegisterAllEvents = Register
 
     return Handler
 end

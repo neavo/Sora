@@ -137,4 +137,4 @@ EventHandler.Event.UI_INFO_MESSAGE = OnUIInfoMessage
 EventHandler.Event.QUEST_TURNED_IN = OnQuestTurnedIn
 EventHandler.Event.QUEST_LOG_UPDATE = OnQuestLogUpdate
 EventHandler.Event.COMBAT_LOG_EVENT_UNFILTERED = OnCombarLogEventUnfiltered
-EventHandler.RegisterAllEvents()
+EventHandler.Register()

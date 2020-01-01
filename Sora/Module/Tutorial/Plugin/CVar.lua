@@ -42,7 +42,7 @@ end
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler:RegisterAllEvents()
+EventHandler:Register()
 
 SLASH_RELOAD1 = "/rl"
 SlashCmdList.RELOAD = function(...)

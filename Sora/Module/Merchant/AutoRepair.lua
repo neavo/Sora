@@ -44,4 +44,4 @@ end
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.MERCHANT_SHOW = OnMerchantShow
-EventHandler:RegisterAllEvents()
+EventHandler:Register()

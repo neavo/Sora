@@ -165,4 +165,4 @@ end
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler:RegisterAllEvents()
+EventHandler:Register()
