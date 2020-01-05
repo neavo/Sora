@@ -28,24 +28,21 @@ local function ProcessButtons()
 
     local container = CreateFrame("Frame", nil, Minimap)
     container:Hide()
-    container:SetSize(size * 8 + space * (8 - 1), size * 2 + space * (2 - 1))
+    container:SetSize(size * 8 + space * 7 + space * 2, size * 2 + space * 1 + space * 2)
     container:SetPoint("TOPLEFT", anchor, "BOTTOMRIGHT", space, -space)
 
     container.bg = container:CreateTexture(nil, "BORDER")
     container.bg:SetAllPoints()
     container.bg:SetTexture(DB.Backdrop)
-    container.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+    container.bg:SetVertexColor(0.12, 0.12, 0.12, 0.50)
 
     container.shadow = S.MakeShadow(container, 2)
     container.shadow:SetFrameLevel(container:GetFrameLevel() + 1)
 
-    local switch = S.CreateButton(Minimap)
+    local switch = S.CreateButton(Minimap, 20)
     switch:SetSize(size - 8, size - 8)
+    switch:SetText("△")
     switch:SetPoint("BOTTOM", anchor, "BOTTOM", 2, 0)
-
-    switch.text = S.MakeText(switch, 20)
-    switch.text:SetPoint("CENTER", 0, -1)
-    switch.text:SetText("△")
 
     local function OnEnter(self, ...)
         GameTooltip:SetOwner(self, "ANCHOR_TOP")
@@ -64,7 +61,7 @@ local function ProcessButtons()
         end
 
         container:Hide()
-        switch.text:SetText("△")
+        switch:SetText("△")
 
         switch.toggle = not switch.toggle
     end
@@ -75,7 +72,7 @@ local function ProcessButtons()
             switch.text:SetText("△")
         else
             container:Show()
-            switch.text:SetText("▽")
+            switch:SetText("▽")
         end
 
         switch.toggle = not switch.toggle
@@ -97,7 +94,7 @@ local function ProcessButtons()
             v:SetPoint("TOP", buttons[k - 1], "BOTTOM", 0, -space)
         elseif k == 5 then
             v:SetParent(container)
-            v:SetPoint("TOPLEFT", container, "TOPLEFT", 0, 0)
+            v:SetPoint("TOPLEFT", container, "TOPLEFT", space, -space)
         elseif mod(k, 5) == 0 then
             v:SetParent(container)
             v:SetPoint("TOP", buttons[k - 5], "BOTTOM", 0, -space)

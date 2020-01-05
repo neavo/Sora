@@ -14,19 +14,16 @@ end
 
 -- Clocl
 local function UpdateClock(self, ...)
-    anchors.clock.text:SetText(GameTime_GetLocalTime(true))
+    anchors.clock:SetText(GameTime_GetLocalTime(true))
 end
 
 local function CreateClock(self, ...)
     GameTimeFrame:Hide()
     TimeManagerClockButton:Hide()
 
-    local clock = S.CreateButton(Minimap)
+    local clock = S.CreateButton(Minimap, 12)
     clock:SetSize(48, 16)
     clock:SetPoint("TOP", Minimap, 0, -4)
-
-    clock.text = S.MakeText(clock, 12)
-    clock.text:SetAllPoints()
 
     local function OnEnter(self, ...)
         local doubleLineColor = {0.75, 0.90, 1.00, 1.00, 1.00, 1.00}
@@ -248,16 +245,7 @@ local function CreateAddon(self, ...)
             if value.isLoaded then
                 currMemory = currMemory + value.addonMemory
 
-                GameTooltip:AddDoubleLine(
-                    value.addonName,
-                    S.FormatMemory(value.addonMemory),
-                    1.00,
-                    1.00,
-                    1.00,
-                    0.00,
-                    1.00,
-                    0.00
-                )
+                GameTooltip:AddDoubleLine(value.addonName, S.FormatMemory(value.addonMemory), 1.00, 1.00, 1.00, 0.00, 1.00, 0.00)
             end
         end
 
@@ -350,16 +338,7 @@ local function CreateGold(self, ...)
 
         GameTooltip:AddLine("货币：", 0.40, 0.78, 1.00)
         GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine(
-            "金币：",
-            ("%d|cffffd700G|r %d|cffc7c7cfS|r %d|cffb87333C|r"):format(gold, sliver, copper),
-            1.00,
-            1.00,
-            1.00,
-            1.00,
-            1.00,
-            1.00
-        )
+        GameTooltip:AddDoubleLine("金币：", ("%d|cffffd700G|r %d|cffc7c7cfS|r %d|cffb87333C|r"):format(gold, sliver, copper), 1.00, 1.00, 1.00, 1.00, 1.00, 1.00)
         GameTooltip:Show()
     end
 

@@ -10,7 +10,7 @@ local function CreateDB(self, ...)
     SoraDB.Aura = SoraDB.Aura or {}
 
     SoraDB.Aura.Size = SoraDB.Aura.Size or 36
-    SoraDB.Aura.Spacing = SoraDB.Aura.Spacing or 12
+    SoraDB.Aura.Space = SoraDB.Aura.Space or 12
     SoraDB.Aura.Postion = SoraDB.Aura.Postion or {"TOPRIGHT", "UIParent", "TOPRIGHT", -8, -8}
 
     C.Aura = S.Copy(SoraDB.Aura)
@@ -19,6 +19,7 @@ end
 local function CreateConfig(self, ...)
     C.Config = C.Config or {}
     C.Config.Aura = C.Config.Aura or {}
+    C.Config.Aura.Mover = C.Config.Aura.Mover or {}
 
     C.Config.Aura.Tab = {
         index = 2,
@@ -41,48 +42,84 @@ local function CreateConfig(self, ...)
         },
         {
             type = "slider",
-            key = "SoraDB.Aura.Spacing",
+            key = "SoraDB.Aura.Space",
             text = "增益图标间距",
             step = 1,
             maxValue = 72,
             minValue = 8,
             OnDataChanged = function(self, data, ...)
                 if data.value then
-                    SoraDB.Aura.Spacing = data.value
+                    SoraDB.Aura.Space = data.value
                 end
             end
         },
         {
-            type = "postion",
-            key = "SoraDB.Aura.Postion",
-            text = "增益锚点位置（注意：横轴偏移量、纵轴偏移量仅限输入数字值，非数字值将不会被保存）",
-            OnDataChanged = function(self, data, ...)
-                SoraDB.Aura.Postion = data.value
+            type = "button",
+            text = "切换锚点显示状态",
+            OnClick = function(self, btn, ...)
+                for k, v in pairs(C.Config.Aura.Mover) do
+                    if v.anchor then
+                        if v.anchor:IsVisible() then
+                            v.anchor:Hide()
+                        else
+                            v.anchor:Show()
+                        end
+                    end
+                end
             end
-        },
-        {
-            type = "space"
         },
         {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
-                SoraConfig:Hide()
-                table.wipe(SoraDB.Aura)
+                local data = {}
 
-                local alert = S.CreateAlert(UIParent, 12)
-                alert:SetData(
+                table.insert(
+                    data,
                     {
                         title = "确认",
-                        detail = "已为您重置设置，即将重新载入UI，请点击下方按钮确认！",
-                        positiveText = "确认",
-                        OnPositiveClick = function(self, btn, ...)
+                        detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
+                        OnNoClick = function(self)
+                        end,
+                        OnYesClick = function(self)
+                            table.wipe(SoraDB.Aura)
+
+                            self:SetData(data[2])
+                            self:Show()
+                        end
+                    }
+                )
+                table.insert(
+                    data,
+                    {
+                        title = "确认",
+                        detail = "已完成重置，请点击下方按钮重新载入UI！",
+                        OnYesClick = function(self)
                             ReloadUI()
                         end
                     }
                 )
-                alert:SetPoint("TOP", UIParent, "TOP", 0, -256)
-                alert:SetAlterWidth(512)
+
+                local confirm = S.CreateConfirm(UIParent, 12)
+                confirm:SetData(data[1])
+                confirm:SetConfirmWidth(512)
+                confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)
+
+                SoraConfig:Hide()
+            end
+        }
+    }
+
+    C.Config.Aura.Mover = {
+        SoraAura = {
+            OnDragStop = function(self, ...)
+                self:StopMovingOrSizing()
+
+                SoraDB.Aura.Postion = {self:GetPoint()}
+                SoraDB.Aura.Postion[2] = "UIParent"
+            end,
+            OnDragStart = function(self, ...)
+                self:StartMoving()
             end
         }
     }

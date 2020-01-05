@@ -1,7 +1,55 @@
 ﻿-- Engines
 local S, C, L, DB = unpack(select(2, ...))
 
--- Begin
+-- Initialize
+local _, class = UnitClass("player")
+local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+
+-- Common
+local function CreateAnchor()
+    local anchor = CreateFrame("Frame", "SoraChat", UIParent)
+    anchor:Hide()
+    anchor:SetSize(C.Chat.Width, C.Chat.Height)
+    anchor:SetPoint(unpack(SoraDB.Chat.Postion))
+    anchor:SetMovable(true)
+    anchor:EnableMouse(true)
+    anchor:SetToplevel(true)
+    anchor:SetFrameStrata("DIALOG")
+    anchor:RegisterForDrag("LeftButton")
+    anchor:SetClampedToScreen(true)
+
+    anchor.bg = anchor:CreateTexture(nil, "BORDER")
+    anchor.bg:SetAllPoints()
+    anchor.bg:SetTexture(DB.Backdrop)
+    anchor.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+
+    anchor.text = S.MakeText(anchor, 16)
+    anchor.text:SetText("聊天框体")
+    anchor.text:SetPoint("CENTER", anchor, "CENTER", 0, 0)
+
+    anchor.shadow = S.MakeShadow(anchor, 2)
+    anchor.shadow:SetFrameLevel(anchor:GetFrameLevel())
+
+    local function OnEnter(self, ...)
+        self.bg:SetVertexColor(r / 4, g / 4, b / 4, 0.50)
+        self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
+    end
+
+    local function OnLeave(self, ...)
+        self.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+        self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+    end
+
+    if C.Config.Chat.Mover and C.Config.Chat.Mover.SoraChat then
+        anchor:SetScript("OnLeave", OnLeave)
+        anchor:SetScript("OnEnter", OnEnter)
+        anchor:SetScript("OnDragStop", C.Config.Chat.Mover.SoraChat.OnDragStop)
+        anchor:SetScript("OnDragStart", C.Config.Chat.Mover.SoraChat.OnDragStart)
+
+        C.Config.Chat.Mover.SoraChat.anchor = anchor
+    end
+end
+
 local function SetOption()
     S.KillFrame(ChatFrameMenuButton)
     S.KillFrame(QuickJoinToastButton)
@@ -21,9 +69,8 @@ local function SetOption()
     ChatTypeInfo["CHANNEL"].sticky = 0 -- 频道
 
     ChatFrame1:ClearAllPoints()
+    ChatFrame1:SetAllPoints(SoraChat)
     ChatFrame1:SetUserPlaced(true)
-    ChatFrame1:SetSize(unpack(C.Chat.ChatFrameSize))
-    ChatFrame1:SetPoint(unpack(C.Chat.ChatFramePostion))
 end
 
 local function SetChatFrame()
@@ -65,6 +112,7 @@ local function SetChatFrame()
 
         local EditBox = _G["ChatFrame" .. i .. "EditBox"]
         local EditBoxHeader = _G["ChatFrame" .. i .. "EditBoxHeader"]
+        local EditBoxLanguage = _G["ChatFrame" .. i .. "EditBoxLanguage"]
 
         local _, size = ChatFrame:GetFont()
 
@@ -85,7 +133,6 @@ local function SetChatFrame()
         S.KillFrame(_G["ChatFrame" .. i .. "EditBoxMid"])
         S.KillFrame(_G["ChatFrame" .. i .. "EditBoxLeft"])
         S.KillFrame(_G["ChatFrame" .. i .. "EditBoxRight"])
-        S.KillFrame(_G["ChatFrame" .. i .. "EditBoxLanguage"])
         S.KillFrame(_G["ChatFrame" .. i .. "EditBoxFocusMid"])
         S.KillFrame(_G["ChatFrame" .. i .. "EditBoxFocusLeft"])
         S.KillFrame(_G["ChatFrame" .. i .. "EditBoxFocusRight"])
@@ -93,6 +140,8 @@ local function SetChatFrame()
 end
 
 local function OnPlayerLogin(self, event, unit, ...)
+    CreateAnchor()
+
     SetOption()
     SetChatFrame()
 end

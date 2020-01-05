@@ -19,6 +19,7 @@ end
 local function CreateConfig(self, ...)
     C.Config = C.Config or {}
     C.Config.Minimap = C.Config.Minimap or {}
+    C.Config.Minimap.Mover = C.Config.Minimap.Mover or {}
 
     C.Config.Minimap.Tab = {
         index = 3,
@@ -53,39 +54,72 @@ local function CreateConfig(self, ...)
             end
         },
         {
-            type = "space"
-        },
-        {
-            type = "postion",
-            key = "SoraDB.Minimap.Postion",
-            text = "锚点位置（注意：横轴偏移量、纵轴偏移量仅限输入数字值，非数字值将不会被保存）",
-            OnDataChanged = function(self, data, ...)
-                SoraDB.Minimap.Postion = data.value
+            type = "button",
+            text = "切换锚点显示状态",
+            OnClick = function(self, btn, ...)
+                for k, v in pairs(C.Config.Minimap.Mover) do
+                    if v.anchor then
+                        if v.anchor:IsVisible() then
+                            v.anchor:Hide()
+                        else
+                            v.anchor:Show()
+                        end
+                    end
+                end
             end
-        },
-        {
-            type = "space"
         },
         {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
-                SoraConfig:Hide()
-                table.wipe(SoraDB.Minimap)
+                local data = {}
 
-                local alert = S.CreateAlert(UIParent, 12)
-                alert:SetData(
+                table.insert(
+                    data,
                     {
                         title = "确认",
-                        detail = "已为您重置设置，即将重新载入UI，请点击下方按钮确认！",
-                        positiveText = "确认",
-                        OnPositiveClick = function(self, btn, ...)
+                        detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
+                        OnNoClick = function(self)
+                        end,
+                        OnYesClick = function(self)
+                            table.wipe(SoraDB.Minimap)
+
+                            self:SetData(data[2])
+                            self:Show()
+                        end
+                    }
+                )
+                table.insert(
+                    data,
+                    {
+                        title = "确认",
+                        detail = "已完成重置，请点击下方按钮重新载入UI！",
+                        OnYesClick = function(self)
                             ReloadUI()
                         end
                     }
                 )
-                alert:SetPoint("TOP", UIParent, "TOP", 0, -256)
-                alert:SetAlterWidth(512)
+
+                local confirm = S.CreateConfirm(UIParent, 12)
+                confirm:SetData(data[1])
+                confirm:SetConfirmWidth(512)
+                confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)
+
+                SoraConfig:Hide()
+            end
+        }
+    }
+
+    C.Config.Minimap.Mover = {
+        SoraMinimap = {
+            OnDragStop = function(self, ...)
+                self:StopMovingOrSizing()
+
+                SoraDB.Minimap.Postion = {self:GetPoint()}
+                SoraDB.Minimap.Postion[2] = "UIParent"
+            end,
+            OnDragStart = function(self, ...)
+                self:StartMoving()
             end
         }
     }

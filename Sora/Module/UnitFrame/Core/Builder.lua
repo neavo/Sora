@@ -3,8 +3,6 @@ local _, ns = ...
 local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
--- Variables
-
 -- Initialize
 S.UnitFrame = S.UnitFrame or {}
 
@@ -13,11 +11,7 @@ local function IsCaster()
     local _, class = UnitClass("player")
     local specialization = GetSpecialization()
 
-    return select(5, GetSpecializationInfo(specialization)) == "HEALER" or (class == "MAGE") or
-        (class == "DRUID" and specialization == 1) or
-        (class == "PRIEST") or
-        (class == "SHAMAN" and specialization == 1) or
-        (class == "WARLOCK")
+    return select(5, GetSpecializationInfo(specialization)) == "HEALER" or (class == "MAGE") or (class == "DRUID" and specialization == 1) or (class == "PRIEST") or (class == "SHAMAN" and specialization == 1) or (class == "WARLOCK")
 end
 
 -- Power
@@ -26,9 +20,7 @@ S.UnitFrame.CreatePower = function(self, unit, ...)
 
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
         height = 4
-    elseif
-        unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil
-     then
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
         height = 2
     elseif unit == "raid" then
         height = 2
@@ -60,9 +52,7 @@ S.UnitFrame.CreateHealth = function(self, unit, ...)
 
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
         height = self:GetHeight() - 8
-    elseif
-        unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil
-     then
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
         height = self:GetHeight() - 4
     elseif unit == "raid" then
         height = self:GetHeight() - 4
@@ -113,9 +103,7 @@ S.UnitFrame.CreateTag = function(self, unit, ...)
         self.nameTag = nameTag
         self.powerTag = powerTag
         self.healthTag = healthTag
-    elseif
-        unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil
-     then
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
         local nameTag = S.MakeText(self.Health, 9)
         nameTag:SetPoint("TOPLEFT", 1, -1)
         self:Tag(nameTag, "[UnitFrame:ShortName]")
@@ -535,8 +523,7 @@ end
 
 S.UnitFrame.CreateQuickMark = function(self, unit, ...)
     local function getText(r, g, b, i)
-        return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255) ..
-            _G["RAID_TARGET_" .. i] .. " " .. ICON_LIST[i] .. "12|t"
+        return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255) .. _G["RAID_TARGET_" .. i] .. " " .. ICON_LIST[i] .. "12|t"
     end
 
     local menu = S.CreateEasyMenu()
@@ -663,9 +650,7 @@ S.UnitFrame.CreateRaidTargetIndicator = function(self, unit, ...)
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
         size = 16
         base = self.Portrait
-    elseif
-        unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil
-     then
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
         size = 12
         base = self.Health
     elseif unit == "raid" then

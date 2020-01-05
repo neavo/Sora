@@ -1,17 +1,65 @@
 ﻿-- Engine
 local S, C, L, DB = unpack(select(2, ...))
 
--- Begin
+-- Initialize
+local _, class = UnitClass("player")
+local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+
+-- Common
+local function CreateAnchor()
+    local anchor = CreateFrame("Frame", "SoraMinimap", UIParent)
+    anchor:Hide()
+    anchor:SetSize(C.Minimap.Width, C.Minimap.Height)
+    anchor:SetPoint(unpack(SoraDB.Minimap.Postion))
+    anchor:SetMovable(true)
+    anchor:EnableMouse(true)
+    anchor:SetToplevel(true)
+    anchor:SetFrameStrata("DIALOG")
+    anchor:RegisterForDrag("LeftButton")
+    anchor:SetClampedToScreen(true)
+
+    anchor.bg = anchor:CreateTexture(nil, "BORDER")
+    anchor.bg:SetAllPoints()
+    anchor.bg:SetTexture(DB.Backdrop)
+    anchor.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+
+    anchor.text = S.MakeText(anchor, 16)
+    anchor.text:SetText("小地图")
+    anchor.text:SetPoint("CENTER", anchor, "CENTER", 0, 0)
+
+    anchor.shadow = S.MakeShadow(anchor, 2)
+    anchor.shadow:SetFrameLevel(anchor:GetFrameLevel())
+
+    local function OnEnter(self, ...)
+        self.bg:SetVertexColor(r / 4, g / 4, b / 4, 0.50)
+        self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
+    end
+
+    local function OnLeave(self, ...)
+        self.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+        self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+    end
+
+    if C.Config.Minimap.Mover and C.Config.Minimap.Mover.SoraMinimap then
+        anchor:SetScript("OnLeave", OnLeave)
+        anchor:SetScript("OnEnter", OnEnter)
+        anchor:SetScript("OnDragStop", C.Config.Minimap.Mover.SoraMinimap.OnDragStop)
+        anchor:SetScript("OnDragStart", C.Config.Minimap.Mover.SoraMinimap.OnDragStart)
+
+        C.Config.Minimap.Mover.SoraMinimap.anchor = anchor
+    end
+end
+
 local function SetMinimap()
+    local anchor = SoraMinimap
+
     Minimap:ClearAllPoints()
+    Minimap:SetSize(SoraMinimap:GetSize())
+    Minimap:SetAllPoints(SoraMinimap)
     Minimap:SetFrameStrata("MEDIUM")
-    Minimap:SetPoint(unpack(C.Minimap.Postion))
-    Minimap:SetSize(C.Minimap.Width, C.Minimap.Height)
     Minimap:SetMaskTexture("Interface\\ChatFrame\\ChatFrameBackground")
 
-    if not Minimap.Shadow then
-        Minimap.Shadow = S.MakeShadow(Minimap, 2)
-    end
+    Minimap.Shadow = S.MakeShadow(Minimap, 2)
 end
 
 local function SetBlzFrame()
@@ -103,6 +151,7 @@ local function SetMouseScroll()
 end
 
 local function OnPlayerLogin(self, event, unit, ...)
+    CreateAnchor()
     SetMinimap()
     SetBlzFrame()
     HideBlzFrame()

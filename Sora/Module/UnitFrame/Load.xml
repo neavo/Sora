@@ -17,6 +17,10 @@
 	<Script file = "RaidDebuffs\MoPDungeon.lua" />
 	<Script file = "RaidDebuffs\CataRaid.lua" />
 	<Script file = "RaidDebuffs\CataDungeon.lua" />
+	<Script file = "RaidDebuffs\WLKRaid.lua" />
+	<Script file = "RaidDebuffs\WLKDungeon.lua" />
+	<Script file = "RaidDebuffs\TBCRaid.lua" />
+	<Script file = "RaidDebuffs\TBCDungeon.lua" />
 
 	<Script file = "Layout\Raid.lua" />
 	<Script file = "Layout\Boss.lua" />

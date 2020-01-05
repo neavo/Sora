@@ -2,12 +2,63 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local perRow, maxRow = 12, 3
-local BuffAnchor, DebuffAnchor = nil, nil
-local size, spacing, postion = nil, nil, nil
+local size, Space, postion = nil, nil, nil
 
--- Begin
-local HookAuraButtonUpdateDuration = function(self, timeLeft, ...)
+-- Initialize
+local _, class = UnitClass("player")
+local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+
+-- Common
+local function Initialize()
+    size, Space, postion = C.Aura.Size, C.Aura.Space, C.Aura.Postion
+end
+
+local function CreateAnchor()
+    local anchor = CreateFrame("Frame", "SoraAura", UIParent)
+    anchor:Hide()
+    anchor:SetSize(size * 12 + Space * (12 - 1), size * 5 + Space * (5 - 1))
+    anchor:SetPoint(unpack(postion))
+    anchor:SetMovable(true)
+    anchor:EnableMouse(true)
+    anchor:SetToplevel(true)
+    anchor:SetFrameStrata("DIALOG")
+    anchor:RegisterForDrag("LeftButton")
+    anchor:SetClampedToScreen(true)
+
+    anchor.bg = anchor:CreateTexture(nil, "BORDER")
+    anchor.bg:SetAllPoints()
+    anchor.bg:SetTexture(DB.Backdrop)
+    anchor.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+
+    anchor.text = S.MakeText(anchor, 16)
+    anchor.text:SetText("增益")
+    anchor.text:SetPoint("CENTER", anchor, "CENTER", 0, 0)
+
+    anchor.shadow = S.MakeShadow(anchor, 2)
+    anchor.shadow:SetFrameLevel(anchor:GetFrameLevel())
+
+    local function OnEnter(self, ...)
+        self.bg:SetVertexColor(r / 4, g / 4, b / 4, 0.50)
+        self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
+    end
+
+    local function OnLeave(self, ...)
+        self.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+        self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+    end
+
+    if C.Config.Aura.Mover and C.Config.Aura.Mover.SoraAura then
+        anchor:SetScript("OnLeave", OnLeave)
+        anchor:SetScript("OnEnter", OnEnter)
+        anchor:SetScript("OnDragStop", C.Config.Aura.Mover.SoraAura.OnDragStop)
+        anchor:SetScript("OnDragStart", C.Config.Aura.Mover.SoraAura.OnDragStart)
+
+        C.Config.Aura.Mover.SoraAura.anchor = anchor
+    end
+end
+
+-- Hook
+local function HookAuraButtonUpdateDuration(self, timeLeft, ...)
     if timeLeft then
         if timeLeft < BUFF_DURATION_WARNING_TIME then
             self.duration:SetTextColor(1.00, 0.00, 0.00)
@@ -17,7 +68,9 @@ local HookAuraButtonUpdateDuration = function(self, timeLeft, ...)
     end
 end
 
-local HookDebuffButtonUpdateAnchors = function(name, index, ...)
+local function HookDebuffButtonUpdateAnchors(name, index, ...)
+    local anchor = SoraAura
+
     for i = 1, DEBUFF_MAX_DISPLAY do
         local aura = _G["DebuffButton" .. i]
 
@@ -29,11 +82,11 @@ local HookDebuffButtonUpdateAnchors = function(name, index, ...)
         aura:SetSize(size, size)
 
         if i == 1 then
-            aura:SetPoint("TOPRIGHT", DebuffAnchor, 0, 0)
-        elseif mod(i, 8) == 1 then
-            aura:SetPoint("TOP", _G["DebuffButton" .. (i - perRow)], "BOTTOM", 0, -spacing)
+            aura:SetPoint("TOPRIGHT", anchor, "TOPRIGHT", 0, -(size * 3 + Space * (3 - 1)))
+        elseif mod(i, 12) == 1 then
+            aura:SetPoint("TOP", _G["DebuffButton" .. (i - 12)], "BOTTOM", 0, -Space)
         else
-            aura:SetPoint("RIGHT", _G["DebuffButton" .. (i - 1)], "LEFT", -spacing, 0)
+            aura:SetPoint("RIGHT", _G["DebuffButton" .. (i - 1)], "LEFT", -Space, 0)
         end
 
         aura.duration:SetShadowOffset(1, -1)
@@ -42,7 +95,9 @@ local HookDebuffButtonUpdateAnchors = function(name, index, ...)
     end
 end
 
-local HookBuffFrameUpdateAllBuffAnchors = function(self, ...)
+local function HookBuffFrameUpdateAllBuffAnchors(self, ...)
+    local anchor = SoraAura
+
     for i = 1, BUFF_MAX_DISPLAY do
         local aura = _G["BuffButton" .. i]
 
@@ -54,11 +109,11 @@ local HookBuffFrameUpdateAllBuffAnchors = function(self, ...)
         aura:SetSize(size, size)
 
         if i == 1 then
-            aura:SetPoint("TOPRIGHT", BuffAnchor, 0, 0)
-        elseif mod(i, perRow) == 1 then
-            aura:SetPoint("TOP", _G["BuffButton" .. (i - perRow)], "BOTTOM", 0, -spacing)
+            aura:SetPoint("TOPRIGHT", anchor, "TOPRIGHT", 0, 0)
+        elseif mod(i, 12) == 1 then
+            aura:SetPoint("TOP", _G["BuffButton" .. (i - 12)], "BOTTOM", 0, -Space)
         else
-            aura:SetPoint("RIGHT", _G["BuffButton" .. (i - 1)], "LEFT", -spacing, 0)
+            aura:SetPoint("RIGHT", _G["BuffButton" .. (i - 1)], "LEFT", -Space, 0)
         end
 
         aura.duration:SetShadowOffset(1, -1)
@@ -67,16 +122,10 @@ local HookBuffFrameUpdateAllBuffAnchors = function(self, ...)
     end
 end
 
-local OnPlayerLogin = function(self, event, ...)
-    size, spacing, postion = C.Aura.Size, C.Aura.Spacing, C.Aura.Postion
-
-    BuffAnchor = CreateFrame("Frame", nil, UIParent)
-    BuffAnchor:SetPoint(unpack(postion))
-    BuffAnchor:SetSize(size * perRow + spacing * (perRow - 1), size * maxRow + spacing * (maxRow - 1))
-
-    DebuffAnchor = CreateFrame("Frame", nil, UIParent)
-    DebuffAnchor:SetSize(size * perRow + spacing * (perRow - 1), size * maxRow + spacing * (maxRow - 1))
-    DebuffAnchor:SetPoint("TOPRIGHT", BuffAnchor, "BOTTOMRIGHT", 0, -spacing)
+-- Event
+local function OnPlayerLogin(self, event, ...)
+    Initialize()
+    CreateAnchor()
 
     hooksecurefunc("AuraButton_UpdateDuration", HookAuraButtonUpdateDuration)
     hooksecurefunc("DebuffButton_UpdateAnchors", HookDebuffButtonUpdateAnchors)

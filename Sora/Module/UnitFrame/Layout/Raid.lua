@@ -4,18 +4,127 @@ local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local oUFAnchor = nil
-local width = C.UnitFrame.Raid.Width
-local height = C.UnitFrame.Raid.Height
-local maxColumns, columnSpacing = 6, 8
-local raidAuras, indicatorFilters = C.UnitFrame.RaidAuras, C.UnitFrame.Raid.IndicatorFilters
-
--- Initialize
-S.UnitFrame.Raid = S.UnitFrame.Raid or {}
+local r, g, b = nil, nil, nil
+local width, height = nil, nil
+local raidAuras, indicatorFilters = nil, nil
 
 -- Common
 local function IsHealer()
 	return select(5, GetSpecializationInfo(GetSpecialization())) == "HEALER"
+end
+
+-- Initialize
+local function Initialize()
+	local _, class = UnitClass("player")
+
+	r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+	width, height = C.UnitFrame.Raid.Width, C.UnitFrame.Raid.Height
+	raidAuras, indicatorFilters = C.UnitFrame.RaidAuras, C.UnitFrame.Raid.IndicatorFilters
+end
+
+-- Anchor
+local function UpdateAnchor(self, ...)
+	if not oUF_Sora_Raid or InCombatLockdown() then
+		return 0
+	end
+
+	if oUF_Sora_Raid:GetNumPoints() > 0 then
+		oUF_Sora_Raid:ClearAllPoints()
+	end
+
+	if IsHealer() then
+		oUF_Sora_Raid:SetPoint("TOPLEFT", SoraUFRaidHealer)
+	else
+		oUF_Sora_Raid:SetPoint("TOPLEFT", SoraUFRaidDefault)
+	end
+end
+
+local function CreateHealerAnchor()
+	local anchor = CreateFrame("Frame", "SoraUFRaidHealer", UIParent)
+	anchor:Hide()
+	anchor:SetSize(C.UnitFrame.Raid.Width * 5 + 8 * 4, C.UnitFrame.Raid.Height * 6 + 8 * 5)
+	anchor:SetPoint(unpack(C.UnitFrame.Raid.HealerPostion))
+	anchor:SetMovable(true)
+	anchor:EnableMouse(true)
+	anchor:SetToplevel(true)
+	anchor:SetFrameStrata("DIALOG")
+	anchor:RegisterForDrag("LeftButton")
+	anchor:SetClampedToScreen(true)
+
+	anchor.bg = anchor:CreateTexture(nil, "BORDER")
+	anchor.bg:SetAllPoints()
+	anchor.bg:SetTexture(DB.Backdrop)
+	anchor.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+
+	anchor.text = S.MakeText(anchor, 16)
+	anchor.text:SetText("单位框体 - 团队 - 治疗模式")
+	anchor.text:SetPoint("CENTER", anchor, "CENTER", 0, 0)
+
+	anchor.shadow = S.MakeShadow(anchor, 2)
+	anchor.shadow:SetFrameLevel(anchor:GetFrameLevel())
+
+	local function OnEnter(self, ...)
+		self.bg:SetVertexColor(r / 4, g / 4, b / 4, 0.50)
+		self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
+	end
+
+	local function OnLeave(self, ...)
+		self.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+		self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+	end
+
+	if C.Config.UnitFrame.Mover and C.Config.UnitFrame.Mover[anchor:GetName()] then
+		anchor:SetScript("OnLeave", OnLeave)
+		anchor:SetScript("OnEnter", OnEnter)
+		anchor:SetScript("OnDragStop", C.Config.UnitFrame.Mover[anchor:GetName()].OnDragStop)
+		anchor:SetScript("OnDragStart", C.Config.UnitFrame.Mover[anchor:GetName()].OnDragStart)
+
+		C.Config.UnitFrame.Mover.SoraUFRaidHealer.anchor = anchor
+	end
+end
+
+local function CreateDefaultAnchor()
+	local anchor = CreateFrame("Frame", "SoraUFRaidDefault", UIParent)
+	anchor:Hide()
+	anchor:SetSize(C.UnitFrame.Raid.Width * 5 + 8 * 4, C.UnitFrame.Raid.Height * 6 + 8 * 5)
+	anchor:SetPoint(unpack(C.UnitFrame.Raid.DefaultPostion))
+	anchor:SetMovable(true)
+	anchor:EnableMouse(true)
+	anchor:SetToplevel(true)
+	anchor:SetFrameStrata("DIALOG")
+	anchor:RegisterForDrag("LeftButton")
+	anchor:SetClampedToScreen(true)
+
+	anchor.bg = anchor:CreateTexture(nil, "BORDER")
+	anchor.bg:SetAllPoints()
+	anchor.bg:SetTexture(DB.Backdrop)
+	anchor.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+
+	anchor.text = S.MakeText(anchor, 16)
+	anchor.text:SetText("单位框体 - 团队 - 默认模式")
+	anchor.text:SetPoint("CENTER", anchor, "CENTER", 0, 0)
+
+	anchor.shadow = S.MakeShadow(anchor, 2)
+	anchor.shadow:SetFrameLevel(anchor:GetFrameLevel())
+
+	local function OnEnter(self, ...)
+		self.bg:SetVertexColor(r / 4, g / 4, b / 4, 0.50)
+		self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
+	end
+
+	local function OnLeave(self, ...)
+		self.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+		self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+	end
+
+	if C.Config.UnitFrame.Mover and C.Config.UnitFrame.Mover[anchor:GetName()] then
+		anchor:SetScript("OnLeave", OnLeave)
+		anchor:SetScript("OnEnter", OnEnter)
+		anchor:SetScript("OnDragStop", C.Config.UnitFrame.Mover[anchor:GetName()].OnDragStop)
+		anchor:SetScript("OnDragStart", C.Config.UnitFrame.Mover[anchor:GetName()].OnDragStart)
+
+		C.Config.UnitFrame.Mover.SoraUFRaidDefault.anchor = anchor
+	end
 end
 
 -- RaidDebuff
@@ -229,22 +338,6 @@ local function CreateReadyCheckIndicator(self, ...)
 end
 
 -- Begin
-local function SetAnchor(self, ...)
-	if not oUFAnchor or InCombatLockdown() then
-		return 0
-	end
-
-	if oUFAnchor:GetNumPoints() > 0 then
-		oUFAnchor:ClearAllPoints()
-	end
-
-	if IsHealer() then
-		oUFAnchor:SetPoint(unpack(C.UnitFrame.Raid.HealerPostion))
-	else
-		oUFAnchor:SetPoint(unpack(C.UnitFrame.Raid.DefaultPostion))
-	end
-end
-
 local function RegisterStyle(self, unit, ...)
 	self.Range = {}
 	self.Range.insideAlpha = 1.00
@@ -279,17 +372,19 @@ local function RegisterStyle(self, unit, ...)
 end
 
 local function OnPlayerLogin(self, event, ...)
+	Initialize()
+	CreateHealerAnchor()
+	CreateDefaultAnchor()
+
 	S.KillFrame(CompactRaidFrameManager)
 	S.KillFrame(CompactRaidFrameContainer)
 
 	oUF:RegisterStyle("oUF_Sora_Raid", RegisterStyle)
 	oUF:SetActiveStyle("oUF_Sora_Raid")
 
-	oUFAnchor = CreateFrame("Frame", nil, UIParent)
-	oUFAnchor:SetSize(width * 5 + 4 * columnSpacing, height * maxColumns + columnSpacing * (maxColumns - 1))
+	local oUFArguments = {}
 
 	do
-		local oUFArguments = {}
 		table.insert(oUFArguments, "oUF_Sora_Raid")
 		table.insert(oUFArguments, "SecureGroupHeaderTemplate")
 		table.insert(oUFArguments, "solo,party,raid")
@@ -300,9 +395,9 @@ local function OnPlayerLogin(self, event, ...)
 		table.insert(oUFArguments, "yoffset")
 		table.insert(oUFArguments, -8)
 		table.insert(oUFArguments, "maxColumns")
-		table.insert(oUFArguments, maxColumns)
+		table.insert(oUFArguments, 6)
 		table.insert(oUFArguments, "columnSpacing")
-		table.insert(oUFArguments, columnSpacing)
+		table.insert(oUFArguments, 8)
 		table.insert(oUFArguments, "unitsPerColumn")
 		table.insert(oUFArguments, 5)
 		table.insert(oUFArguments, "columnAnchorPoint")
@@ -323,16 +418,17 @@ local function OnPlayerLogin(self, event, ...)
 		table.insert(oUFArguments, "INDEX")
 		table.insert(oUFArguments, "oUF-initialConfigFunction")
 		table.insert(oUFArguments, ([[ self:SetWidth(%d) self:SetHeight(%d) ]]):format(width, height))
-		oUF:SpawnHeader(unpack(oUFArguments)):SetPoint("TOPLEFT", oUFAnchor, "TOPLEFT", 0, 0)
 	end
+
+	oUF:SpawnHeader(unpack(oUFArguments))
 end
 
 local function OnPlayerTalentUpdate(self, event, ...)
-	SetAnchor(self, ...)
+	UpdateAnchor(self, ...)
 end
 
 local function OnPlayerEnteringWorld(self, event, ...)
-	SetAnchor(self, ...)
+	UpdateAnchor(self, ...)
 end
 
 -- Handler

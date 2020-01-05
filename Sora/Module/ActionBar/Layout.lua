@@ -1,10 +1,62 @@
 -- Engine
 local S, C, L, DB = unpack(select(2, ...))
 
+-- Initialize
+local _, class = UnitClass("player")
+local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+
+-- Common
+local function CreateAnchor()
+	local width = C.ActionBar.Size * 16 + C.ActionBar.Space * 14 + C.ActionBar.Space * 3
+	local height = C.ActionBar.Size * 3 + C.ActionBar.Space * 2
+
+	local anchor = CreateFrame("Frame", "SoraActionBar", UIParent)
+	anchor:Hide()
+	anchor:SetSize(width, height)
+	anchor:SetPoint(unpack(SoraDB.ActionBar.Postion))
+	anchor:SetMovable(true)
+	anchor:EnableMouse(true)
+	anchor:SetToplevel(true)
+	anchor:SetFrameStrata("DIALOG")
+	anchor:RegisterForDrag("LeftButton")
+	anchor:SetClampedToScreen(true)
+
+	anchor.bg = anchor:CreateTexture(nil, "BORDER")
+	anchor.bg:SetAllPoints()
+	anchor.bg:SetTexture(DB.Backdrop)
+	anchor.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+
+	anchor.text = S.MakeText(anchor, 16)
+	anchor.text:SetText("动作条（重载UI后生效）")
+	anchor.text:SetPoint("CENTER", anchor, "CENTER", 0, 0)
+
+	anchor.shadow = S.MakeShadow(anchor, 2)
+	anchor.shadow:SetFrameLevel(anchor:GetFrameLevel())
+
+	local function OnEnter(self, ...)
+		self.bg:SetVertexColor(r / 4, g / 4, b / 4, 0.50)
+		self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
+	end
+
+	local function OnLeave(self, ...)
+		self.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+		self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+	end
+
+	if C.Config.ActionBar.Mover and C.Config.ActionBar.Mover.SoraActionBar then
+		anchor:SetScript("OnLeave", OnLeave)
+		anchor:SetScript("OnEnter", OnEnter)
+		anchor:SetScript("OnDragStop", C.Config.ActionBar.Mover.SoraActionBar.OnDragStop)
+		anchor:SetScript("OnDragStart", C.Config.ActionBar.Mover.SoraActionBar.OnDragStart)
+
+		C.Config.ActionBar.Mover.SoraActionBar.anchor = anchor
+	end
+end
+
 -- Begin
 local function CreateMainBar(self, event, ...)
-	local postion = C.ActionBar.Postion
-	postion[4] = postion[4] - 2 * (C.ActionBar.Size + C.ActionBar.Space)
+	local postion = {SoraActionBar:GetPoint()}
+	postion[4] = postion[4] - (C.ActionBar.Size * 4 + C.ActionBar.Space * 3 + C.ActionBar.Space * 3) / 2
 
 	rActionBar:CreateActionBar1(
 		"Sora",
@@ -203,17 +255,20 @@ local function FixMultiActionBarUpdateGridVisibility(self, event, ...)
 	hooksecurefunc("MultiActionBar_UpdateGridVisibility", OnMultiActionBarUpdateGridVisibility)
 
 	do
-		C_Timer.NewTicker(0.10, OnMultiActionBarUpdateGridVisibility, 1)
+		C_Timer.NewTicker(0.50, OnMultiActionBarUpdateGridVisibility, 1)
 	end
 end
 
+-- Event
 local function OnCVarUpdate(self, event, key, value)
 	if key == "ALWAYS_SHOW_MULTIBARS_TEXT" then
-		C_Timer.NewTicker(0.10, OnMultiActionBarUpdateGridVisibility, 1)
+		C_Timer.NewTicker(0.50, OnMultiActionBarUpdateGridVisibility, 1)
 	end
 end
 
 local function OnPlayerLogin(self, event, ...)
+	CreateAnchor(self, event, ...)
+
 	CreateMainBar(self, event, ...)
 	CreateSideBar(self, event, ...)
 	CreateFunctionBar(self, event, ...)

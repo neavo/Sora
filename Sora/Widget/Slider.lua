@@ -41,13 +41,15 @@ function SD.CreateInstance(parent, fontSize)
     frame.text:SetPoint("BOTTOM", frame.line, "TOP", 0, 8)
 
     frame.minValue = S.MakeText(frame.line, fontSize)
-    frame.minValue:SetPoint("TOPRIGHT", frame.line, "BOTTOMLEFT", -4, -4)
+    frame.minValue:SetJustifyH("RIGHT")
+    frame.minValue:SetPoint("TOPRIGHT", frame.line, "BOTTOMLEFT", -2, -4)
 
     frame.curValue = S.MakeText(frame.line, fontSize)
     frame.curValue:SetPoint("TOP", frame.line, "BOTTOM", 0, -4)
 
     frame.maxValue = S.MakeText(frame.line, fontSize)
-    frame.maxValue:SetPoint("TOPLEFT", frame.line, "BOTTOMRIGHT", 4, -4)
+    frame.maxValue:SetJustifyH("LEFT")
+    frame.maxValue:SetPoint("TOPLEFT", frame.line, "BOTTOMRIGHT", 2, -4)
 
     return frame
 end
@@ -59,7 +61,9 @@ function SD.UpdateDataBinding(self)
         return 0
     end
 
-    self.OnDataChanged = data.OnDataChanged
+    if data.OnDataChanged then
+        self.OnDataChanged = data.OnDataChanged
+    end
 
     self.text:SetText(data.text)
     self.minValue:SetText(data.minValue)
@@ -71,8 +75,16 @@ function SD.UpdateDataBinding(self)
     self.line:SetValueStep(data.step)
     self.line.thumb:SetSize(6, self.line:GetHeight())
 
+    if self.minValue:GetWidth() < 32 then
+        self.minValue:SetWidth(32)
+    end
+
+    if self.maxValue:GetWidth() < 32 then
+        self.maxValue:SetWidth(32)
+    end
+
     self:SetSize(
-        self.minValue:GetWidth() + 4 + self.line:GetWidth() + 4 + self.maxValue:GetWidth(),
+        self.minValue:GetWidth() + 2 + self.line:GetWidth() + 2 + self.maxValue:GetWidth(),
         self.text:GetHeight() + 8 + self.line:GetHeight() + 4 + self.minValue:GetHeight()
     )
 end

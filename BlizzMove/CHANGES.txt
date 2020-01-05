@@ -1,22 +1,12 @@
-lightweight tag a74bf03e062661036071de45c08c1ba91d9ff5b4 v1.9.3
+lightweight tag fe203710e7e004f3380c018ca631a5d9b724f31a v1.9.4
 Author:	MarkW <17293527+Numynum@users.noreply.github.com>
-Date:	Fri Dec 20 07:18:41 2019 +0100
+Date:	Tue Dec 31 17:48:33 2019 +0100
 
-commit a74bf03e062661036071de45c08c1ba91d9ff5b4
+commit fe203710e7e004f3380c018ca631a5d9b724f31a
 Author: zaCade <zaCade@hotmail.com>
-Date:   Fri Dec 20 07:18:41 2019 +0100
+Date:   Tue Dec 31 17:48:33 2019 +0100
 
-    Fix OrderHallMissionFrame, Add BFAMissionFrame, Update .toc (#7)
+    Move some frames, Fix some of them, Add Quest List (Classic & Retail) (#8)
     
-    * Clean up code, add more frames.
-    
-    Cleaned up the code, and added frames i got from https://github.com/Suraf/BlizzMove, and fixed some issues like the code for the objective tracker.
-    
-            modified:   BlizzMove.lua
-    
-            modified:   BlizzMove.lua
-            modified:   Handle.lua
-            modified:   BlizzMove.lua
-    
-    * Fix OrderHallMissionFrame, Add BFAMissionFrame, Update .toc
+    * Swap some frames around, refractor code, create move handles and small stuff
 

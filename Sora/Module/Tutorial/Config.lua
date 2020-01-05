@@ -2,60 +2,31 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-C.Announcer = C.Announcer or {}
+C.Tutorial = C.Tutorial or {}
 
 -- Common
 local function CreateDB(self, ...)
-    SoraDB = SoraDB or {}
-    SoraDB.Announcer = SoraDB.Announcer or {}
+    SoraDBPerCharacter = SoraDBPerCharacter or {}
+    SoraDBPerCharacter.Tutorial = SoraDBPerCharacter.Tutorial or {}
+    SoraDBPerCharacter.Tutorial.Initialized = SoraDBPerCharacter.Tutorial.Initialized or false
 
-    SoraDB.Announcer.OnlyPlayer = SoraDB.Announcer.OnlyPlayer or false
-    SoraDB.Announcer.AlertForPlayer = SoraDB.Announcer.AlertForPlayer or false
-
-    C.Announcer = S.Copy(SoraDB.Announcer)
+    C.Tutorial = S.Copy(SoraDBPerCharacter.Tutorial)
 end
 
 local function CreateConfig(self, ...)
     C.Config = C.Config or {}
-    C.Config.Announcer = C.Config.Announcer or {}
+    C.Config.Tutorial = C.Config.Tutorial or {}
+    C.Config.Tutorial.Mover = C.Config.Tutorial.Mover or {}
 
-    C.Config.Announcer.Tab = {
-        index = 4,
-        text = "信息通报"
+    C.Config.Tutorial.Tab = {
+        index = -1,
+        text = "向导"
     }
 
-    C.Config.Announcer.Menu = {
-        {
-            type = "dropdown",
-            text = "通报范围",
-            key = "SoraDB.Announcer.OnlyPlayer",
-            options = {
-                ["全部"] = false,
-                ["仅玩家施放的技能"] = true
-            },
-            OnDataChanged = function(self, data, ...)
-                if S.ToBoolean(data.value) ~= nil then
-                    SoraDB.Announcer.OnlyPlayer = S.ToBoolean(data.value)
-                end
-            end
-        },
-        {
-            type = "dropdown",
-            text = "通报频道",
-            key = "SoraDB.Announcer.AlertForPlayer",
-            options = {
-                ["智能"] = false,
-                ["仅玩家个人频道"] = true
-            },
-            OnDataChanged = function(self, data, ...)
-                if S.ToBoolean(data.value) ~= nil then
-                    SoraDB.Announcer.AlertForPlayer = S.ToBoolean(data.value)
-                end
-            end
-        },
+    C.Config.Tutorial.Menu = {
         {
             type = "button",
-            text = "重置本页设置至默认值",
+            text = "重置全部设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
@@ -63,11 +34,12 @@ local function CreateConfig(self, ...)
                     data,
                     {
                         title = "确认",
-                        detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
+                        detail = "即将为您重置全部 |cff70C0F5Sora's|r 设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
                         end,
                         OnYesClick = function(self)
-                            table.wipe(SoraDB.Announcer)
+                            table.wipe(SoraDB)
+                            table.wipe(SoraDBPerCharacter)
 
                             self:SetData(data[2])
                             self:Show()

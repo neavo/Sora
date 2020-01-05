@@ -91,37 +91,6 @@ function S.MakeTextureShadow(parent, anchor, size)
     return Shadow
 end
 
-function S.CreateButton(parent)
-    local _, class = UnitClass("player")
-    local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
-
-    local frame = CreateFrame("Button", nil, parent)
-    frame:SetFrameLevel(parent:GetFrameLevel() + 2)
-
-    frame.bg = frame:CreateTexture(nil, "BORDER")
-    frame.bg:SetAllPoints()
-    frame.bg:SetTexture(DB.Backdrop)
-    frame.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
-
-    frame.shadow = S.MakeShadow(frame, 2)
-    frame.shadow:SetFrameLevel(parent:GetFrameLevel() + 1)
-
-    local function OnEnter(self, ...)
-        self.bg:SetVertexColor(r / 4, g / 4, b / 4, 1.00)
-        self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
-    end
-
-    local function OnLeave(self, ...)
-        self.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
-        self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
-    end
-
-    frame:SetScript("OnLeave", OnLeave)
-    frame:SetScript("OnEnter", OnEnter)
-
-    return frame
-end
-
 function S.CreateEasyMenu()
     local hanlder = {}
     local menuList = {}
@@ -256,7 +225,9 @@ function S.KillFrame(frame)
         frame:UnregisterAllEvents()
     end
 
-    frame:Hide()
+    do
+        frame:Hide()
+    end
 end
 
 function S.CreateEventHandler()

@@ -1,24 +1,24 @@
 ﻿-- Engine
 local S, C, L, DB = unpack(select(2, ...))
 
--- Variables
-local fontScale = C.Core.FontScale
-
 -- Common
-local function ProcessText(text, extra)
+local function IsTextRegion(k, v)
+	return type(v) == "table" and v.GetObjectType and v:GetObjectType() == "Font" and v.GetFont
+end
+
+local function ProcessTextRegion(text, scale)
 	if text.__Processed then
 		return 0
 	end
 
-	local scale = fontScale * extra
 	local font, size, flag = text:GetFont()
 
 	if size <= 0 then
 		return 0
 	end
 
-	text:SetFont(STANDARD_TEXT_FONT, floor(size * scale + 0.5), "OUTLINE")
-	text:SetShadowOffset(1, -1)
+	text:SetFont(STANDARD_TEXT_FONT, size * scale, "OUTLINE")
+	text:SetShadowOffset(1.00, 1.00)
 	text:SetShadowColor(0, 0, 0, 0.5)
 
 	text.__Processed = true
@@ -29,6 +29,9 @@ local function HookPaperDollFrameSetLabelAndText(statFrame, label, text, isPerce
 	if isPercentage or string.match(text, "%%") then
 		statFrame.Value:SetText(format("%.2f%%", numericValue))
 	end
+end
+do
+	hooksecurefunc("PaperDollFrame_SetLabelAndText", HookPaperDollFrameSetLabelAndText)
 end
 
 -- Special for Blizzard_WarboardUI、Blizzard_QuestChoice
@@ -66,7 +69,7 @@ local function HookQuestChoiceFrameUpdate()
 	local fontStrings = FindAllText(QuestChoiceFrame)
 
 	for k, v in pairs(fontStrings) do
-		ProcessText(v, 1.00)
+		ProcessTextRegion(v, 1.00)
 
 		v:SetText((v:GetText() or ""):gsub("\r+", ""):gsub("\n+", ""))
 		v:SetSpacing(2)
@@ -78,7 +81,7 @@ local function HookWarboardQuestChoiceFrameUpdate()
 	local fontStrings = FindAllText(WarboardQuestChoiceFrame)
 
 	for k, v in pairs(fontStrings) do
-		ProcessText(v, 1.00)
+		ProcessTextRegion(v, 1.00)
 
 		v:SetText((v:GetText() or ""):gsub("\r+", ""):gsub("\n+", ""))
 		v:SetSpacing(2)
@@ -103,29 +106,25 @@ local function OnAddonLoaded(self, event, name, ...)
 end
 
 local function OnPlayerLogin(self, event, ...)
-	local special = {}
-	special.GameFontNormalSmall = 0.80
+	local extras = {
+		"CombatTextTemplate"
+	}
+
+	local specials = {
+		["GameFontNormalSmall"] = 0.80
+	}
 
 	for k, v in pairs(_G) do
-		if string.match(k, "Font") and type(v) == "table" and v.GetObjectType and v:GetObjectType() == "Font" then
-			ProcessText(v, special[k] or 0.95)
+		if string.match(k, "Font") and IsTextRegion(k, v) then
+			ProcessTextRegion(v, specials[k] or 0.95)
 		end
 	end
 
-	-- local function OnTicker(ticker)
-	-- 	for k, v in pairs(C_ChatBubbles.GetAllChatBubbles()) do
-	-- 		for i = 1, v:GetNumRegions() do
-	-- 			local region = select(i, v:GetRegions())
-
-	-- 			if region:GetObjectType() == "FontString" then
-	-- 				ProcessText(region, 0.85)
-	-- 			end
-	-- 		end
-	-- 	end
-	-- end
-	-- C_Timer.NewTicker(1.00, OnTicker)
-
-	hooksecurefunc("PaperDollFrame_SetLabelAndText", HookPaperDollFrameSetLabelAndText)
+	for k, v in pairs(extras) do
+		if IsTextRegion(k, v) then
+			ProcessTextRegion(_G[v], specials[v] or 0.95)
+		end
+	end
 end
 
 -- Handler

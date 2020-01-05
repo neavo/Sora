@@ -10,56 +10,54 @@ local DD = {}
 
 -- Common
 function DD.CreateInstance(parent, fontSize)
-    local frame = CreateFrame("Button", nil, parent)
+    local instance = CreateFrame("Button", nil, parent)
 
-    frame.bg = frame:CreateTexture(nil, "BORDER")
-    frame.bg:SetAllPoints()
-    frame.bg:SetTexture(DB.Backdrop)
-    frame.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+    instance.bg = instance:CreateTexture(nil, "BORDER")
+    instance.bg:SetAllPoints()
+    instance.bg:SetTexture(DB.Backdrop)
+    instance.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
 
-    frame.shadow = CreateFrame("Frame", nil, frame)
-    frame.shadow:SetFrameLevel(frame:GetFrameLevel())
-    frame.shadow:SetPoint("TOPLEFT", frame, -1, 1)
-    frame.shadow:SetPoint("BOTTOMRIGHT", frame, 1, -1)
-    frame.shadow:SetBackdrop({edgeFile = DB.GlowTex, edgeSize = 1})
-    frame.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+    instance.shadow = S.MakeShadow(instance, 1)
+    instance.shadow:SetFrameLevel(instance:GetFrameLevel())
 
-    frame.right = S.MakeText(frame, fontSize + 4)
-    frame.right:SetText("▽")
-    frame.right:SetPoint("RIGHT", frame, "RIGHT", 0, 0)
+    instance.right = S.MakeText(instance, fontSize + 4)
+    instance.right:SetText("▽")
+    instance.right:SetPoint("RIGHT", instance, "RIGHT", 0, 0)
 
-    frame.split = frame:CreateTexture(nil, "ARTWORK")
-    frame.split:SetTexture(DB.Border)
-    frame.split:SetVertexColor(0.00, 0.00, 0.00, 1.00)
-    frame.split:SetPoint("RIGHT", frame.right, "LEFT", 0, 0)
+    instance.split = instance:CreateTexture(nil, "ARTWORK")
+    instance.split:SetTexture(DB.Border)
+    instance.split:SetVertexColor(0.00, 0.00, 0.00, 1.00)
+    instance.split:SetPoint("RIGHT", instance.right, "LEFT", 0, 0)
 
-    frame.left = S.MakeText(frame, fontSize)
-    frame.left:SetPoint("LEFT", frame, "LEFT", 0, 0)
+    instance.left = S.MakeText(instance, fontSize)
+    instance.left:SetPoint("LEFT", instance, "LEFT", 0, 0)
 
-    frame.menu = CreateFrame("Frame", nil, frame)
-    frame.menu:Hide()
-    frame.menu:EnableMouse(true)
-    frame.menu:SetFrameStrata("DIALOG")
-    frame.menu:SetPoint("TOP", frame, "BOTTOM", 0, -2)
+    instance.menu = CreateFrame("Frame", nil, instance)
+    instance.menu:Hide()
+    instance.menu:EnableMouse(true)
+    instance.menu:SetFrameStrata("DIALOG")
+    instance.menu:SetPoint("TOP", instance, "BOTTOM", 0, -2)
 
-    frame.menu.bg = frame.menu:CreateTexture(nil, "BORDER")
-    frame.menu.bg:SetAllPoints()
-    frame.menu.bg:SetTexture(DB.Backdrop)
-    frame.menu.bg:SetVertexColor(0.12, 0.12, 0.12, 0.75)
+    instance.menu.bg = instance.menu:CreateTexture(nil, "BORDER")
+    instance.menu.bg:SetAllPoints()
+    instance.menu.bg:SetTexture(DB.Backdrop)
+    instance.menu.bg:SetVertexColor(0.12, 0.12, 0.12, 0.75)
 
-    frame.menu.shadow = CreateFrame("Frame", nil, frame.menu)
-    frame.menu.shadow:SetFrameLevel(frame.menu:GetFrameLevel())
-    frame.menu.shadow:SetPoint("TOPLEFT", frame.menu, -1, 1)
-    frame.menu.shadow:SetPoint("BOTTOMRIGHT", frame.menu, 1, -1)
-    frame.menu.shadow:SetBackdrop({edgeFile = DB.GlowTex, edgeSize = 1})
-    frame.menu.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+    instance.menu.shadow = S.MakeShadow(instance.menu, 1)
+    instance.menu.shadow:SetFrameLevel(instance:GetFrameLevel())
 
-    return frame
+    return instance
 end
 
 function DD.UpdateDataBinding(self)
-    if not self.data then
+    local data = self.data
+
+    if not data then
         return
+    end
+
+    if data.OnDataChanged then
+        self.OnDataChanged = data.OnDataChanged
     end
 
     if not self.menu.childs then
@@ -103,7 +101,7 @@ function DD.UpdateDataBinding(self)
         end
 
         local function OnClick(_, btn, ...)
-            self.data.value = v
+            data.value = v
 
             self.menu:Hide()
             self.OnDataChanged(self, self.data, ...)
@@ -160,7 +158,7 @@ function S.CreateDropDown(parent, fontSize)
     end
 
     local function OnLeave(self, ...)
-        instance.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+        instance.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
         instance.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
     end
 

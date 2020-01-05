@@ -18,7 +18,7 @@ function CB.CreateInstance(parent)
     frame.box.bg = frame.box:CreateTexture(nil, "ARTWORK")
     frame.box.bg:SetAllPoints()
     frame.box.bg:SetTexture(DB.Backdrop)
-    frame.box.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+    frame.box.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
 
     frame.box.hl = frame.box:CreateTexture(nil, "OVERLAY")
     frame.box.hl:Hide()
@@ -39,13 +39,17 @@ function CB.UpdateDataBinding(self)
         return 0
     end
 
-    self.OnDataChanged = data.OnDataChanged
+    if data.OnDataChanged then
+        self.OnDataChanged = data.OnDataChanged
+    end
 
     if data.value then
         self.box.bg:SetVertexColor(r, g, b, 1.00)
     else
-        self.box.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+        self.box.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
     end
+
+    self:SetSize(self.box:GetWidth(), self.box:GetHeight())
 end
 
 function CB.GetData(self, ...)
@@ -63,7 +67,6 @@ function CB.GetBoxSize(self, ...)
 end
 
 function CB.SetBoxSize(self, width, height, ...)
-    self:SetSize(width, height)
     self.box:SetSize(height, height)
 
     CB.UpdateDataBinding(self)
@@ -88,7 +91,7 @@ function S.CreateCheckBox(parent)
             instance.box.bg:SetVertexColor(r, g, b, 1.00)
         else
             data.value = false
-            instance.box.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+            instance.box.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
         end
 
         if instance.OnDataChanged then

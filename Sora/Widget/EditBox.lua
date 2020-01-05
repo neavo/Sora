@@ -10,52 +10,61 @@ local EB = {}
 
 -- Common
 function EB.CreateInstance(parent, fontSize)
-    local frame = CreateFrame("Button", nil, parent)
+    local instance = CreateFrame("Button", nil, parent)
 
-    frame.editbox = CreateFrame("EditBox", nil, frame)
-    frame.editbox:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
-    frame.editbox:SetPoint("LEFT", frame, "LEFT", 0, 0)
-    frame.editbox:SetJustifyH("CENTER")
-    frame.editbox:SetJustifyV("MIDDLE")
-    frame.editbox:SetAutoFocus(false)
-    frame.editbox:SetTextColor(0.90, 0.90, 0.90)
-    frame.editbox:SetTextInsets(4, 4, 4, 4)
-    frame.editbox:SetFrameLevel(frame:GetFrameLevel() + 1)
-    frame.editbox:SetShadowColor(0.00, 0.00, 0.00, 0.50)
-    frame.editbox:SetShadowOffset(1, -1)
+    instance.editbox = CreateFrame("EditBox", nil, instance)
+    instance.editbox:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
+    instance.editbox:SetPoint("LEFT", instance, "LEFT", 0, 0)
+    instance.editbox:SetJustifyH("CENTER")
+    instance.editbox:SetJustifyV("MIDDLE")
+    instance.editbox:SetAutoFocus(false)
+    instance.editbox:SetTextColor(0.90, 0.90, 0.90)
+    instance.editbox:SetTextInsets(4, 4, 4, 4)
+    instance.editbox:SetFrameLevel(instance:GetFrameLevel() + 1)
+    instance.editbox:SetShadowColor(0.00, 0.00, 0.00, 0.50)
+    instance.editbox:SetShadowOffset(1, -1)
 
-    frame.editbox.bg = frame.editbox:CreateTexture(nil, "BORDER")
-    frame.editbox.bg:SetAllPoints()
-    frame.editbox.bg:SetTexture(DB.Backdrop)
-    frame.editbox.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+    instance.editbox.bg = instance.editbox:CreateTexture(nil, "BORDER")
+    instance.editbox.bg:SetAllPoints()
+    instance.editbox.bg:SetTexture(DB.Backdrop)
+    instance.editbox.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
 
-    frame.editbox.shadow = S.MakeShadow(frame.editbox, 1)
-    frame.editbox.shadow:SetFrameLevel(frame.editbox:GetFrameLevel() + 1)
+    instance.editbox.shadow = S.MakeShadow(instance.editbox, 1)
+    instance.editbox.shadow:SetFrameLevel(instance.editbox:GetFrameLevel())
 
-    frame.btn = CreateFrame("Button", nil, frame)
-    frame.btn:Hide()
-    frame.btn:SetFrameLevel(frame:GetFrameLevel() + 1)
-    frame.btn:SetPoint("LEFT", frame.editbox, "RIGHT", 4, 0)
+    instance.btn = CreateFrame("Button", nil, instance)
+    instance.btn:Hide()
+    instance.btn:SetFrameLevel(instance:GetFrameLevel() + 1)
+    instance.btn:SetPoint("LEFT", instance.editbox, "RIGHT", 4, 0)
 
-    frame.btn.bg = frame.btn:CreateTexture(nil, "BORDER")
-    frame.btn.bg:SetAllPoints()
-    frame.btn.bg:SetTexture(DB.Backdrop)
-    frame.btn.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+    instance.btn.bg = instance.btn:CreateTexture(nil, "BORDER")
+    instance.btn.bg:SetAllPoints()
+    instance.btn.bg:SetTexture(DB.Backdrop)
+    instance.btn.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
 
-    frame.btn.text = S.MakeText(frame.btn, fontSize - 2)
-    frame.btn.text:SetText("确定")
-    frame.btn.text:SetPoint("CENTER", 0.5, 0.0)
+    instance.btn.text = S.MakeText(instance.btn, fontSize - 2)
+    instance.btn.text:SetText("确定")
+    instance.btn.text:SetPoint("CENTER", 0.5, 0.0)
 
-    frame.btn.shadow = S.MakeShadow(frame.btn, 1)
-    frame.btn.shadow:SetFrameLevel(frame.btn:GetFrameLevel() + 1)
+    instance.btn.shadow = S.MakeShadow(instance.btn, 1)
+    instance.btn.shadow:SetFrameLevel(instance.btn:GetFrameLevel())
 
-    return frame
+    return instance
 end
 
 function EB.UpdateDataBinding(self)
     local data = self.data
 
+    if not data then
+        return 0
+    end
+
+    if data.OnDataChanged then
+        self.OnDataChanged = data.OnDataChanged
+    end
+
     self.editbox:SetText(data.value)
+    self:SetSize(self.btn:GetWidth() + 4 + self.editbox:GetWidth(), max(self.btn:GetHeight(), self.editbox:GetHeight()))
 end
 
 function EB.GetBTNSize(self)
@@ -65,10 +74,7 @@ end
 function EB.SetBTNSize(self, width, height)
     self.btn:SetSize(width, height)
 
-    self:SetSize(
-        self.btn:GetWidth() + 4 + self.editbox:GetWidth(),
-        max(self.btn:GetHeight(), self.editbox:GetHeight())
-    )
+    EB.UpdateDataBinding(self)
 end
 
 function EB.GetEditBoxSize(self)
@@ -78,10 +84,7 @@ end
 function EB.SetEditBoxSize(self, width, height)
     self.editbox:SetSize(width, height)
 
-    self:SetSize(
-        self.btn:GetWidth() + 4 + self.editbox:GetWidth(),
-        max(self.btn:GetHeight(), self.editbox:GetHeight())
-    )
+    EB.UpdateDataBinding(self)
 end
 
 function EB.GetData(self)
@@ -98,7 +101,7 @@ function S.CreateEditBox(parent, fontSize)
     local instance = EB.CreateInstance(parent, fontSize)
 
     local function OnBTNLeave(self, ...)
-        self.bg:SetVertexColor(0.30, 0.30, 0.30, 0.30)
+        self.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
         self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
     end
 
