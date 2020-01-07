@@ -14,8 +14,9 @@ local function Initialize()
 end
 
 local function CreateAnchor()
-    local anchor = CreateFrame("Frame", "SoraAura", UIParent)
+    local anchor = S.CreateButton(UIParent, 16, "SoraAura")
     anchor:Hide()
+    anchor:SetText("状态")
     anchor:SetSize(size * 12 + Space * (12 - 1), size * 5 + Space * (5 - 1))
     anchor:SetPoint(unpack(postion))
     anchor:SetMovable(true)
@@ -25,31 +26,7 @@ local function CreateAnchor()
     anchor:RegisterForDrag("LeftButton")
     anchor:SetClampedToScreen(true)
 
-    anchor.bg = anchor:CreateTexture(nil, "BORDER")
-    anchor.bg:SetAllPoints()
-    anchor.bg:SetTexture(DB.Backdrop)
-    anchor.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-
-    anchor.text = S.MakeText(anchor, 16)
-    anchor.text:SetText("增益")
-    anchor.text:SetPoint("CENTER", anchor, "CENTER", 0, 0)
-
-    anchor.shadow = S.MakeShadow(anchor, 2)
-    anchor.shadow:SetFrameLevel(anchor:GetFrameLevel())
-
-    local function OnEnter(self, ...)
-        self.bg:SetVertexColor(r / 4, g / 4, b / 4, 0.50)
-        self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
-    end
-
-    local function OnLeave(self, ...)
-        self.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-        self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
-    end
-
     if C.Config.Aura.Mover and C.Config.Aura.Mover.SoraAura then
-        anchor:SetScript("OnLeave", OnLeave)
-        anchor:SetScript("OnEnter", OnEnter)
         anchor:SetScript("OnDragStop", C.Config.Aura.Mover.SoraAura.OnDragStop)
         anchor:SetScript("OnDragStart", C.Config.Aura.Mover.SoraAura.OnDragStart)
 

@@ -57,14 +57,9 @@ local FitPattern = function(p)
     return "^" .. p .. "$"
 end
 local QuestPatterns = {
-    FitPattern(ERR_QUEST_ADD_ITEM_SII),
-    FitPattern(ERR_QUEST_ADD_KILL_SII),
-    FitPattern(ERR_QUEST_ADD_FOUND_SII),
-    FitPattern(ERR_QUEST_ADD_PLAYER_KILL_SII),
-    FitPattern(ERR_QUEST_FAILED_S),
-    FitPattern(ERR_QUEST_COMPLETE_S),
-    FitPattern(ERR_QUEST_UNKNOWN_COMPLETE),
-    FitPattern(ERR_QUEST_OBJECTIVE_COMPLETE_S)
+    FitPattern(ERR_QUEST_ADD_ITEM_SII), FitPattern(ERR_QUEST_ADD_KILL_SII), FitPattern(ERR_QUEST_ADD_FOUND_SII),
+    FitPattern(ERR_QUEST_ADD_PLAYER_KILL_SII), FitPattern(ERR_QUEST_FAILED_S), FitPattern(ERR_QUEST_COMPLETE_S),
+    FitPattern(ERR_QUEST_UNKNOWN_COMPLETE), FitPattern(ERR_QUEST_OBJECTIVE_COMPLETE_S)
 }
 local OnUIInfoMessage = function(self, event, errorType, msg)
     for _, pattern in pairs(QuestPatterns) do
@@ -103,8 +98,7 @@ local OnCombarLogEventUnfiltered = function(self, event, ...)
         return 0
     end
 
-    local isPlayer =
-        sourceName == UnitName("player") or sourceName == UnitName("pet") or sourceName == UnitName("vehicle")
+    local isPlayer = sourceName == UnitName("player") or sourceName == UnitName("pet") or sourceName == UnitName("vehicle")
     if C.Announcer.OnlyPlayer and not isPlayer then
         return 0
     end
@@ -125,9 +119,7 @@ local OnCombarLogEventUnfiltered = function(self, event, ...)
     end
 
     lastMsgTime = timestamp
-    SendMessage(
-        sourceName .. " 使用 " .. GetSpellLink(spellId) .. action .. destName .. " 的 " .. GetSpellLink(destSpellId)
-    )
+    SendMessage(sourceName .. " 使用 " .. GetSpellLink(spellId) .. action .. destName .. " 的 " .. GetSpellLink(destSpellId))
 end
 
 -- EventHandler

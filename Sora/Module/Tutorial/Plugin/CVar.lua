@@ -40,6 +40,9 @@ local function OnTickder()
     -- 启用 - 自动置顶当前区域任务
     SetCVar("autoQuestProgress", 1)
 
+    -- 启用 - 生命值过低时不闪烁屏幕
+    SetCVar("doNotFlashLowHealthWarning", 1)
+
     -- 启用 - 自动自我施法
     SetCVar("autoSelfCast", 1)
 
@@ -73,9 +76,7 @@ end
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+-- EventHandler.Event.CVAR_UPDATE = function(self, event, ...)
+--     print(...)
+-- end
 EventHandler:Register()
-
-SLASH_RELOAD1 = "/rl"
-SlashCmdList.RELOAD = function(...)
-    ReloadUI()
-end

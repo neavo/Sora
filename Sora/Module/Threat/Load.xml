@@ -1,5 +1,5 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 	
-	<Script file = "Threat.lua"/>
+	<Script file = "Core.lua"/>
 	
 </Ui>

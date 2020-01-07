@@ -1,9 +1,9 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 
 	<script file = "Config.lua" />
-	
+
+	<script file = "Core.lua" />
 	<script file = "Style.lua" />
 	<script file = "HotKey.lua" />
-	<script file = "Layout.lua" />
 
 </Ui>

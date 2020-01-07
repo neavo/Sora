@@ -24,7 +24,7 @@ function SD.CreateInstance(parent, fontSize)
     frame.line.thumb.hl:Hide()
     frame.line.thumb.hl:SetTexture(DB.Backdrop)
     frame.line.thumb.hl:SetAllPoints(frame.line.thumb)
-    frame.line.thumb.hl:SetVertexColor(1.00, 1.00, 1.00, 0.30)
+    frame.line.thumb.hl:SetVertexColor(1.00, 1.00, 1.00, 0.50)
 
     frame.line:SetBackdrop(nil)
     frame.line:SetThumbTexture(frame.line.thumb)

@@ -18,10 +18,7 @@ local function CreateConfig(self, ...)
     C.Config.Tutorial = C.Config.Tutorial or {}
     C.Config.Tutorial.Mover = C.Config.Tutorial.Mover or {}
 
-    C.Config.Tutorial.Tab = {
-        index = -1,
-        text = "向导"
-    }
+    C.Config.Tutorial.Tab = {index = -1, text = "向导"}
 
     C.Config.Tutorial.Menu = {
         {
@@ -31,8 +28,7 @@ local function CreateConfig(self, ...)
                 local data = {}
 
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "即将为您重置全部 |cff70C0F5Sora's|r 设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -47,8 +43,7 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)
@@ -58,6 +53,7 @@ local function CreateConfig(self, ...)
                 )
 
                 local confirm = S.CreateConfirm(UIParent, 12)
+                confirm:Show()
                 confirm:SetData(data[1])
                 confirm:SetConfirmWidth(512)
                 confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)

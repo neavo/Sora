@@ -7,8 +7,9 @@ local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLA
 
 -- Common
 local function CreateAnchor()
-    local anchor = CreateFrame("Frame", "SoraMinimap", UIParent)
+    local anchor = S.CreateButton(UIParent, 16, "SoraMinimap")
     anchor:Hide()
+    anchor:SetText("小地图")
     anchor:SetSize(C.Minimap.Width, C.Minimap.Height)
     anchor:SetPoint(unpack(SoraDB.Minimap.Postion))
     anchor:SetMovable(true)
@@ -18,31 +19,7 @@ local function CreateAnchor()
     anchor:RegisterForDrag("LeftButton")
     anchor:SetClampedToScreen(true)
 
-    anchor.bg = anchor:CreateTexture(nil, "BORDER")
-    anchor.bg:SetAllPoints()
-    anchor.bg:SetTexture(DB.Backdrop)
-    anchor.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-
-    anchor.text = S.MakeText(anchor, 16)
-    anchor.text:SetText("小地图")
-    anchor.text:SetPoint("CENTER", anchor, "CENTER", 0, 0)
-
-    anchor.shadow = S.MakeShadow(anchor, 2)
-    anchor.shadow:SetFrameLevel(anchor:GetFrameLevel())
-
-    local function OnEnter(self, ...)
-        self.bg:SetVertexColor(r / 4, g / 4, b / 4, 0.50)
-        self.shadow:SetBackdropBorderColor(r, g, b, 1.00)
-    end
-
-    local function OnLeave(self, ...)
-        self.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-        self.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
-    end
-
     if C.Config.Minimap.Mover and C.Config.Minimap.Mover.SoraMinimap then
-        anchor:SetScript("OnLeave", OnLeave)
-        anchor:SetScript("OnEnter", OnEnter)
         anchor:SetScript("OnDragStop", C.Config.Minimap.Mover.SoraMinimap.OnDragStop)
         anchor:SetScript("OnDragStart", C.Config.Minimap.Mover.SoraMinimap.OnDragStart)
 
@@ -93,22 +70,28 @@ end
 
 local function HideBlzFrame()
     S.KillFrame(StreamingIcon)
+    S.KillFrame(MinimapNorthTag)
+    S.KillFrame(MiniMapMailBorder)
+    S.KillFrame(MiniMapWorldMapButton)
+
     S.KillFrame(GuildInstanceDifficulty)
     S.KillFrame(MiniMapInstanceDifficulty)
-    S.KillFrame(GameTimeCalendarInvitesTexture)
+
+    S.KillFrame(TimeManagerClockButton)
     S.KillFrame(GameTimeFrame)
-    S.KillFrame(MinimapBorderTop)
-    S.KillFrame(MinimapNorthTag)
+    S.KillFrame(GameTimeCalendarInvitesTexture)
+
     S.KillFrame(MinimapBorder)
-    S.KillFrame(MinimapZoneTextButton)
-    S.KillFrame(MinimapZoomOut)
+    S.KillFrame(MinimapBorderTop)
+
     S.KillFrame(MinimapZoomIn)
-    S.KillFrame(MiniMapWorldMapButton)
-    S.KillFrame(MiniMapMailBorder)
+    S.KillFrame(MinimapZoomOut)
+    S.KillFrame(MinimapZoneTextButton)
 end
 
 local function SetMouseClick()
     local menu = S.CreateEasyMenu()
+    menu.NewLine("系统菜单", nil, nil, {isTitle = true})
     menu.NewLine(CHARACTER_BUTTON, ToggleCharacter, {"PaperDollFrame"})
     menu.NewLine(SPELLBOOK_ABILITIES_BUTTON, SpellbookMicroButton.Click, {SpellbookMicroButton})
     menu.NewLine(TALENTS_BUTTON, TalentMicroButton.Click, {TalentMicroButton})

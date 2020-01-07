@@ -45,7 +45,7 @@ local function ProcessButtons()
     switch:SetPoint("BOTTOM", anchor, "BOTTOM", 2, 0)
 
     local function OnEnter(self, ...)
-        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 4)
         GameTooltip:ClearLines()
         GameTooltip:AddLine(self.toggle and "点击收起" or "点击展开", 0.75, 0.90, 1.00)
         GameTooltip:Show()
@@ -56,26 +56,18 @@ local function ProcessButtons()
     end
 
     local function OnButtonClick(self, key, ...)
-        if not switch.toggle then
-            return 0
-        end
-
         container:Hide()
         switch:SetText("△")
-
-        switch.toggle = not switch.toggle
     end
 
     local function OnSwitchClick(self, key, ...)
-        if switch.toggle then
+        if container:IsVisible() then
             container:Hide()
             switch.text:SetText("△")
         else
             container:Show()
             switch:SetText("▽")
         end
-
-        switch.toggle = not switch.toggle
     end
 
     switch.toggle = false

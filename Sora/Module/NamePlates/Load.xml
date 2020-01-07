@@ -3,6 +3,6 @@
 	<Script file = "Config.lua" />
 
 	<Script file = "Tag.lua" />
-	<Script file = "NamePlates.lua" />
+	<Script file = "Core.lua" />
 
 </Ui>

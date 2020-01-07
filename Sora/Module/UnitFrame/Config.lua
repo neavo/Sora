@@ -5,6 +5,25 @@ local S, C, L, DB = unpack(select(2, ...))
 C.UnitFrame = C.UnitFrame or {}
 
 -- Common
+local function CreateAuraManager()
+    local text, class = UnitClass("player")
+
+    local data = {}
+    data.text = "当前职业为" .. text .. "\n请自行调整需要监视的状态，每个职业最多可监视8个状态"
+    data.auras = S.Copy(SoraDB.UnitFrame.Raid.IndicatorFilters[string.upper(class)] or {})
+
+    function data.OnDataChanged(self, data)
+        SoraDB.UnitFrame.Raid.IndicatorFilters[string.upper(class)] = data.auras
+    end
+
+    local instance = S.CreateAuraManager(UIParent)
+    instance:SetData(data)
+    instance:SetPoint("CENTER")
+    instance:SetManagerWidth(150 * 5 + 12 * 4 + 12 * 2)
+
+    return instance
+end
+
 local function CreateDB(self, ...)
     SoraDB = SoraDB or {}
     SoraDB.UnitFrame = SoraDB.UnitFrame or {}
@@ -33,18 +52,20 @@ local function CreateDB(self, ...)
     SoraDB.UnitFrame.Raid.Width = SoraDB.UnitFrame.Raid.Width or 96
     SoraDB.UnitFrame.Raid.Height = SoraDB.UnitFrame.Raid.Height or 30
     SoraDB.UnitFrame.Raid.HealerPostion = SoraDB.UnitFrame.Raid.HealerPostion or {"BOTTOM", "UIParent", "BOTTOM", 0, 170}
-    SoraDB.UnitFrame.Raid.DefaultPostion = SoraDB.UnitFrame.Raid.DefaultPostion or {"BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -8, 8}
+    SoraDB.UnitFrame.Raid.DefaultPostion = SoraDB.UnitFrame.Raid.DefaultPostion
+                                               or {"BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -8, 8}
 
-    -- 不同职业下，团队框体边角状态监视
-    -- 请自行添加需要监视的技能ID，最大可监视8个技能ID
     SoraDB.UnitFrame.Raid.IndicatorFilters = SoraDB.UnitFrame.Raid.IndicatorFilters or {}
     SoraDB.UnitFrame.Raid.IndicatorFilters.MONK = SoraDB.UnitFrame.Raid.IndicatorFilters.MONK or {}
     SoraDB.UnitFrame.Raid.IndicatorFilters.MAGE = SoraDB.UnitFrame.Raid.IndicatorFilters.MAGE or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.DRUID = SoraDB.UnitFrame.Raid.IndicatorFilters.DRUID or {774, 33763, 207386, 102351, 48438, 8936, 102342, 157982} -- 回春术，生命绽放，春暖花开，塞纳里奥结界，野性成长，愈合，铁木树皮，宁静
+
+    SoraDB.UnitFrame.Raid.IndicatorFilters.DRUID = SoraDB.UnitFrame.Raid.IndicatorFilters.DRUID
+                                                       or {774, 33763, 207386, 102351, 48438, 8936, 102342, 157982} -- 回春术，生命绽放，春暖花开，塞纳里奥结界，野性成长，愈合，铁木树皮，宁静
+
     SoraDB.UnitFrame.Raid.IndicatorFilters.ROGUE = SoraDB.UnitFrame.Raid.IndicatorFilters.ROGUE or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.PRIEST = SoraDB.UnitFrame.Raid.IndicatorFilters.PRIEST or {}
+    SoraDB.UnitFrame.Raid.IndicatorFilters.PRIEST = SoraDB.UnitFrame.Raid.IndicatorFilters.PRIEST or {139, 77489}
     SoraDB.UnitFrame.Raid.IndicatorFilters.HUNTER = SoraDB.UnitFrame.Raid.IndicatorFilters.HUNTER or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.SHAMAN = SoraDB.UnitFrame.Raid.IndicatorFilters.SHAMAN or {}
+    SoraDB.UnitFrame.Raid.IndicatorFilters.SHAMAN = SoraDB.UnitFrame.Raid.IndicatorFilters.SHAMAN or {207400} -- 先祖活力
     SoraDB.UnitFrame.Raid.IndicatorFilters.WARLOCK = SoraDB.UnitFrame.Raid.IndicatorFilters.WARLOCK or {}
     SoraDB.UnitFrame.Raid.IndicatorFilters.PALADIN = SoraDB.UnitFrame.Raid.IndicatorFilters.PALADIN or {53563}
     SoraDB.UnitFrame.Raid.IndicatorFilters.WARRIOR = SoraDB.UnitFrame.Raid.IndicatorFilters.WARRIOR or {}
@@ -58,10 +79,7 @@ local function CreateConfig(self, ...)
     C.Config = C.Config or {}
     C.Config.UnitFrame = C.Config.UnitFrame or {}
 
-    C.Config.UnitFrame.Tab = {
-        text = "单位框体",
-        index = 4
-    }
+    C.Config.UnitFrame.Tab = {text = "单位框体", index = 4}
 
     C.Config.UnitFrame.Menu = {
         {
@@ -76,8 +94,7 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Player.Width = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.UnitFrame.Player.Height",
             text = "玩家框体高度",
@@ -89,8 +106,7 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Player.Height = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.UnitFrame.Target.Width",
             text = "目标框体宽度",
@@ -102,8 +118,7 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Target.Width = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.UnitFrame.Target.Height",
             text = "目标框体高度",
@@ -115,8 +130,7 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Target.Height = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.UnitFrame.Focus.Width",
             text = "焦点框体宽度",
@@ -128,8 +142,7 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Focus.Width = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.UnitFrame.Focus.Height",
             text = "焦点框体高度",
@@ -141,8 +154,7 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Focus.Height = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.UnitFrame.Raid.Width",
             text = "团队单位框体宽度",
@@ -154,8 +166,7 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Raid.Width = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.UnitFrame.Raid.Height",
             text = "团队单位框体高度",
@@ -167,8 +178,16 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Raid.Height = data.value
                 end
             end
-        },
-        {
+        }, {
+            type = "button",
+            text = "团队边角状态监视管理",
+            OnClick = function(self, btn, ...)
+                local instance = CreateAuraManager()
+
+                instance:Show()
+                SoraConfig:Hide()
+            end
+        }, {
             type = "button",
             text = "切换锚点显示状态",
             OnClick = function(self, btn, ...)
@@ -182,16 +201,14 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -205,8 +222,7 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)
@@ -216,6 +232,7 @@ local function CreateConfig(self, ...)
                 )
 
                 local confirm = S.CreateConfirm(UIParent, 12)
+                confirm:Show()
                 confirm:SetData(data[1])
                 confirm:SetConfirmWidth(512)
                 confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)

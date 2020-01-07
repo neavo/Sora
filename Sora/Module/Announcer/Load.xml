@@ -1,7 +1,8 @@
-﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+﻿<Ui xmlns = "http://www.blizzard.com/wow/ui/">
 
 	<script file = "Config.lua" />
-	<Script file = "Announcer.lua" />
+
+	<Script file = "Core.lua" />
 
 </Ui>
 

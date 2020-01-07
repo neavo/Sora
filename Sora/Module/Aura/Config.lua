@@ -21,39 +21,34 @@ local function CreateConfig(self, ...)
     C.Config.Aura = C.Config.Aura or {}
     C.Config.Aura.Mover = C.Config.Aura.Mover or {}
 
-    C.Config.Aura.Tab = {
-        index = 2,
-        text = "增益"
-    }
+    C.Config.Aura.Tab = {index = 2, text = "状态"}
 
     C.Config.Aura.Menu = {
         {
             type = "slider",
             key = "SoraDB.Aura.Size",
-            text = "增益图标尺寸",
+            text = "状态图标尺寸",
             step = 1,
             maxValue = 72,
-            minValue = 8,
+            minValue = 0,
             OnDataChanged = function(self, data, ...)
                 if data.value then
                     SoraDB.Aura.Size = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.Aura.Space",
-            text = "增益图标间距",
+            text = "状态图标间距",
             step = 1,
-            maxValue = 72,
-            minValue = 8,
+            maxValue = 24,
+            minValue = 0,
             OnDataChanged = function(self, data, ...)
                 if data.value then
                     SoraDB.Aura.Space = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "切换锚点显示状态",
             OnClick = function(self, btn, ...)
@@ -67,16 +62,14 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -90,8 +83,7 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)
@@ -101,6 +93,7 @@ local function CreateConfig(self, ...)
                 )
 
                 local confirm = S.CreateConfirm(UIParent, 12)
+                confirm:Show()
                 confirm:SetData(data[1])
                 confirm:SetConfirmWidth(512)
                 confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)

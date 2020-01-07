@@ -168,6 +168,8 @@ function S.CreateDropDown(parent, fontSize)
         else
             instance.menu:Show()
         end
+
+        PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
     end
 
     instance:SetScript("OnLeave", OnLeave)

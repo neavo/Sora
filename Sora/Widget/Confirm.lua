@@ -11,63 +11,105 @@ local SD = {}
 -- Common
 function SD.CreateInstance(parent, fontSize)
     local instance = CreateFrame("Frame", nil, parent)
+    instance:Hide()
+    instance:SetSize(96, 96)
+    instance:SetMovable(true)
+    instance:EnableMouse(true)
+    instance:SetToplevel(true)
+    instance:SetFrameStrata("DIALOG")
+    instance:RegisterForDrag("LeftButton")
+    instance:SetClampedToScreen(true)
 
-    instance.confirm = CreateFrame("Frame", nil, instance)
-    instance.confirm:SetPoint("CENTER", instance, "CENTER", 0, 0)
-    instance.confirm:SetFrameStrata("DIALOG")
+    instance.bg = instance:CreateTexture(nil, "BORDER")
+    instance.bg:SetAllPoints()
+    instance.bg:SetTexture(DB.Backdrop)
+    instance.bg:SetVertexColor(0.12, 0.12, 0.12, 0.75)
 
-    instance.confirm.bg = instance.confirm:CreateTexture(nil, "BORDER")
-    instance.confirm.bg:SetAllPoints()
-    instance.confirm.bg:SetTexture(DB.Backdrop)
-    instance.confirm.bg:SetVertexColor(0.12, 0.12, 0.12, 0.75)
+    instance.shadow = S.MakeShadow(instance, 2)
+    instance.shadow:SetFrameLevel(instance:GetFrameLevel())
 
-    instance.confirm.shadow = S.MakeShadow(instance.confirm, 2)
-    instance.confirm.shadow:SetFrameLevel(instance.confirm:GetFrameLevel())
+    instance.top = CreateFrame("Frame", nil, instance)
+    instance.top:SetHeight(48)
+    instance.top:SetPoint("TOP", instance, "TOP", 0, 0)
 
-    instance.confirm.title = S.MakeText(instance.confirm, fontSize + 4)
-    instance.confirm.title:SetPoint("TOP", instance.confirm, "TOP", 0, -12)
+    instance.top.title = S.MakeText(instance.top, fontSize + 4)
+    instance.top.title:SetPoint("CENTER", instance.top, "CENTER", 0, 0)
+    instance.top.title:SetSpacing(4)
 
-    instance.confirm.divide = instance.confirm:CreateTexture(nil, "ARTWORK")
-    instance.confirm.divide:SetPoint("TOP", instance.confirm.title, "BOTTOM", 0, -12)
-    instance.confirm.divide:SetHeight(1)
-    instance.confirm.divide:SetTexture(DB.Border)
-    instance.confirm.divide:SetVertexColor(r, g, b, 1.00)
+    instance.top.divide = instance.top:CreateTexture(nil, "ARTWORK")
+    instance.top.divide:SetPoint("TOPLEFT", instance.top, "BOTTOMLEFT", 12, -1)
+    instance.top.divide:SetPoint("BOTTOMRIGHT", instance.top, "BOTTOMRIGHT", -12, 0)
+    instance.top.divide:SetTexture(DB.Border)
+    instance.top.divide:SetVertexColor(r, g, b, 1.00)
 
-    instance.confirm.detail = S.MakeText(instance.confirm, fontSize)
-    instance.confirm.detail:SetPoint("TOP", instance.confirm.divide, "BOTTOM", 0, -12)
-    instance.confirm.detail:SetSpacing(4)
+    instance.bottom = CreateFrame("Frame", nil, instance)
+    instance.bottom:SetHeight(48)
+    instance.bottom:SetPoint("BOTTOM", instance, "BOTTOM", 0, 0)
 
-    instance.confirm.no = CreateFrame("Button", nil, instance.confirm)
-    instance.confirm.no:SetSize(fontSize * 8, fontSize + 8)
-    instance.confirm.no:SetFrameLevel(instance.confirm:GetFrameLevel() + 1)
+    instance.bottom.no = S.CreateButton(instance.bottom, fontSize)
+    instance.bottom.no:SetSize(fontSize * 8, fontSize + 8)
+    instance.bottom.no:SetFrameLevel(instance.bottom:GetFrameLevel() + 1)
 
-    instance.confirm.no.text = S.MakeText(instance.confirm.no, fontSize)
-    instance.confirm.no.text:SetPoint("CENTER", instance.confirm.no, "CENTER", 0, 0)
+    instance.bottom.yes = S.CreateButton(instance.bottom, fontSize)
+    instance.bottom.yes:SetSize(fontSize * 8, fontSize + 8)
+    instance.bottom.yes:SetFrameLevel(instance.bottom:GetFrameLevel() + 1)
 
-    instance.confirm.no.bg = instance.confirm.no:CreateTexture(nil, "BORDER")
-    instance.confirm.no.bg:SetAllPoints()
-    instance.confirm.no.bg:SetTexture(DB.Backdrop)
-    instance.confirm.no.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+    instance.content = CreateFrame("Frame", nil, instance)
+    instance.content:SetHeight(48)
+    instance.content:SetPoint("CENTER", instance, "CENTER", 0, 0)
 
-    instance.confirm.no.shadow = S.MakeShadow(instance.confirm.no, 1)
-    instance.confirm.no.shadow:SetFrameLevel(instance.confirm:GetFrameLevel() + 1)
-
-    instance.confirm.yes = CreateFrame("Button", nil, instance.confirm)
-    instance.confirm.yes:SetSize(fontSize * 8, fontSize + 8)
-    instance.confirm.yes:SetFrameLevel(instance.confirm:GetFrameLevel() + 1)
-
-    instance.confirm.yes.text = S.MakeText(instance.confirm.yes, fontSize)
-    instance.confirm.yes.text:SetPoint("CENTER", instance.confirm.yes, "CENTER", 0, 0)
-
-    instance.confirm.yes.bg = instance.confirm.yes:CreateTexture(nil, "BORDER")
-    instance.confirm.yes.bg:SetAllPoints()
-    instance.confirm.yes.bg:SetTexture(DB.Backdrop)
-    instance.confirm.yes.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-
-    instance.confirm.yes.shadow = S.MakeShadow(instance.confirm.yes, 1)
-    instance.confirm.yes.shadow:SetFrameLevel(instance.confirm:GetFrameLevel() + 1)
+    instance.content.detail = S.MakeText(instance.content, fontSize)
+    instance.content.detail:SetPoint("CENTER", instance.content, "CENTER", 0, 0)
+    instance.content.detail:SetSpacing(4)
 
     return instance
+end
+
+function SD.UpdateTop(self)
+    local data = self.data
+    local top = self.top
+
+    top.title:SetText(data.title)
+    top:SetSize(self:GetWidth() - 12 * 2, top:GetHeight())
+end
+
+function SD.UpdateBottom(self)
+    local data = self.data
+    local bottom = self.bottom
+
+    bottom.no:Hide()
+    bottom.no:SetText(data.noText or "取消")
+    bottom.no:ClearAllPoints()
+
+    bottom.yes:Hide()
+    bottom.yes:SetText(data.yesText or "确认")
+    bottom.yes:ClearAllPoints()
+
+    local btnWidth = bottom.no:GetWidth()
+    local btnHeight = bottom.no:GetHeight()
+
+    if data.OnNoClick and not data.OnYesClick then
+        bottom.no:Show()
+        bottom.no:SetPoint("CENTER", bottom, "CENTER", 0, 0)
+    elseif not data.OnNoClick and data.OnYesClick then
+        bottom.yes:Show()
+        bottom.yes:SetPoint("CENTER", bottom, "CENTER", 0, 0)
+    elseif data.OnNoClick and data.OnYesClick then
+        bottom.no:Show()
+        bottom.yes:Show()
+        bottom.no:SetPoint("CENTER", bottom, "CENTER", btnWidth / 2 + 8, 0)
+        bottom.yes:SetPoint("CENTER", bottom, "CENTER", -(btnWidth / 2 + 8), 0)
+    end
+
+    bottom:SetSize(self:GetWidth() - 12 * 2, bottom:GetHeight())
+end
+
+function SD.UpdateContent(self)
+    local data = self.data
+    local content = self.content
+
+    content.detail:SetText(data.detail)
+    content:SetSize(self:GetWidth() - 12 * 2, content.detail:GetHeight() + 12 * 2)
 end
 
 function SD.UpdateDataBinding(self)
@@ -77,40 +119,11 @@ function SD.UpdateDataBinding(self)
         return 0
     end
 
-    self.confirm.title:SetText(data.title)
-    self.confirm.detail:SetText(data.detail)
-    self.confirm.detail:SetJustifyH(data.justifyH or "CENTER")
+    SD.UpdateTop(self)
+    SD.UpdateBottom(self)
+    SD.UpdateContent(self)
 
-    self.confirm.title:SetWidth(self.confirm:GetWidth() - 12 * 2)
-    self.confirm.detail:SetWidth(self.confirm:GetWidth() - 12 * 2)
-    self.confirm.divide:SetWidth(self.confirm:GetWidth() - 12 * 2)
-
-    self.confirm.no.text:SetText(data.noText or "取消")
-    self.confirm.yes.text:SetText(data.yesText or "确认")
-
-    self.confirm.no:Hide()
-    self.confirm.yes:Hide()
-    self.confirm.no:ClearAllPoints()
-    self.confirm.yes:ClearAllPoints()
-
-    local btnWidth = self.confirm.no:GetWidth()
-    local btnHeight = self.confirm.no:GetHeight()
-
-    if data.OnNoClick and not data.OnYesClick then
-        self.confirm.no:Show()
-        self.confirm.no:SetPoint("BOTTOM", self.confirm, "BOTTOM", 0, 12)
-    elseif not data.OnNoClick and data.OnYesClick then
-        self.confirm.yes:Show()
-        self.confirm.yes:SetPoint("BOTTOM", self.confirm, "BOTTOM", 0, 12)
-    elseif data.OnNoClick and data.OnYesClick then
-        self.confirm.no:Show()
-        self.confirm.yes:Show()
-        self.confirm.no:SetPoint("BOTTOM", self.confirm, "BOTTOM", btnWidth / 2 + 8, 12)
-        self.confirm.yes:SetPoint("BOTTOM", self.confirm, "BOTTOM", -(btnWidth / 2 + 8), 12)
-    end
-
-    self.confirm:SetHeight(12 + self.confirm.title:GetHeight() + 12 + self.confirm.divide:GetHeight() + 12 + self.confirm.detail:GetHeight() + 12 + btnHeight + 12)
-    self:SetSize(self.confirm:GetSize())
+    self:SetHeight(self.top:GetHeight() + self.bottom:GetHeight() + self.content:GetHeight())
 end
 
 function SD.Get(self, k)
@@ -134,11 +147,11 @@ function SD.SetData(self, data)
 end
 
 function SD.GetConfirmWidth(self)
-    return self.confirm:GetWidth()
+    return self:GetWidth()
 end
 
 function SD.SetConfirmWidth(self, width)
-    self.confirm:SetWidth(width)
+    self:SetWidth(width)
 
     SD.UpdateDataBinding(self)
 end
@@ -154,14 +167,12 @@ function S.CreateConfirm(parent, fontSize)
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
     end
 
-    local function OnNoLeave(self, ...)
-        instance.confirm.no.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-        instance.confirm.no.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+    local function OnDragStop(self, ...)
+        instance:StopMovingOrSizing()
     end
 
-    local function OnNoEnter(self, ...)
-        instance.confirm.no.bg:SetVertexColor(r / 4, g / 4, b / 4, 1.00)
-        instance.confirm.no.shadow:SetBackdropBorderColor(r, g, b, 1.00)
+    local function OnDragStart(self, ...)
+        instance:StartMoving()
     end
 
     local function OnNoClick(self, btn, ...)
@@ -172,16 +183,6 @@ function S.CreateConfirm(parent, fontSize)
         end
     end
 
-    local function OnYesLeave(self, ...)
-        instance.confirm.yes.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-        instance.confirm.yes.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
-    end
-
-    local function OnYesEnter(self, ...)
-        instance.confirm.yes.bg:SetVertexColor(r / 4, g / 4, b / 4, 1.00)
-        instance.confirm.yes.shadow:SetBackdropBorderColor(r, g, b, 1.00)
-    end
-
     local function OnYesClick(self, btn, ...)
         instance:Hide()
 
@@ -190,14 +191,12 @@ function S.CreateConfirm(parent, fontSize)
         end
     end
 
-    instance.confirm:SetScript("OnShow", OnShow)
-    instance.confirm:SetScript("OnHide", OnHide)
-    instance.confirm.no:SetScript("OnLeave", OnNoLeave)
-    instance.confirm.no:SetScript("OnEnter", OnNoEnter)
-    instance.confirm.no:SetScript("OnClick", OnNoClick)
-    instance.confirm.yes:SetScript("OnLeave", OnYesLeave)
-    instance.confirm.yes:SetScript("OnEnter", OnYesEnter)
-    instance.confirm.yes:SetScript("OnClick", OnYesClick)
+    instance:SetScript("OnShow", OnShow)
+    instance:SetScript("OnHide", OnHide)
+    instance:SetScript("OnDragStop", OnDragStop)
+    instance:SetScript("OnDragStart", OnDragStart)
+    instance.bottom.no:HookScript("OnClick", OnNoClick)
+    instance.bottom.yes:HookScript("OnClick", OnYesClick)
 
     instance.Get = SD.Get
     instance.Set = SD.Set

@@ -21,10 +21,7 @@ local function CreateConfig(self, ...)
     C.Config.Minimap = C.Config.Minimap or {}
     C.Config.Minimap.Mover = C.Config.Minimap.Mover or {}
 
-    C.Config.Minimap.Tab = {
-        index = 3,
-        text = "小地图"
-    }
+    C.Config.Minimap.Tab = {index = 3, text = "小地图"}
 
     C.Config.Minimap.Menu = {
         {
@@ -39,8 +36,7 @@ local function CreateConfig(self, ...)
                     SoraDB.Minimap.Width = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.Minimap.Height",
             text = "小地图高度",
@@ -52,8 +48,7 @@ local function CreateConfig(self, ...)
                     SoraDB.Minimap.Height = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "切换锚点显示状态",
             OnClick = function(self, btn, ...)
@@ -67,16 +62,14 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -90,8 +83,7 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)
@@ -101,6 +93,7 @@ local function CreateConfig(self, ...)
                 )
 
                 local confirm = S.CreateConfirm(UIParent, 12)
+                confirm:Show()
                 confirm:SetData(data[1])
                 confirm:SetConfirmWidth(512)
                 confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)

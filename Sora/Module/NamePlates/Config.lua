@@ -18,10 +18,7 @@ local function CreateConfig(self, ...)
     C.Config = C.Config or {}
     C.Config.NamePlates = C.Config.NamePlates or {}
 
-    C.Config.NamePlates.Tab = {
-        index = 3,
-        text = "姓名板"
-    }
+    C.Config.NamePlates.Tab = {index = 3, text = "姓名板"}
 
     C.Config.NamePlates.Menu = {
         {
@@ -36,8 +33,7 @@ local function CreateConfig(self, ...)
                     SoraDB.NamePlates.Width = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.NamePlates.Height",
             text = "姓名板高度",
@@ -49,16 +45,14 @@ local function CreateConfig(self, ...)
                     SoraDB.NamePlates.Height = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -72,8 +66,7 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)
@@ -83,6 +76,7 @@ local function CreateConfig(self, ...)
                 )
 
                 local confirm = S.CreateConfirm(UIParent, 12)
+                confirm:Show()
                 confirm:SetData(data[1])
                 confirm:SetConfirmWidth(512)
                 confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)

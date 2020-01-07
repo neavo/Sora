@@ -21,10 +21,7 @@ local function CreateConfig(self, ...)
     C.Config.Chat = C.Config.Chat or {}
     C.Config.Chat.Mover = C.Config.Chat.Mover or {}
 
-    C.Config.Chat.Tab = {
-        index = 4,
-        text = "聊天框体"
-    }
+    C.Config.Chat.Tab = {index = 4, text = "聊天框体"}
 
     C.Config.Chat.Menu = {
         {
@@ -39,8 +36,7 @@ local function CreateConfig(self, ...)
                     SoraDB.Chat.Width = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.Chat.Height",
             text = "聊天框体高度",
@@ -52,8 +48,7 @@ local function CreateConfig(self, ...)
                     SoraDB.Chat.Height = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "切换锚点显示状态",
             OnClick = function(self, btn, ...)
@@ -67,16 +62,14 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -90,8 +83,7 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)
@@ -101,6 +93,7 @@ local function CreateConfig(self, ...)
                 )
 
                 local confirm = S.CreateConfirm(UIParent, 12)
+                confirm:Show()
                 confirm:SetData(data[1])
                 confirm:SetConfirmWidth(512)
                 confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)

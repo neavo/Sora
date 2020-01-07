@@ -3,8 +3,8 @@
 	<Script file = "Button.lua" />
 	<Script file = "Slider.lua" />
 	<Script file = "Confirm.lua" />
-	<Script file = "EditBox.lua" />
 	<Script file = "CheckBox.lua" />
 	<Script file = "DropDown.lua" />
+	<Script file = "AuraManager.lua" />
 
 </Ui>

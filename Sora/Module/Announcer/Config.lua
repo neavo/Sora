@@ -19,49 +19,37 @@ local function CreateConfig(self, ...)
     C.Config = C.Config or {}
     C.Config.Announcer = C.Config.Announcer or {}
 
-    C.Config.Announcer.Tab = {
-        index = 4,
-        text = "信息通报"
-    }
+    C.Config.Announcer.Tab = {index = 4, text = "信息通报"}
 
     C.Config.Announcer.Menu = {
         {
             type = "dropdown",
             text = "通报范围",
             key = "SoraDB.Announcer.OnlyPlayer",
-            options = {
-                ["全部"] = false,
-                ["仅玩家施放的技能"] = true
-            },
+            options = {["全部"] = false, ["仅玩家施放的技能"] = true},
             OnDataChanged = function(self, data, ...)
                 if S.ToBoolean(data.value) ~= nil then
                     SoraDB.Announcer.OnlyPlayer = S.ToBoolean(data.value)
                 end
             end
-        },
-        {
+        }, {
             type = "dropdown",
             text = "通报频道",
             key = "SoraDB.Announcer.AlertForPlayer",
-            options = {
-                ["智能"] = false,
-                ["仅玩家个人频道"] = true
-            },
+            options = {["智能"] = false, ["仅玩家个人频道"] = true},
             OnDataChanged = function(self, data, ...)
                 if S.ToBoolean(data.value) ~= nil then
                     SoraDB.Announcer.AlertForPlayer = S.ToBoolean(data.value)
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -75,8 +63,7 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)
@@ -86,6 +73,7 @@ local function CreateConfig(self, ...)
                 )
 
                 local confirm = S.CreateConfirm(UIParent, 12)
+                confirm:Show()
                 confirm:SetData(data[1])
                 confirm:SetConfirmWidth(512)
                 confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)

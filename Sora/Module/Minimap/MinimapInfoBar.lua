@@ -12,18 +12,16 @@ local function OnLeave(self, event, ...)
     GameTooltip:Hide()
 end
 
--- Clocl
+-- Clock
 local function UpdateClock(self, ...)
     anchors.clock:SetText(GameTime_GetLocalTime(true))
 end
 
 local function CreateClock(self, ...)
-    GameTimeFrame:Hide()
-    TimeManagerClockButton:Hide()
-
     local clock = S.CreateButton(Minimap, 12)
     clock:SetSize(48, 16)
     clock:SetPoint("TOP", Minimap, 0, -4)
+    clock:SetFrameLevel(Minimap:GetFrameLevel() + 255)
 
     local function OnEnter(self, ...)
         local doubleLineColor = {0.75, 0.90, 1.00, 1.00, 1.00, 1.00}
@@ -43,13 +41,13 @@ local function CreateClock(self, ...)
         GameTooltip:Hide()
     end
 
-    local function OnMouseUp(self, btn, ...)
+    local function OnClick(self, btn, ...)
         GameTimeFrame:Click()
     end
 
     clock:HookScript("OnLeave", OnLeave)
     clock:HookScript("OnEnter", OnEnter)
-    clock:HookScript("OnMouseUp", OnMouseUp)
+    clock:HookScript("OnClick", OnClick)
 
     anchors.clock = clock
 end
@@ -80,6 +78,8 @@ local function CreateFPS(self, ...)
     fps.text:SetPoint("CENTER", 0, 5)
 
     fps.shadow = S.MakeShadow(fps, 2)
+    fps.shadow:SetFrameLevel(fps:GetFrameLevel())
+
     fps.bg = fps:CreateTexture(nil, "BACKGROUND")
     fps.bg:SetTexture(DB.Statusbar)
     fps.bg:SetAllPoints()
@@ -143,8 +143,7 @@ local function UpdateAddon(self, ...)
     end
 
     table.sort(
-        addons,
-        function(l, r)
+        addons, function(l, r)
             if l and r then
                 return l.addonMemory > r.addonMemory
             end
@@ -185,6 +184,8 @@ local function CreatePing(self, ...)
     ping.text:SetPoint("CENTER", 0, 5)
 
     ping.shadow = S.MakeShadow(ping, 2)
+    ping.shadow:SetFrameLevel(anchor:GetFrameLevel())
+
     ping.bg = ping:CreateTexture(nil, "BACKGROUND")
     ping.bg:SetTexture(DB.Statusbar)
     ping.bg:SetAllPoints()
@@ -224,6 +225,8 @@ local function CreateAddon(self, ...)
     addon.text:SetPoint("CENTER", 0, 5)
 
     addon.shadow = S.MakeShadow(addon, 2)
+    addon.shadow:SetFrameLevel(anchor:GetFrameLevel())
+
     addon.bg = addon:CreateTexture(nil, "BACKGROUND")
     addon.bg:SetTexture(DB.Statusbar)
     addon.bg:SetAllPoints()
@@ -322,6 +325,8 @@ local function CreateGold(self, ...)
     gold.text:SetPoint("CENTER", 0, 5)
 
     gold.shadow = S.MakeShadow(gold, 2)
+    gold.shadow:SetFrameLevel(gold:GetFrameLevel())
+
     gold.bg = gold:CreateTexture(nil, "BACKGROUND")
     gold.bg:SetTexture(DB.Statusbar)
     gold.bg:SetAllPoints()
@@ -338,7 +343,10 @@ local function CreateGold(self, ...)
 
         GameTooltip:AddLine("货币：", 0.40, 0.78, 1.00)
         GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine("金币：", ("%d|cffffd700G|r %d|cffc7c7cfS|r %d|cffb87333C|r"):format(gold, sliver, copper), 1.00, 1.00, 1.00, 1.00, 1.00, 1.00)
+        GameTooltip:AddDoubleLine(
+            "金币：", ("%d|cffffd700G|r %d|cffc7c7cfS|r %d|cffb87333C|r"):format(gold, sliver, copper), 1.00, 1.00, 1.00,
+            1.00, 1.00, 1.00
+        )
         GameTooltip:Show()
     end
 
@@ -363,6 +371,8 @@ local function CreateItem(self, ...)
     item.text:SetPoint("CENTER", 0, 5)
 
     item.shadow = S.MakeShadow(item, 2)
+    item.shadow:SetFrameLevel(item:GetFrameLevel())
+
     item.bg = item:CreateTexture(nil, "BACKGROUND")
     item.bg:SetTexture(DB.Statusbar)
     item.bg:SetAllPoints()
@@ -432,7 +442,7 @@ local function CreateExperienceLine(self, ...)
     end
 
     experience.shadow = S.MakeShadow(experience, 2)
-    experience.OverrideUpdateTooltip = OnExperienceUpdateTooltip
+    experience.shadow:SetFrameLevel(experience:GetFrameLevel())
 
     experience.rested = CreateFrame("StatusBar", nil, experience)
     experience.rested:SetAllPoints(experience)
@@ -460,9 +470,11 @@ local function CreateExperienceLine(self, ...)
     experience.onEnterRestedLine:ClearAllPoints()
     self:Tag(experience.onEnterRestedLine, "[experience:currested] - [experience:perrested]%")
 
-    anchors.Experience = anchor
     self.Experience = experience
     self.Experience.Rested = experience.rested
+    self.Experience.OverrideUpdateTooltip = OnExperienceUpdateTooltip
+
+    anchors.Experience = anchor
 end
 
 -- Reputation
@@ -492,8 +504,10 @@ local function CreateReputationLine(self, ...)
         GameTooltip:Show()
     end
 
-    reputation.colorStanding = true
     reputation.shadow = S.MakeShadow(reputation, 2)
+    reputation.shadow:SetFrameLevel(reputation:GetFrameLevel())
+
+    reputation.colorStanding = true
     reputation.UpdateTooltip = OnReputationUpdateTooltip
 
     reputation.text = S.MakeText(reputation, 10)
@@ -514,8 +528,11 @@ local function CreateReputationLine(self, ...)
     reputation.onEnterValueLine:ClearAllPoints()
     self:Tag(reputation.onEnterValueLine, "[reputation:cur]/[reputation:max] - [reputation:per]%")
 
-    anchors.Reputation = anchor
     self.Reputation = reputation
+    self.Reputation.colorStanding = true
+    self.Reputation.UpdateTooltip = OnReputationUpdateTooltip
+
+    anchors.Reputation = anchor
 end
 
 -- Artifact Power、Azerite Item
@@ -532,21 +549,25 @@ local function CreateArtifactPowerLine(self, ...)
     artifactPower.text = S.MakeText(artifactPower, 10)
     artifactPower.text:SetText("N/A")
     artifactPower.text:SetPoint("CENTER", 0, 5)
+
     artifactPower.shadow = S.MakeShadow(artifactPower, 2)
+    artifactPower.shadow:SetFrameLevel(artifactPower:GetFrameLevel())
 
     artifactPower.bg = artifactPower:CreateTexture(nil, "BACKGROUND")
     artifactPower.bg:SetTexture(DB.Statusbar)
     artifactPower.bg:SetAllPoints()
     artifactPower.bg:SetVertexColor(0.12, 0.12, 0.12)
 
-    artifactPower.PostUpdate = function(self, event, isShown)
+    local function PostUpdate(self, event, isShown)
         if isShown then
             self.text:SetText(("%d%%"):format(self.current / self.max * 100))
         end
     end
 
-    anchors.ArtifactPower = anchor
     self.ArtifactPower = artifactPower
+    self.ArtifactPower.PostUpdate = PostUpdate
+
+    anchors.ArtifactPower = anchor
 end
 
 -- Begin

@@ -17,8 +17,8 @@ function BN.SetText(self, text)
     self.text:SetText(text)
 end
 
-function BN.CreateInstance(parent, fontSize)
-    local instance = CreateFrame("Button", nil, parent)
+function BN.CreateInstance(parent, fontSize, name)
+    local instance = CreateFrame("Button", name, parent)
     instance:SetFrameLevel(parent:GetFrameLevel() + 1)
 
     instance.bg = instance:CreateTexture(nil, "BORDER")
@@ -35,8 +35,8 @@ function BN.CreateInstance(parent, fontSize)
     return instance
 end
 
-function S.CreateButton(parent, fontSize)
-    local instance = BN.CreateInstance(parent, fontSize or 12)
+function S.CreateButton(parent, fontSize, name)
+    local instance = BN.CreateInstance(parent, fontSize or 12, name)
 
     local function OnEnter(self, ...)
         instance.bg:SetVertexColor(r / 4, g / 4, b / 4, 1.00)
@@ -48,8 +48,13 @@ function S.CreateButton(parent, fontSize)
         instance.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
     end
 
+    local function OnClick(self, btn, ...)
+        PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
+    end
+
     instance:SetScript("OnLeave", OnLeave)
     instance:SetScript("OnEnter", OnEnter)
+    instance:SetScript("OnClick", OnClick)
 
     instance.GetText = BN.GetText
     instance.SetText = BN.SetText

@@ -26,7 +26,9 @@ S.NamePlates.CreatePower = function(self, unit, ...)
     power.colorPower = true
     power.colorSmooth = true
     power.frequentUpdates = true
-    power.shadow = S.MakeShadow(power, 1)
+
+    power.shadow = S.MakeShadow(power, 2)
+    power.shadow:SetFrameLevel(power:GetFrameLevel())
 
     self.Power = power
 end
@@ -52,7 +54,9 @@ S.NamePlates.CreateHealth = function(self, unit, ...)
     health.colorSmooth = true
     health.colorHealth = true
     health.frequentUpdates = true
-    health.shadow = S.MakeShadow(health, 1)
+
+    health.shadow = S.MakeShadow(health, 2)
+    health.shadow:SetFrameLevel(health:GetFrameLevel())
 
     self.Health = health
 end

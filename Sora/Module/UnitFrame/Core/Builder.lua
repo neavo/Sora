@@ -11,7 +11,9 @@ local function IsCaster()
     local _, class = UnitClass("player")
     local specialization = GetSpecialization()
 
-    return select(5, GetSpecializationInfo(specialization)) == "HEALER" or (class == "MAGE") or (class == "DRUID" and specialization == 1) or (class == "PRIEST") or (class == "SHAMAN" and specialization == 1) or (class == "WARLOCK")
+    return select(5, GetSpecializationInfo(specialization)) == "HEALER" or (class == "MAGE")
+               or (class == "DRUID" and specialization == 1) or (class == "PRIEST")
+               or (class == "SHAMAN" and specialization == 1) or (class == "WARLOCK")
 end
 
 -- Power
@@ -41,7 +43,9 @@ S.UnitFrame.CreatePower = function(self, unit, ...)
     power.colorPower = true
     power.colorSmooth = true
     power.frequentUpdates = true
+
     power.shadow = S.MakeShadow(power, 2)
+    power.shadow:SetFrameLevel(power:GetFrameLevel())
 
     self.Power = power
 end
@@ -527,6 +531,7 @@ S.UnitFrame.CreateQuickMark = function(self, unit, ...)
     end
 
     local menu = S.CreateEasyMenu()
+    menu.NewLine("快捷标记", nil, nil, {isTitle = true})
     menu.NewLine(RAID_TARGET_NONE, SetRaidTarget, {unit, 0})
     menu.NewLine(getText(1.00, 0.92, 0.00, 1), SetRaidTarget, {unit, 1})
     menu.NewLine(getText(0.98, 0.57, 0.00, 2), SetRaidTarget, {unit, 2})

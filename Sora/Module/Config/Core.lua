@@ -2,8 +2,8 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local rowSize, btnSize = 48, 24
-local width, height, space = 768, 512, 8
+local _, class = UnitClass("player")
+local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
 
 -- Initialize
 C.Config = C.Config or {}
@@ -27,14 +27,14 @@ end
 
 local function CreateSpaceUnit(self, data)
     local unit = CreateFrame("Frame", nil, self.menu)
-    unit:SetSize((self.menu:GetWidth() - space * 2 - space) / 2, rowSize)
+    unit:SetSize((self.menu:GetWidth() - 12 * 2 - 12) / 2, 48)
 
     return unit
 end
 
 local function CreateSliderUnit(self, data)
     local unit = CreateFrame("Frame", nil, self.menu)
-    unit:SetSize((self.menu:GetWidth() - space * 2 - space) / 2, rowSize)
+    unit:SetSize((self.menu:GetWidth() - 12 * 2 - 12) / 2, 48)
 
     data.value = GetData(data.key)
     unit.core = S.CreateSlider(unit, 11)
@@ -47,39 +47,20 @@ end
 
 local function CreateButtonUnit(self, data)
     local unit = CreateFrame("Frame", nil, self.menu)
-    unit:SetSize((self.menu:GetWidth() - space * 2 - space) / 2, rowSize)
+    unit:SetSize((self.menu:GetWidth() - 12 * 2 - 12) / 2, 48)
 
     unit.core = S.CreateButton(unit, 12)
     unit.core:SetSize(150, 20)
     unit.core:SetText(data.text)
     unit.core:SetPoint("CENTER", unit, "CENTER", 0, 0)
-    unit.core:SetScript("OnClick", data.OnClick)
-
-    return unit
-end
-
-local function CreateEditBoxUnit(self, data)
-    local unit = CreateFrame("Frame", nil, self.menu)
-    unit:SetSize((self.menu:GetWidth() - space * 2 - space) / 2, rowSize)
-
-    data.value = GetData(data.key)
-    unit.core = S.CreateEditBox(unit, 11)
-    unit.core:SetData(data)
-    unit.core:SetBTNSize(24, 14)
-    unit.core:SetEditBoxSize(48, 14)
-
-    unit.core.text = S.MakeText(unit.core, 11)
-    unit.core.text:SetText(data.text)
-
-    unit.core.text:SetPoint("LEFT", unit, "LEFT", space, 0)
-    unit.core:SetPoint("LEFT", unit.core.text, "RIGHT", space, 0)
+    unit.core:HookScript("OnClick", data.OnClick)
 
     return unit
 end
 
 local function CreateDropDownUnit(self, data)
     local unit = CreateFrame("Frame", nil, self.menu)
-    unit:SetSize((self.menu:GetWidth() - space * 2 - space) / 2, rowSize)
+    unit:SetSize((self.menu:GetWidth() - 12 * 2 - 12) / 2, 48)
 
     data.value = GetData(data.key)
     unit.core = S.CreateDropDown(unit, 12)
@@ -89,15 +70,15 @@ local function CreateDropDownUnit(self, data)
     unit.core.text = S.MakeText(unit.core, 12)
     unit.core.text:SetText(data.text)
 
-    unit.core:SetPoint("CENTER", unit, "CENTER", -(unit.core.text:GetWidth() + space) / 2, 0)
-    unit.core.text:SetPoint("LEFT", unit.core, "RIGHT", space, 0)
+    unit.core:SetPoint("CENTER", unit, "CENTER", -(unit.core.text:GetWidth() + 12) / 2, 0)
+    unit.core.text:SetPoint("LEFT", unit.core, "RIGHT", 12, 0)
 
     return unit
 end
 
 local function CreateCheckBoxUnit(self, data)
     local unit = CreateFrame("Frame", nil, self.menu)
-    unit:SetSize((self.menu:GetWidth() - space * 2 - space) / 2, rowSize)
+    unit:SetSize((self.menu:GetWidth() - 12 * 2 - 12) / 2, 48)
 
     data.value = GetData(data.key)
     unit.core = S.CreateCheckBox(unit)
@@ -107,7 +88,7 @@ local function CreateCheckBoxUnit(self, data)
 
     unit.core.text = S.MakeText(unit.core, 12)
     unit.core.text:SetText(data.text)
-    unit.core.text:SetPoint("LEFT", unit.core, "RIGHT", space, 0)
+    unit.core.text:SetPoint("LEFT", unit.core, "RIGHT", 12, 0)
 
     return unit
 end
@@ -121,8 +102,6 @@ local function CreateMenuUnit(self, data)
         unit = CreateSliderUnit(self, data)
     elseif data.type == "button" then
         unit = CreateButtonUnit(self, data)
-    elseif data.type == "editbox" then
-        unit = CreateEditBoxUnit(self, data)
     elseif data.type == "dropdown" then
         unit = CreateDropDownUnit(self, data)
     elseif data.type == "checkbox" then
@@ -141,29 +120,26 @@ local function UpdateMenu(self, data)
     end
     table.wipe(menu.units)
 
-    local height = 0
     for k, v in pairs(data.Menu) do
         local unit = CreateMenuUnit(self, v)
 
         if k == 1 then
-            height = height + space + unit:GetHeight()
-            unit:SetPoint("TOPLEFT", menu, "TOPLEFT", space, -space)
+            unit:SetPoint("TOPLEFT", menu, "TOPLEFT", 12, -12)
         elseif mod(k, 2) == 0 then
-            unit:SetPoint("LEFT", menu.units[k - 1], "RIGHT", space, 0)
+            unit:SetPoint("LEFT", menu.units[k - 1], "RIGHT", 12, 0)
         else
-            height = height + space * 2 + unit:GetHeight()
-            unit:SetPoint("TOP", menu.units[k - 2], "BOTTOM", 0, -space * 2)
+            unit:SetPoint("TOP", menu.units[k - 2], "BOTTOM", 0, -12 * 2)
         end
 
         table.insert(menu.units, unit)
     end
 
-    menu:SetSize(width - btnSize * 6 - space, height + space)
+    -- menu:SetHeight(math.ceil(#menu.units / 2) * 48)
 end
 
 local function CreateTabUnit(self, data)
     local unit = S.CreateButton(self.tab)
-    unit:SetSize(self.tab:GetWidth() - space * 2, btnSize)
+    unit:SetSize(self.tab:GetWidth() - 12 * 2, 24)
 
     unit.text = S.MakeText(unit, 12)
     unit.text:SetText(data.Tab.text)
@@ -171,9 +147,10 @@ local function CreateTabUnit(self, data)
 
     local function OnClick(_, btn, ...)
         UpdateMenu(self, data)
+        PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
     end
 
-    unit:SetScript("OnClick", OnClick)
+    unit:HookScript("OnClick", OnClick)
 
     return unit
 end
@@ -191,9 +168,9 @@ local function UpdateTab(self, data)
         local unit = CreateTabUnit(self, v)
 
         if #tab.units == 0 then
-            unit:SetPoint("TOP", tab, "TOP", 0, -space)
+            unit:SetPoint("TOP", tab, "TOP", 0, -12)
         else
-            unit:SetPoint("TOP", tab.units[#tab.units], "BOTTOM", 0, -space)
+            unit:SetPoint("TOP", tab.units[#tab.units], "BOTTOM", 0, -12)
         end
 
         table.insert(tab.units, unit)
@@ -202,127 +179,78 @@ end
 
 -- Tab
 local function CreateTab(self)
-    local tab = CreateFrame("Frame", nil, self)
-    tab:SetSize(btnSize * 6, height)
-    tab:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0, 0)
-    tab:SetFrameLevel(self:GetFrameLevel())
+    local scroll = CreateFrame("ScrollFrame", nil, self, "UIPanelScrollFrameTemplate")
+    scroll:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -48)
+    scroll:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", 192, 0)
 
-    tab.bg = tab:CreateTexture(nil, "BORDER")
-    tab.bg:SetAllPoints()
-    tab.bg:SetTexture(DB.Backdrop)
-    tab.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+    scroll.divide = self:CreateTexture(nil, "ARTWORK")
+    scroll.divide:SetPoint("TOPLEFT", scroll, "TOPRIGHT", -1, -12)
+    scroll.divide:SetPoint("BOTTOMRIGHT", scroll, "BOTTOMRIGHT", 0, 12)
+    scroll.divide:SetTexture(DB.Border)
+    scroll.divide:SetVertexColor(r, g, b, 1.00)
 
-    tab.shadow = S.MakeShadow(tab, 2)
-    tab.shadow:SetFrameLevel(self:GetFrameLevel())
+    self.tab = CreateFrame("Frame", nil, self)
+    self.tab:SetSize(scroll:GetSize())
 
-    self.tab = tab
+    scroll:SetScrollChild(self.tab)
+    scroll.ScrollBar:SetAlpha(0.00)
 end
 
 -- Menu
 local function CreateMenu(self)
-    local menu = CreateFrame("Frame", nil, self)
-    menu:SetSize(width - btnSize * 6 - space, height)
-    menu:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
-    menu:SetFrameLevel(self:GetFrameLevel())
-
     local scroll = CreateFrame("ScrollFrame", nil, self, "UIPanelScrollFrameTemplate")
-    scroll:SetSize(width - btnSize * 6 - space, height)
+    scroll:SetPoint("TOPLEFT", self, "TOPLEFT", 192, -48)
     scroll:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
-    scroll:SetScrollChild(menu)
 
-    scroll.shadow = S.MakeShadow(scroll, 2)
-    scroll.shadow:SetFrameLevel(self:GetFrameLevel())
+    self.menu = CreateFrame("Frame", nil, self)
+    self.menu:SetSize(scroll:GetSize())
 
-    scroll.shadow.bg = scroll.shadow:CreateTexture(nil, "BORDER")
-    scroll.shadow.bg:SetAllPoints()
-    scroll.shadow.bg:SetTexture(DB.Backdrop)
-    scroll.shadow.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-
-    if AuroraClassic then
-        AuroraClassic[1].ReskinScroll(scroll.ScrollBar)
-    end
-
-    local function OnShow(self, ...)
-        if not self:GetScrollChild() then
-            return 0
-        end
-
-        if self:GetHeight() > self:GetScrollChild():GetHeight() then
-            self.ScrollBar:Show()
-        else
-            self.ScrollBar:Hide()
-        end
-    end
-
-    scroll:SetScript("OnShow", OnShow)
-
-    self.menu = menu
+    scroll:SetScrollChild(self.menu)
+    scroll.ScrollBar:SetAlpha(0.00)
 end
 
 -- Title
 local function CreateTitle(self)
-    local title = CreateFrame("Frame", nil, self)
-    title:SetSize(width - btnSize * 2 - space * 2, btnSize)
-    title:SetPoint("BOTTOM", self, "TOP", 0, space)
-    title:SetFrameLevel(self:GetFrameLevel())
+    self.title = CreateFrame("Frame", nil, self)
+    self.title:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
+    self.title:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, -48)
 
-    title.bg = title:CreateTexture(nil, "BORDER")
-    title.bg:SetAllPoints()
-    title.bg:SetTexture(DB.Backdrop)
-    title.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+    self.title.text = S.MakeText(self.title, 14)
+    self.title.text:SetText("|cff70C0F5Sora's|r Config - 设置选项将在点击左上角按钮重载UI后生效")
+    self.title.text:SetPoint("CENTER", self.title, "CENTER", 0, 0)
 
-    title.shadow = S.MakeShadow(title, 2)
-    title.shadow:SetFrameLevel(self:GetFrameLevel())
+    self.title.divide = self.title:CreateTexture(nil, "ARTWORK")
+    self.title.divide:SetPoint("TOPLEFT", self.title, "BOTTOMLEFT", 12, -1)
+    self.title.divide:SetPoint("BOTTOMRIGHT", self.title, "BOTTOMRIGHT", -12, 0)
+    self.title.divide:SetTexture(DB.Border)
+    self.title.divide:SetVertexColor(r, g, b, 1.00)
 
-    title.text = S.MakeText(title, 14)
-    title.text:SetText("|cff70C0F5Sora's|r Config - 设置选项将在点击左上角按钮重载UI后生效")
-    title.text:SetPoint("CENTER", title, "CENTER", 0, 0)
+    self.title.close = S.CreateButton(self.title, 20)
+    self.title.close:SetText("×")
+    self.title.close:SetSize(24, 24)
+    self.title.close:SetPoint("RIGHT", self.title, "RIGHT", -12, 0)
 
-    self.title = title
-end
+    self.title.reload = S.CreateButton(self.title, 11.5)
+    self.title.reload:SetText("重")
+    self.title.reload:SetSize(24, 24)
+    self.title.reload:SetPoint("LEFT", self.title, "LEFT", 12, 0)
 
--- Close
-local function CreateClose(self)
-    local close = S.CreateButton(self)
-    close:SetSize(btnSize, btnSize)
-    close:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, space)
-
-    close.text = S.MakeText(close, 20)
-    close.text:SetText("×")
-    close.text:SetPoint("CENTER", close, "CENTER", 0, 0)
-
-    local function OnClick(_, btn, ...)
+    local function OnCloseClick(_, btn, ...)
         self:Hide()
     end
 
-    close:SetScript("OnClick", OnClick)
-
-    self.close = close
-end
-
--- Reload
-local function CreateReload(self)
-    local reload = S.CreateButton(self)
-    reload:SetSize(btnSize, btnSize)
-    reload:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, space)
-
-    reload.text = S.MakeText(reload, 11.5)
-    reload.text:SetText("重")
-    reload.text:SetPoint("CENTER", reload, "CENTER", 0, 0)
-
-    local function OnClick(_, btn, ...)
+    local function OnReloadClick(_, btn, ...)
         ReloadUI()
     end
 
-    reload:SetScript("OnClick", OnClick)
-
-    self.reload = reload
+    self.title.close:HookScript("OnClick", OnCloseClick)
+    self.title.reload:HookScript("OnClick", OnReloadClick)
 end
 
 -- GameMenuButton
 local function CreateGameMenuButton(self)
-	local _, class = UnitClass("player")
-	local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+    local _, class = UnitClass("player")
+    local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
 
     local btn = CreateFrame("Button", nil, GameMenuFrame)
     btn:SetSize(GameMenuButtonAddons:GetSize())
@@ -333,7 +261,7 @@ local function CreateGameMenuButton(self)
     btn.bg:SetTexture(DB.Backdrop)
     btn.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
 
-    btn.text = S.MakeText(btn, 12.5)
+    btn.text = S.MakeText(btn, 13)
     btn.text:SetText("|cff70C0F5Sora's|r Config")
     btn.text:SetPoint("CENTER", btn, "CENTER", 0, 0)
 
@@ -374,12 +302,24 @@ end
 -- Begin
 local function CreateInstance(parent)
     local instance = CreateFrame("Frame", "SoraConfig", parent)
+    instance:Hide()
+    instance:SetSize(192 + 768, 48 * 9 + 12 * 10)
+    instance:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    instance:SetMovable(true)
+    instance:EnableMouse(true)
+    instance:SetToplevel(true)
+    instance:SetFrameStrata("DIALOG")
+    instance:RegisterForDrag("LeftButton")
+    instance:SetClampedToScreen(true)
+
+    instance.bg = instance:CreateTexture(nil, "BORDER")
+    instance.bg:SetAllPoints()
+    instance.bg:SetTexture(DB.Backdrop)
+    instance.bg:SetVertexColor(0.12, 0.12, 0.12, 0.75)
 
     CreateTab(instance)
     CreateMenu(instance)
     CreateTitle(instance)
-    CreateClose(instance)
-    CreateReload(instance)
     CreateGameMenuButton(instance)
 
     return instance
@@ -412,11 +352,11 @@ local function OnShow(self, ...)
     UpdateTab(self, tabs)
     UpdateMenu(self, tabs[1])
 
-    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION, "Master")
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPEN, "Master")
 end
 
 local function OnHide(self, ...)
-    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION, "Master")
+    PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE, "Master")
 end
 
 local function OnDragStop(self, ...)
@@ -430,15 +370,8 @@ end
 local function OnPlayerLogin(self, event, ...)
     local instance = CreateInstance(UIParent)
 
-    instance:Hide()
-    instance:SetSize(width, height)
-    instance:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-    instance:SetMovable(true)
-    instance:EnableMouse(true)
-    instance:SetToplevel(true)
-    instance:SetFrameStrata("DIALOG")
-    instance:RegisterForDrag("LeftButton")
-    instance:SetClampedToScreen(true)
+    instance.shadow = S.MakeShadow(instance, 2)
+    instance.shadow:SetFrameLevel(instance:GetFrameLevel())
 
     instance:SetScript("OnShow", OnShow)
     instance:SetScript("OnHide", OnHide)

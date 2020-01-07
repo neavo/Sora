@@ -17,9 +17,11 @@ local function ProcessTextRegion(text, scale)
 		return 0
 	end
 
+	local p = C.Core.Pixel or 1.00
+
 	text:SetFont(STANDARD_TEXT_FONT, size * scale, "OUTLINE")
-	text:SetShadowOffset(1.00, 1.00)
-	text:SetShadowColor(0, 0, 0, 0.5)
+	text:SetShadowOffset(1.00 * p, -1.00 * p)
+	text:SetShadowColor(0.00, 0.00, 0.00, 0.50)
 
 	text.__Processed = true
 end

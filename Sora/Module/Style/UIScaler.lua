@@ -8,8 +8,9 @@ local function OnPlayerLogin(self, event, ...)
     end
 
     -- Calculate current UI scale
-    local pixelScale = 768 / 1080
-    local cvarScale, parentScale = tonumber(GetCVar("uiscale")), floor(UIParent:GetScale() * 100 + 0.5) / 100
+    local cvarScale = tonumber(GetCVar("uiscale"))
+    local pixelScale = floor(768 / 1080 * 100 + 0.5) / 100
+    local parentScale = floor(UIParent:GetScale() * 100 + 0.5) / 100
 
     -- Setting the `uiScale` cvar will taint the ObjectiveTracker, and by extention the
     -- WorldMap and map action button. As such, we only use that if we absolutly have to

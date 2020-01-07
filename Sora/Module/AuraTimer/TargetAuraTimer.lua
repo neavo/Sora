@@ -85,7 +85,7 @@ local CreateAuras = function()
         aura:Hide()
         aura:SetSize(iconSize, iconSize)
 
-        aura.icon = aura:CreateTexture("$parentIcon", "ARTWORK")
+        aura.icon = aura:CreateTexture(nil, "ARTWORK")
         aura.icon:SetAllPoints()
         aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
@@ -110,10 +110,10 @@ local CreateAuras = function()
         aura.nameText:SetPoint("CENTER", -10, 6)
 
         aura.shadow = S.MakeShadow(aura, 2)
-        aura.shadow:SetFrameLevel(0)
+        aura.shadow:SetFrameLevel(aura:GetFrameLevel())
 
         aura.bar.shadow = S.MakeShadow(aura.bar, 2)
-        aura.bar.shadow:SetFrameLevel(0)
+        aura.bar.shadow:SetFrameLevel(aura.bar:GetFrameLevel())
 
         if i == 1 then
             aura:SetPoint("BOTTOMLEFT")
@@ -144,7 +144,7 @@ local OnPlayerLogin = function(self, event, ...)
     iconSize = (oUF_Sora_Player:GetWidth() - spacing * (8 - 1)) / 8
     barWidth = oUF_Sora_Target:GetWidth() - iconSize - spacing
 
-    anchor = CreateFrame("Frame", "$parentAnchor", UIParent)
+    anchor = CreateFrame("Frame", nil, UIParent)
     anchor:SetPoint("BOTTOM", oUF_Sora_Target, "TOP", 0, 12)
     anchor:SetSize(oUF_Sora_Target:GetWidth(), iconSize * maxLines + spacing * (maxLines - 1))
 
