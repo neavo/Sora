@@ -277,19 +277,29 @@ function S.FormatInteger(int)
 end
 
 function S.CreateEventHandler()
-    local Handler = CreateFrame("Frame")
-    Handler.Event = {}
+    local handler = CreateFrame("Frame")
+    handler.Event = {}
 
     local Register = function()
-        Handler:UnregisterAllEvents()
+        handler:UnregisterAllEvents()
 
-        for k, v in pairs(Handler.Event) do
-            Handler:RegisterEvent(k, v)
+        for k, v in pairs(handler.Event) do
+            if k ~= "INITIALIZE" then
+                handler:RegisterEvent(k)
+            end
+        end
+
+        if handler.Event.INITIALIZE then
+            handler:RegisterEvent("PLAYER_LOGIN")
         end
     end
 
     local OnEvent = function(self, event, ...)
         for k, v in pairs(self.Event) do
+            if handler.Event.INITIALIZE and k == "PLAYER_LOGIN" then
+                handler.Event.INITIALIZE(self, event, ...)
+            end
+
             if k == event then
                 v(self, event, ...)
                 return 0
@@ -297,9 +307,9 @@ function S.CreateEventHandler()
         end
     end
 
-    Handler:SetScript("OnEvent", OnEvent)
-    Handler.Register = Register
+    handler:SetScript("OnEvent", OnEvent)
+    handler.Register = Register
 
-    return Handler
+    return handler
 end
 

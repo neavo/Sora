@@ -21,6 +21,7 @@ local function OnPlayerLogin(self, event, ...)
     confirm:SetData(data)
     confirm:SetConfirmWidth(512)
     confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)
+    confirm:Show()
 
     SoraDBPerCharacter.Tutorial.Initialized = true
 end

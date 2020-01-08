@@ -60,7 +60,7 @@ function AM.CreateInstance(parent)
     instance.bottom.text:SetText("请输入有效的状态ID：")
 
     instance.bottom.editbox = S.CreateEditBox(instance.bottom, 12)
-    instance.bottom.editbox:SetSize(96, 14)
+    instance.bottom.editbox:SetSize(96, 16)
     instance.bottom.editbox:SetPoint("LEFT", instance.bottom.text, "RIGHT", 4, 0)
     instance.bottom.editbox:SetJustifyH("CENTER")
     instance.bottom.editbox:SetJustifyV("MIDDLE")
@@ -73,7 +73,7 @@ function AM.CreateInstance(parent)
     instance.bottom.editbox.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
 
     instance.bottom.confirm = S.CreateButton(instance.bottom, 12)
-    instance.bottom.confirm:SetSize(48, 14)
+    instance.bottom.confirm:SetSize(48, 16)
     instance.bottom.confirm:SetText("添加")
     instance.bottom.confirm:SetPoint("LEFT", instance.bottom.editbox, "RIGHT", 4, 0)
 
@@ -141,7 +141,7 @@ function AM.UpdateContent(self)
 
     local function OnClick(self, btn, ...)
         local menu = S.CreateEasyMenu()
-        menu.NewLine("操作菜单", nil, nil, {isTitle = true})
+        menu.NewLine("Aura ID - " .. self.value, nil, nil, {isTitle = true})
         menu.NewLine("向前移动", MoveBack, {self.key})
         menu.NewLine("向后移动", MoveForward, {self.key})
         menu.NewLine("移除此项", DeleteTarget, {self.key})
@@ -155,6 +155,7 @@ function AM.UpdateContent(self)
         local unit = S.CreateButton(self.content, 12)
         unit:SetText(link)
         unit:SetSize(150, 24)
+
         unit:HookScript("OnClick", OnClick)
 
         unit.key = k
@@ -195,6 +196,16 @@ function AM.UpdateDataBinding(self)
     AM.UpdateTitle(self)
     AM.UpdateBottom(self)
     AM.UpdateContent(self)
+end
+
+function AM.Get(self, k)
+    return self.data[k]
+end
+
+function AM.Set(self, k, v)
+    self.data[k] = v
+
+    AM.UpdateDataBinding(self)
 end
 
 function AM.GetData(self)
@@ -271,6 +282,8 @@ function S.CreateAuraManager(parent)
     instance.bottom.confirm:HookScript("OnClick", OnConfirmClick)
     instance.bottom.editbox:HookScript("OnEnterPressed", OnEnterPressed)
 
+    instance.Get = AM.Get
+    instance.Set = AM.Set
     instance.GetData = AM.GetData
     instance.SetData = AM.SetData
     instance.GetManagerWidth = AM.GetManagerWidth

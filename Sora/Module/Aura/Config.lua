@@ -62,7 +62,7 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        }, {
+        }, {type = "space"}, {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)

@@ -6,11 +6,11 @@ local S, C, L, DB = unpack(select(2, ...))
 -- Variables
 local auras = {}
 local anchor = nil
-local spacing, iconSize, barWidth, maxLines = 4, nil, nil, 8
-local whitelist = C.AuraTimer.WhiteList.Target
+local iconSize, barWidth = nil, nil
+local whitelist, blacklist = nil, nil
 
 -- Begin
-local OnEnter = function(self)
+local function OnEnter(self)
     if not self:IsVisible() then
         return
     end
@@ -19,11 +19,11 @@ local OnEnter = function(self)
     GameTooltip:SetUnitAura(unpack(self.tooltipData))
 end
 
-local OnLeave = function(self)
+local function OnLeave(self)
     GameTooltip:Hide()
 end
 
-local OnAuraUpdate = function(self, elapsed, ...)
+local function OnAuraUpdate(self, elapsed, ...)
     if not self:IsVisible() then
         self:SetScript("OnUpdate", nil)
     else
@@ -34,14 +34,34 @@ local OnAuraUpdate = function(self, elapsed, ...)
     end
 end
 
-local UpdateAuras = function(unit)
+local function DoFilter(duration, caster, spellID)
+    local inwhite, inblack = false, false
+
+    for k, v in pairs(whitelist) do
+        if v == spellID then
+            inwhite = true
+            break
+        end
+    end
+
+    for k, v in pairs(blacklist) do
+        if v == spellID then
+            inblack = true
+            break
+        end
+    end
+
+    return not inblack and caster == "player" and (inwhite or (duration > 0 and duration <= 60))
+end
+
+local function UpdateAuras(unit)
     local data, datas = nil, {}
 
     for k, v in pairs({"HELPFUL", "HARMFUL"}) do
         for i = 1, 40 do
             local name, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i, v)
 
-            if caster == "player" and ((duration > 0 and duration < 60) or whitelist[spellID]) then
+            if spellID and DoFilter(duration, caster, spellID) then
                 data = {}
                 data.name = name
                 data.count = count
@@ -77,10 +97,10 @@ local UpdateAuras = function(unit)
     end
 end
 
-local CreateAuras = function()
+local function CreateAuras()
     local _, class = UnitClass("player")
 
-    for i = 1, 8 * maxLines do
+    for i = 1, 8 * 8 do
         local aura = CreateFrame("Frame", nil, anchor)
         aura:Hide()
         aura:SetSize(iconSize, iconSize)
@@ -95,7 +115,7 @@ local CreateAuras = function()
         aura.bar = CreateFrame("StatusBar", nil, aura)
         aura.bar:SetSize(barWidth, iconSize / 3)
         aura.bar:SetStatusBarTexture(DB.Statusbar)
-        aura.bar:SetPoint("BOTTOMLEFT", aura, "BOTTOMRIGHT", spacing, 0)
+        aura.bar:SetPoint("BOTTOMLEFT", aura, "BOTTOMRIGHT", 4, 0)
         aura.bar:SetStatusBarColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b)
 
         aura.bar.bg = aura.bar:CreateTexture(nil, "BACKGROUND")
@@ -118,7 +138,7 @@ local CreateAuras = function()
         if i == 1 then
             aura:SetPoint("BOTTOMLEFT")
         else
-            aura:SetPoint("BOTTOM", auras[i - 1], "TOP", 0, spacing)
+            aura:SetPoint("BOTTOM", auras[i - 1], "TOP", 0, 4)
         end
 
         aura:SetScript("OnEnter", OnEnter)
@@ -128,25 +148,29 @@ local CreateAuras = function()
     end
 end
 
-local OnUnitAura = function(self, event, unit, ...)
+local function OnInitialize(self, event, ...)
+    whitelist, blacklist = C.AuraTimer.Target.WhiteList, C.AuraTimer.Target.BlackList
+end
+
+local function OnUnitAura(self, event, unit, ...)
     if unit == "target" then
         UpdateAuras("target")
     end
 end
 
-local OnUnitTarget = function(self, event, unit, ...)
+local function OnUnitTarget(self, event, unit, ...)
     if unit == "player" then
         UpdateAuras("target")
     end
 end
 
-local OnPlayerLogin = function(self, event, ...)
-    iconSize = (oUF_Sora_Player:GetWidth() - spacing * (8 - 1)) / 8
-    barWidth = oUF_Sora_Target:GetWidth() - iconSize - spacing
+local function OnPlayerLogin(self, event, ...)
+    iconSize = (oUF_Sora_Player:GetWidth() - 4 * (8 - 1)) / 8
+    barWidth = oUF_Sora_Target:GetWidth() - iconSize - 4
 
     anchor = CreateFrame("Frame", nil, UIParent)
     anchor:SetPoint("BOTTOM", oUF_Sora_Target, "TOP", 0, 12)
-    anchor:SetSize(oUF_Sora_Target:GetWidth(), iconSize * maxLines + spacing * (maxLines - 1))
+    anchor:SetSize(oUF_Sora_Target:GetWidth(), iconSize * 8 + 4 * (8 - 1))
 
     CreateAuras()
 end
@@ -154,6 +178,7 @@ end
 -- EventHandler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.UNIT_AURA = OnUnitAura
+EventHandler.Event.INITIALIZE = OnInitialize
 EventHandler.Event.UNIT_TARGET = OnUnitTarget
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
 EventHandler.Register()

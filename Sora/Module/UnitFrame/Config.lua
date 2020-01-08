@@ -5,15 +5,14 @@ local S, C, L, DB = unpack(select(2, ...))
 C.UnitFrame = C.UnitFrame or {}
 
 -- Common
-local function CreateAuraManager()
-    local text, class = UnitClass("player")
-
+local function CreateAuraManager(auras)
     local data = {}
-    data.text = "当前职业为" .. text .. "\n请自行调整需要监视的状态，每个职业最多可监视8个状态"
-    data.auras = S.Copy(SoraDB.UnitFrame.Raid.IndicatorFilters[string.upper(class)] or {})
+    data.auras = S.Copy(auras or {})
 
     function data.OnDataChanged(self, data)
-        SoraDB.UnitFrame.Raid.IndicatorFilters[string.upper(class)] = data.auras
+        for k, v in pairs(data.auras) do
+            auras[k] = v
+        end
     end
 
     local instance = S.CreateAuraManager(UIParent)
@@ -48,29 +47,20 @@ local function CreateDB(self, ...)
     SoraDB.UnitFrame.Boss.Height = SoraDB.UnitFrame.Boss.Height or 36
     SoraDB.UnitFrame.Boss.Postion = SoraDB.UnitFrame.Boss.Postion or {"CENTER", "UIParent", "CENTER", 0, 350}
 
-    SoraDB.UnitFrame.Raid = SoraDB.UnitFrame.Raid or {}
-    SoraDB.UnitFrame.Raid.Width = SoraDB.UnitFrame.Raid.Width or 96
-    SoraDB.UnitFrame.Raid.Height = SoraDB.UnitFrame.Raid.Height or 30
-    SoraDB.UnitFrame.Raid.HealerPostion = SoraDB.UnitFrame.Raid.HealerPostion or {"BOTTOM", "UIParent", "BOTTOM", 0, 170}
-    SoraDB.UnitFrame.Raid.DefaultPostion = SoraDB.UnitFrame.Raid.DefaultPostion
-                                               or {"BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -8, 8}
-
-    SoraDB.UnitFrame.Raid.IndicatorFilters = SoraDB.UnitFrame.Raid.IndicatorFilters or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.MONK = SoraDB.UnitFrame.Raid.IndicatorFilters.MONK or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.MAGE = SoraDB.UnitFrame.Raid.IndicatorFilters.MAGE or {}
-
-    SoraDB.UnitFrame.Raid.IndicatorFilters.DRUID = SoraDB.UnitFrame.Raid.IndicatorFilters.DRUID
-                                                       or {774, 33763, 207386, 102351, 48438, 8936, 102342, 157982} -- 回春术，生命绽放，春暖花开，塞纳里奥结界，野性成长，愈合，铁木树皮，宁静
-
-    SoraDB.UnitFrame.Raid.IndicatorFilters.ROGUE = SoraDB.UnitFrame.Raid.IndicatorFilters.ROGUE or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.PRIEST = SoraDB.UnitFrame.Raid.IndicatorFilters.PRIEST or {139, 77489}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.HUNTER = SoraDB.UnitFrame.Raid.IndicatorFilters.HUNTER or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.SHAMAN = SoraDB.UnitFrame.Raid.IndicatorFilters.SHAMAN or {207400} -- 先祖活力
-    SoraDB.UnitFrame.Raid.IndicatorFilters.WARLOCK = SoraDB.UnitFrame.Raid.IndicatorFilters.WARLOCK or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.PALADIN = SoraDB.UnitFrame.Raid.IndicatorFilters.PALADIN or {53563}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.WARRIOR = SoraDB.UnitFrame.Raid.IndicatorFilters.WARRIOR or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.DEATHKNIGHT = SoraDB.UnitFrame.Raid.IndicatorFilters.DEATHKNIGHT or {}
-    SoraDB.UnitFrame.Raid.IndicatorFilters.DEMONHUNTER = SoraDB.UnitFrame.Raid.IndicatorFilters.DEMONHUNTER or {}
+    SoraDB.UnitFrame.Raid = SoraDB.UnitFrame.Raid or {
+        Width = 96,
+        Height = 30,
+        HealerPostion = {"BOTTOM", "UIParent", "BOTTOM", 0, 170},
+        DefaultPostion = {"BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -8, 8},
+        IndicatorMode = 1, -- 1 = 智能，2 = 仅白名单
+        IndicatorBlackList = {
+            269279 -- 特质，回升防护
+        },
+        IndicatorWhiteList = {
+            974, -- 萨满，大地之盾
+            53563 -- 骑士，圣光道标
+        }
+    }
 
     C.UnitFrame = S.Copy(SoraDB.UnitFrame)
 end
@@ -179,11 +169,28 @@ local function CreateConfig(self, ...)
                 end
             end
         }, {
+            type = "dropdown",
+            text = "团队边角监视模式",
+            key = "SoraDB.UnitFrame.Raid.IndicatorMode",
+            options = {["智能"] = 1, ["仅白名单"] = 2},
+            OnDataChanged = function(self, data, ...)
+                SoraDB.UnitFrame.Raid.IndicatorFilters.Mode = data.value
+            end
+        }, {type = "space"}, {
             type = "button",
-            text = "团队边角状态监视管理",
+            text = "团队边角监视白名单",
             OnClick = function(self, btn, ...)
-                local instance = CreateAuraManager()
-
+                local instance = CreateAuraManager(SoraDB.UnitFrame.Raid.IndicatorWhiteList)
+                instance:Set("text", "团队边角监视白名单")
+                instance:Show()
+                SoraConfig:Hide()
+            end
+        }, {
+            type = "button",
+            text = "团队边角监视黑名单",
+            OnClick = function(self, btn, ...)
+                local instance = CreateAuraManager(SoraDB.UnitFrame.Raid.IndicatorBlackList)
+                instance:Set("text", "团队边角监视黑名单")
                 instance:Show()
                 SoraConfig:Hide()
             end
@@ -201,7 +208,7 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        }, {
+        }, {type = "space"}, {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)

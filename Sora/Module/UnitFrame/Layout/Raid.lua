@@ -4,22 +4,15 @@ local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local r, g, b = nil, nil, nil
+local _, class = UnitClass("player")
+local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+local raidAuras = nil
 local width, height = nil, nil
-local raidAuras, indicatorFilters = nil, nil
+local indicatorMode, whitelist, blackwhite = nil, nil, nil
 
 -- Common
 local function IsHealer()
     return select(5, GetSpecializationInfo(GetSpecialization())) == "HEALER"
-end
-
--- Initialize
-local function Initialize()
-    local _, class = UnitClass("player")
-
-    r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
-    width, height = C.UnitFrame.Raid.Width, C.UnitFrame.Raid.Height
-    raidAuras, indicatorFilters = C.UnitFrame.RaidAuras, C.UnitFrame.Raid.IndicatorFilters
 end
 
 -- Anchor
@@ -168,43 +161,56 @@ local function OnIndicatorUpdate(self, elapsed, ...)
     end
 end
 
-local function UpdateAuraIndicator(self, event, unit, ...)
-    local _, class = UnitClass("player")
+local function DoFilter(duration, caster, spellID)
+    local inwhite, inblack = false, false
 
-    local indicators = self.Indicators
-    local filters = indicatorFilters[class]
-
-    for k, v in pairs(indicators) do
-        local filter = filters[k]
-
-        if not filter then
+    for k, v in pairs(whitelist) do
+        if v == spellID then
+            inwhite = true
             break
         end
+    end
 
-        local data = nil
+    for k, v in pairs(blacklist) do
+        if v == spellID then
+            inblack = true
+            break
+        end
+    end
 
-        for x, y in pairs({"HELPFUL", "HARMFUL"}) do
-            if data then
+    if indicatorMode == 1 then
+        return not inblack and caster == "player" and (inwhite or (duration > 0 and duration <= 60))
+    end
+
+    if indicatorMode == 2 then
+        return not inblack and caster == "player" and inwhite
+    end
+end
+
+local function UpdateAuraIndicator(self, event, unit, ...)
+    local data, datas = nil, {}
+
+    for k, v in pairs({"HELPFUL", "HARMFUL"}) do
+        for i = 1, 40 do
+            local name, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i, v)
+
+            if spellID and DoFilter(duration, caster, spellID) then
+                data = {}
+                data.texture = texture
+                data.duration = duration
+                data.expiration = expiration
+
+                table.insert(datas, data)
+            end
+
+            if #datas >= 8 then
                 break
             end
-
-            for i = 1, 40 do
-                local name, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i, y)
-
-                if not spellID or caster ~= "player" then
-                    break
-                end
-
-                if spellID == filter then
-                    data = {}
-                    data.texture = texture
-                    data.duration = duration
-                    data.expiration = expiration
-
-                    break
-                end
-            end
         end
+    end
+
+    for k, v in pairs(self.Indicators) do
+        data = datas[k]
 
         if not data then
             v:Hide()
@@ -326,8 +332,16 @@ local function RegisterStyle(self, unit, ...)
     CreateReadyCheckIndicator(self, ...)
 end
 
+-- Event
+local function OnInitialize(self, event, ...)
+    raidAuras = C.UnitFrame.RaidAuras
+    width, height = C.UnitFrame.Raid.Width, C.UnitFrame.Raid.Height
+
+    indicatorMode = C.UnitFrame.Raid.IndicatorMode
+    whitelist, blacklist = C.UnitFrame.Raid.IndicatorWhiteList, C.UnitFrame.Raid.IndicatorBlackList
+end
+
 local function OnPlayerLogin(self, event, ...)
-    Initialize()
     CreateHealerAnchor()
     CreateDefaultAnchor()
 
@@ -388,6 +402,7 @@ end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
+EventHandler.Event.INITIALIZE = OnInitialize
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
 EventHandler.Event.PLAYER_TALENT_UPDATE = OnPlayerTalentUpdate
 EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld

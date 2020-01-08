@@ -128,13 +128,11 @@ local function UpdateMenu(self, data)
         elseif mod(k, 2) == 0 then
             unit:SetPoint("LEFT", menu.units[k - 1], "RIGHT", 12, 0)
         else
-            unit:SetPoint("TOP", menu.units[k - 2], "BOTTOM", 0, -12 * 2)
+            unit:SetPoint("TOP", menu.units[k - 2], "BOTTOM", 0, -12)
         end
 
         table.insert(menu.units, unit)
     end
-
-    -- menu:SetHeight(math.ceil(#menu.units / 2) * 48)
 end
 
 local function CreateTabUnit(self, data)
@@ -147,7 +145,6 @@ local function CreateTabUnit(self, data)
 
     local function OnClick(_, btn, ...)
         UpdateMenu(self, data)
-        PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
     end
 
     unit:HookScript("OnClick", OnClick)
@@ -269,12 +266,11 @@ local function CreateGameMenuButton(self)
     btn.shadow:SetFrameLevel(btn:GetFrameLevel())
 
     local function OnClick(_, ...)
-        if not InCombatLockdown() then
+        if InCombatLockdown() then
+            S.Error("无法在战斗时打开设置面板！")
+        else
             self:Show()
             HideUIPanel(GameMenuFrame)
-        else
-            PlaySound(SOUNDKIT.RAID_WARNING, "Master")
-            print("|cff70C0F5[Sora's]|r 无法在战斗时打开设置面板！")
         end
     end
 

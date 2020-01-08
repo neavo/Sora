@@ -20,10 +20,7 @@ local function CreateConfig(self, ...)
     C.Config = C.Config or {}
     C.Config.ActionBar = C.Config.ActionBar or {}
 
-    C.Config.ActionBar.Tab = {
-        index = 3,
-        text = "动作条"
-    }
+    C.Config.ActionBar.Tab = {index = 3, text = "动作条"}
 
     C.Config.ActionBar.Menu = {
         {
@@ -32,27 +29,25 @@ local function CreateConfig(self, ...)
             text = "动作条按钮尺寸",
             step = 1,
             maxValue = 72,
-            minValue = 8,
+            minValue = 0,
             OnDataChanged = function(self, data, ...)
                 if data.value then
                     SoraDB.ActionBar.Size = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "slider",
             key = "SoraDB.ActionBar.Space",
             text = "动作条按钮间距",
             step = 1,
-            maxValue = 32,
+            maxValue = 16,
             minValue = 0,
             OnDataChanged = function(self, data, ...)
                 if data.value then
                     SoraDB.ActionBar.Space = data.value
                 end
             end
-        },
-        {
+        }, {
             type = "button",
             text = "切换锚点显示状态",
             OnClick = function(self, btn, ...)
@@ -66,16 +61,14 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        },
-        {
+        },  {type = "space"},{
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -89,8 +82,7 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data,
-                    {
+                    data, {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)

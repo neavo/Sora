@@ -26,8 +26,8 @@ local function CreateConfig(self, ...)
             key = "SoraDB.NamePlates.Width",
             text = "姓名板宽度",
             step = 1,
-            maxValue = 256,
-            minValue = 64,
+            maxValue = 160,
+            minValue = 60,
             OnDataChanged = function(self, data, ...)
                 if data.value then
                     SoraDB.NamePlates.Width = data.value
@@ -38,8 +38,8 @@ local function CreateConfig(self, ...)
             key = "SoraDB.NamePlates.Height",
             text = "姓名板高度",
             step = 1,
-            maxValue = 24,
-            minValue = 4,
+            maxValue = 12,
+            minValue = 0,
             OnDataChanged = function(self, data, ...)
                 if data.value then
                     SoraDB.NamePlates.Height = data.value
