@@ -1,6 +1,7 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 
 	<Script file = "Focuser.lua" />
+	<Script file = "DragEmAll.lua" />
 	<Script file = "CombatAlert.lua" />
 	<Script file = "ncHoverBind.lua" />
 	<Script file = "AlreadyKnown.lua" />

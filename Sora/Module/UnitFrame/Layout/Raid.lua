@@ -4,11 +4,8 @@ local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local _, class = UnitClass("player")
-local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
-local raidAuras = nil
 local width, height = nil, nil
-local indicatorMode, whitelist, blackwhite = nil, nil, nil
+local raidAuras, indicatorFilters = nil, nil
 
 -- Common
 local function IsHealer()
@@ -161,67 +158,41 @@ local function OnIndicatorUpdate(self, elapsed, ...)
     end
 end
 
-local function DoFilter(duration, caster, spellID)
-    local inwhite, inblack = false, false
-
-    for k, v in pairs(whitelist) do
-        if v == spellID then
-            inwhite = true
-            break
-        end
-    end
-
-    for k, v in pairs(blacklist) do
-        if v == spellID then
-            inblack = true
-            break
-        end
-    end
-
-    if indicatorMode == 1 then
-        return not inblack and caster == "player" and (inwhite or (duration > 0 and duration <= 60))
-    end
-
-    if indicatorMode == 2 then
-        return not inblack and caster == "player" and inwhite
-    end
-end
-
 local function UpdateAuraIndicator(self, event, unit, ...)
     local data, datas = nil, {}
 
-    for k, v in pairs({"HELPFUL", "HARMFUL"}) do
-        for i = 1, 40 do
-            local name, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i, v)
+    for k, v in pairs(self.Indicators) do
+        local data = nil
+        local indicator = v
+        local filter = indicatorFilters[k]
 
-            if spellID and DoFilter(duration, caster, spellID) then
-                data = {}
-                data.texture = texture
-                data.duration = duration
-                data.expiration = expiration
+        for k, v in pairs({"HELPFUL", "HARMFUL"}) do
+            for i = 1, 40 do
+                local name, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i, v)
 
-                table.insert(datas, data)
-            end
+                if not spellID then
+                    break
+                end
 
-            if #datas >= 8 then
-                break
+                if caster == "player" and spellID == filter then
+                    data = {}
+                    data.texture = texture
+                    data.duration = duration
+                    data.expiration = expiration
+                end
             end
         end
-    end
-
-    for k, v in pairs(self.Indicators) do
-        data = datas[k]
 
         if not data then
-            v:Hide()
+            indicator:Hide()
         else
-            v:Show()
-            v.icon:SetTexture(data.texture)
+            indicator:Show()
+            indicator.icon:SetTexture(data.texture)
 
-            v.duration = data.duration
-            v.expiration = data.expiration
+            indicator.duration = data.duration
+            indicator.expiration = data.expiration
 
-            v:SetScript("OnUpdate", OnIndicatorUpdate)
+            indicator:SetScript("OnUpdate", OnIndicatorUpdate)
         end
     end
 end
@@ -334,11 +305,8 @@ end
 
 -- Event
 local function OnInitialize(self, event, ...)
-    raidAuras = C.UnitFrame.RaidAuras
     width, height = C.UnitFrame.Raid.Width, C.UnitFrame.Raid.Height
-
-    indicatorMode = C.UnitFrame.Raid.IndicatorMode
-    whitelist, blacklist = C.UnitFrame.Raid.IndicatorWhiteList, C.UnitFrame.Raid.IndicatorBlackList
+    raidAuras, indicatorFilters = C.UnitFrame.RaidAuras, C.UnitFrame.Raid.IndicatorFilters[S.GetClass()]
 end
 
 local function OnPlayerLogin(self, event, ...)

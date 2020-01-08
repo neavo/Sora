@@ -170,6 +170,26 @@ function S.Print(t)
     end
 end
 
+function S.GetClass()
+    return select(2, UnitClass("player"))
+end
+
+function S.GetClassName(pure)
+    local str, class = UnitClass("player")
+    local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+
+    if pure then
+        return str
+    else
+        return string.format("|cff%02X%02X%02X", r * 255, g * 255, b * 255) .. str .. "|r"
+    end
+end
+
+function S.GetClassColor()
+    local str, class = UnitClass("player")
+    return RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+end
+
 function S.KillFrame(frame)
     if frame.Show and frame.Hide then
         frame.Show = frame.Hide

@@ -2,22 +2,18 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local size, Space, postion = nil, nil, nil
-
--- Initialize
-local _, class = UnitClass("player")
-local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+local size, space, postion = nil, nil, nil
 
 -- Common
 local function Initialize()
-    size, Space, postion = C.Aura.Size, C.Aura.Space, C.Aura.Postion
+    size, space, postion = C.Aura.Size, C.Aura.Space, C.Aura.Postion
 end
 
 local function CreateAnchor()
     local anchor = S.CreateButton(UIParent, 16, "SoraAura")
     anchor:Hide()
     anchor:SetText("状态")
-    anchor:SetSize(size * 12 + Space * (12 - 1), size * 5 + Space * (5 - 1))
+    anchor:SetSize(size * 12 + space * 11, size * 5 + space * 4)
     anchor:SetPoint(unpack(postion))
     anchor:SetMovable(true)
     anchor:EnableMouse(true)
@@ -59,11 +55,11 @@ local function HookDebuffButtonUpdateAnchors(name, index, ...)
         aura:SetSize(size, size)
 
         if i == 1 then
-            aura:SetPoint("TOPRIGHT", anchor, "TOPRIGHT", 0, -(size * 3 + Space * (3 - 1)))
+            aura:SetPoint("TOPRIGHT", anchor, "TOPRIGHT", 0, -(size * 3 + space * 3))
         elseif mod(i, 12) == 1 then
-            aura:SetPoint("TOP", _G["DebuffButton" .. (i - 12)], "BOTTOM", 0, -Space)
+            aura:SetPoint("TOP", _G["DebuffButton" .. (i - 12)], "BOTTOM", 0, -space)
         else
-            aura:SetPoint("RIGHT", _G["DebuffButton" .. (i - 1)], "LEFT", -Space, 0)
+            aura:SetPoint("RIGHT", _G["DebuffButton" .. (i - 1)], "LEFT", -space, 0)
         end
 
         aura.duration:SetShadowOffset(1, -1)
@@ -88,9 +84,9 @@ local function HookBuffFrameUpdateAllBuffAnchors(self, ...)
         if i == 1 then
             aura:SetPoint("TOPRIGHT", anchor, "TOPRIGHT", 0, 0)
         elseif mod(i, 12) == 1 then
-            aura:SetPoint("TOP", _G["BuffButton" .. (i - 12)], "BOTTOM", 0, -Space)
+            aura:SetPoint("TOP", _G["BuffButton" .. (i - 12)], "BOTTOM", 0, -space)
         else
-            aura:SetPoint("RIGHT", _G["BuffButton" .. (i - 1)], "LEFT", -Space, 0)
+            aura:SetPoint("RIGHT", _G["BuffButton" .. (i - 1)], "LEFT", -space, 0)
         end
 
         aura.duration:SetShadowOffset(1, -1)
