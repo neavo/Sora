@@ -63,7 +63,7 @@ end
 
 -- Tag
 S.NamePlates.CreateTag = function(self, unit, ...)
-    self.RaraTag = S.MakeText(self.Health, 8)
+    self.RaraTag = S.MakeText(self.Health, 7)
     self.RaraTag:SetPoint("RIGHT", self, "LEFT", -4, 0.5)
     self:Tag(self.RaraTag, "[NamePlates:Rare]")
 

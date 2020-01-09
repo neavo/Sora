@@ -2,9 +2,9 @@
 
 	<include file = "Aura\Load.xml" />
 	<include file = "Chat\Load.xml" />
-	<include file = "Style\Load.xml" />
 	<include file = "Config\Load.xml" />
 	<include file = "Threat\Load.xml" />
+	<include file = "Plugins\Load.xml" />
 	<include file = "Minimap\Load.xml" />
 	<include file = "Tutorial\Load.xml" />
 	<include file = "Merchant\Load.xml" />

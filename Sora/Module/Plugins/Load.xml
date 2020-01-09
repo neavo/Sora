@@ -1,9 +1,12 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 
+	<Script file = "Font.lua" />
 	<Script file = "Focuser.lua" />
+	<Script file = "UIScaler.lua" />
 	<Script file = "DragEmAll.lua" />
 	<Script file = "CombatAlert.lua" />
 	<Script file = "ncHoverBind.lua" />
+	<Script file = "UIParentFade.lua" />
 	<Script file = "AlreadyKnown.lua" />
 	<Script file = "AlignmentGrid.lua" />
 	<Script file = "OutRangeColor.lua" />

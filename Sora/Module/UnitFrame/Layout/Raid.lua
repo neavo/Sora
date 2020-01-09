@@ -166,6 +166,10 @@ local function UpdateAuraIndicator(self, event, unit, ...)
         local indicator = v
         local filter = indicatorFilters[k]
 
+        if not filter then
+            return
+        end
+
         for k, v in pairs({"HELPFUL", "HARMFUL"}) do
             for i = 1, 40 do
                 local name, texture, count, _, duration, expiration, caster, _, _, spellID = UnitAura(unit, i, v)
@@ -201,7 +205,7 @@ local function CreateAuraIndicator(self, ...)
     local size = 9
     local indicators = {}
 
-    for i = 1, 8 do
+    for i = 1, 12 do
         local indicator = CreateFrame("Frame", nil, self)
         indicator:Hide()
         indicator:SetSize(size, size)
@@ -214,15 +218,15 @@ local function CreateAuraIndicator(self, ...)
         indicator.border:SetFrameLevel(indicator:GetFrameLevel() + 1)
 
         if i == 1 then
-            indicator:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMLEFT", 2, 0)
+            indicator:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMLEFT", 1, 1)
         elseif i == 4 then
-            indicator:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMRIGHT", -(2 * 3 + size * (3 - 1)), 0)
+            indicator:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMRIGHT", -(size * 2 + 2 * 2 + 1), 1)
         elseif i == 7 then
-            indicator:SetPoint("BOTTOM", indicators[1], "TOP", 0, 2)
-        elseif i == 8 then
-            indicator:SetPoint("BOTTOM", indicators[6], "TOP", 0, 2)
+            indicator:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 1, -1)
+        elseif i == 10 then
+            indicator:SetPoint("TOPRIGHT", self.Health, "TOPRIGHT", -(size * 2 + 2 * 2 + 1), -1)
         else
-            indicator:SetPoint("LEFT", indicators[i - 1], "RIGHT", 2, 0)
+            indicator:SetPoint("LEFT", indicators[i - 1], "RIGHT", 1, 0)
         end
 
         indicators[i] = indicator

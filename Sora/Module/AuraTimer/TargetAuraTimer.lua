@@ -29,8 +29,13 @@ local function OnAuraUpdate(self, elapsed, ...)
     else
         local timeLeft = self.expiration - GetTime()
 
-        self.bar:SetValue(timeLeft)
-        self.timeText:SetText(("%.1f"):format(timeLeft))
+        if timeLeft <= 0 then
+            self.bar:SetValue(1)
+            self.timeText:SetText("N/A")
+        else
+            self.bar:SetValue(timeLeft)
+            self.timeText:SetText(string.format("%.1f", timeLeft))
+        end
     end
 end
 
@@ -86,7 +91,7 @@ local function UpdateAuras(unit)
             v.tooltipData = data.tooltipData
 
             v:Show()
-            v.bar:SetMinMaxValues(0, data.duration)
+            v.bar:SetMinMaxValues(0, data.duration > 0 and data.duration or 1)
             v.icon:SetTexture(data.texture)
             v.count:SetText(data.count > 1 and data.count or nil)
             v.nameText:SetText(data.name)

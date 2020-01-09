@@ -56,7 +56,7 @@ local function CreateConfig(self, ...)
             text = "玩家框体计时器白名单",
             OnClick = function(self, btn, ...)
                 local instance = CreateAuraManager(SoraDB.AuraTimer.Player.WhiteList)
-                instance:Set("text", "玩家框体计时器白名单")
+                instance:Set("text", "不论持续时间长短，这里设置的状态都会被监视")
                 instance:Show()
                 SoraConfig:Hide()
             end
@@ -65,7 +65,7 @@ local function CreateConfig(self, ...)
             text = "玩家框体计时器黑名单",
             OnClick = function(self, btn, ...)
                 local instance = CreateAuraManager(SoraDB.AuraTimer.Player.BlackList)
-                instance:Set("text", "玩家框体计时器黑名单")
+                instance:Set("text", "不论持续时间长短，这里设置的状态都不会被监视")
                 instance:Show()
                 SoraConfig:Hide()
             end
@@ -74,7 +74,7 @@ local function CreateConfig(self, ...)
             text = "目标框体计时器白名单",
             OnClick = function(self, btn, ...)
                 local instance = CreateAuraManager(SoraDB.AuraTimer.Target.WhiteList)
-                instance:Set("text", "目标框体计时器白名单")
+                instance:Set("text", "不论持续时间长短，这里设置的状态都会被监视")
                 instance:Show()
                 SoraConfig:Hide()
             end
@@ -83,7 +83,7 @@ local function CreateConfig(self, ...)
             text = "目标框体计时器黑名单",
             OnClick = function(self, btn, ...)
                 local instance = CreateAuraManager(SoraDB.AuraTimer.Target.BlackList)
-                instance:Set("text", "目标框体计时器黑名单")
+                instance:Set("text", "不论持续时间长短，这里设置的状态都不会被监视")
                 instance:Show()
                 SoraConfig:Hide()
             end
