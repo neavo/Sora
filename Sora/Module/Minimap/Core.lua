@@ -34,15 +34,10 @@ local function SetMinimap()
     Minimap:SetSize(SoraMinimap:GetSize())
     Minimap:SetAllPoints(SoraMinimap)
     Minimap:SetFrameStrata("MEDIUM")
-    -- Minimap:SetMaskTexture("Interface\\ChatFrame\\ChatFrameBackground")
+    Minimap:SetMaskTexture("Interface\\ChatFrame\\ChatFrameBackground")
 
     Minimap.Shadow = S.MakeShadow(Minimap, 2)
     Minimap.Shadow:SetFrameLevel(Minimap:GetFrameLevel())
-
-    -- Minimap.BG = Minimap:CreateTexture(nil, "BORDER")
-    -- Minimap.BG:SetAllPoints()
-    -- Minimap.BG:SetTexture(DB.Backdrop)
-    -- Minimap.BG:SetVertexColor(0.20, 0.20, 0.20, 0.60)
 end
 
 local function SetBlzFrame()
