@@ -55,7 +55,7 @@ local function OnPlayerLogin(self, event, ...)
 				["scale"] = 1,
 				["maxHeight"] = 0.90,
 				["skin"] = {
-					["border"] = "1 Pixel",
+					["border"] = "None",
 					["borderWidth"] = 1,
 					["insets"] = 0
 				},

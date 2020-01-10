@@ -65,7 +65,7 @@ local function OnPlayerLogin(self, event, ...)
 			["statusbarText"] = false,
 			["skinMoreFrames"] = false,
 			["headerFontFlag"] = "default",
-			["borderCorner"] = "1 Pixel",
+			["borderCorner"] = "angular",
 			["statusbarColor"] = "auto",
 			["statusbarFontFlag"] = "THINOUTLINE",
 			["alwaysShowIdInfo"] = true
