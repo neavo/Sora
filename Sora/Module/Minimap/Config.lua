@@ -9,8 +9,7 @@ local function CreateDB(self, ...)
     SoraDB = SoraDB or {}
     SoraDB.Minimap = SoraDB.Minimap or {}
 
-    SoraDB.Minimap.Width = SoraDB.Minimap.Width or 150
-    SoraDB.Minimap.Height = SoraDB.Minimap.Height or 150
+    SoraDB.Minimap.Size = SoraDB.Minimap.Size or 150
     SoraDB.Minimap.Postion = SoraDB.Minimap.Postion or {"TOPLEFT", "UIParent", "TOPLEFT", 8, -8}
 
     C.Minimap = S.Copy(SoraDB.Minimap)
@@ -26,29 +25,17 @@ local function CreateConfig(self, ...)
     C.Config.Minimap.Menu = {
         {
             type = "slider",
-            key = "SoraDB.Minimap.Width",
-            text = "小地图宽度",
+            key = "SoraDB.Minimap.Size",
+            text = "小地图尺寸",
             step = 1,
             maxValue = 250,
             minValue = 50,
             OnDataChanged = function(self, data, ...)
                 if data.value then
-                    SoraDB.Minimap.Width = data.value
+                    SoraDB.Minimap.Size = data.value
                 end
             end
-        }, {
-            type = "slider",
-            key = "SoraDB.Minimap.Height",
-            text = "小地图高度",
-            step = 1,
-            maxValue = 250,
-            minValue = 50,
-            OnDataChanged = function(self, data, ...)
-                if data.value then
-                    SoraDB.Minimap.Height = data.value
-                end
-            end
-        }, {
+        }, {type = "space"}, {
             type = "button",
             text = "切换锚点显示状态",
             OnClick = function(self, btn, ...)
