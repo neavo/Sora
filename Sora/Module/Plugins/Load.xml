@@ -2,7 +2,7 @@
 
 	<Script file = "Font.lua" />
 	<Script file = "Focuser.lua" />
-	<Script file = "UIScaler.lua" />
+	<Script file = "ReloadUI.lua" />
 	<Script file = "DragEmAll.lua" />
 	<Script file = "CombatAlert.lua" />
 	<Script file = "ncHoverBind.lua" />

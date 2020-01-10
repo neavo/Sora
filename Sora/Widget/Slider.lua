@@ -54,6 +54,27 @@ function SD.CreateInstance(parent, fontSize)
     return frame
 end
 
+function SD.UpdateValue(self)
+    local data = self.data
+
+    local i = 0
+    local x = data.step
+    while x < 1.00 do
+        i = i + 1
+        x = x * 10
+    end
+
+    if i == 0 then
+        self.curValue:SetText(string.format("%d", data.value))
+    else
+        self.curValue:SetText(string.format("%." .. i .. "f", data.value))
+    end
+
+    self.text:SetText(data.text)
+    self.minValue:SetText(data.minValue)
+    self.maxValue:SetText(data.maxValue)
+end
+
 function SD.UpdateDataBinding(self)
     local data = self.data
 
@@ -65,10 +86,7 @@ function SD.UpdateDataBinding(self)
         self.OnDataChanged = data.OnDataChanged
     end
 
-    self.text:SetText(data.text)
-    self.minValue:SetText(data.minValue)
-    self.curValue:SetText(data.value)
-    self.maxValue:SetText(data.maxValue)
+    SD.UpdateValue(self)
 
     self.line:SetMinMaxValues(data.minValue, data.maxValue)
     self.line:SetValue(data.value)

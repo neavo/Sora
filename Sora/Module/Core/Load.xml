@@ -1,0 +1,6 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	
+	<Script file = "Config.lua"/>
+	<Script file = "UIScaler.lua"/>
+	
+</Ui>

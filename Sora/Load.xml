@@ -1,7 +1,6 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 
 	<Script file = "Init.lua" />	
-	<Script file = "Config.lua" />	
 
 	<include file = "Lib\Load.xml" />
 	<include file = "Core\Load.xml" />

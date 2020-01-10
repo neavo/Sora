@@ -1,5 +1,6 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 
+	<include file = "Core\Load.xml" />
 	<include file = "Aura\Load.xml" />
 	<include file = "Chat\Load.xml" />
 	<include file = "Config\Load.xml" />
