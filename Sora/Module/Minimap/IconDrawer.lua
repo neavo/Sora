@@ -52,7 +52,6 @@ local function ProcessButtons()
     local switch = S.CreateButton(Minimap, size - 8)
     switch:SetSize(size - 8, size - 8)
     switch:SetText("+")
-    switch:SetPoint("BOTTOM", anchor, "BOTTOM", 2, 0)
     table.insert(icons, perRow, switch)
 
     local function OnEnter(self, ...)
@@ -81,7 +80,11 @@ local function ProcessButtons()
     switch:HookScript("OnClick", OnClick)
 
     for k, v in ipairs(icons) do
-        if not k == perRow then
+        if k > perRow then
+            v:SetParent(container)
+        end
+
+        if k ~= perRow then
             v:ClearAllPoints()
             v:SetSize(size, size)
 
@@ -93,14 +96,12 @@ local function ProcessButtons()
             v:HookScript("OnClick", OnClick)
         end
 
-        if k > perRow then
-            v:SetParent(container)
-        end
-
         if k == 1 then
-            v:SetPoint("TOP", anchor, "TOP", 0, space)
+            v:SetPoint("TOP", anchor, "TOP", 0, 0)
+        elseif k == perRow then
+            v:SetPoint("TOP", icons[k - 1], "BOTTOM", 1.5, -(space + 8))
         elseif mod(k, perRow) == 1 then
-            v:SetPoint("TOPRIGHT", icons[k - perRow], "TOPLEFT", 0, 0)
+            v:SetPoint("TOPRIGHT", icons[k - perRow], "TOPLEFT", -space, 0)
         else
             v:SetPoint("TOP", icons[k - 1], "BOTTOM", 0, -space)
         end
