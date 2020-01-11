@@ -6,8 +6,9 @@
 	<Script file = "DragEmAll.lua" />
 	<Script file = "CombatAlert.lua" />
 	<Script file = "ncHoverBind.lua" />
-	<Script file = "UIParentFade.lua" />
+	<Script file = "BorderShadow.lua" />
 	<Script file = "AlreadyKnown.lua" />
+	<Script file = "UIParentFade.lua" />
 	<Script file = "AlignmentGrid.lua" />
 	<Script file = "OutRangeColor.lua" />
 
