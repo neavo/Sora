@@ -80,7 +80,7 @@ function Addon:GetDatabaseDefaults()
 		-- this value is a percentage of the size of an ActionButton
 		minScale = 0.4,
 		-- the minimum number of seconds a cooldown's duration must be to display text
-		minDuration = 3,
+		minDuration = 1.5,
 		-- the minimum number of miliseconds a cooldown must be to display in the expiring format
 		expiringDuration = 5000,
 		-- when to show tenths of seconds remaining, in miliseconds
