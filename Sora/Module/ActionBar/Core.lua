@@ -8,7 +8,7 @@ local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLA
 -- Common
 local function CreateAnchor()
     local width = C.ActionBar.Size * 18 + C.ActionBar.Space * 15 + C.ActionBar.Space * 4
-    local height = C.ActionBar.Size * 2 + C.ActionBar.Space * 1
+    local height = C.ActionBar.Size * 3 + C.ActionBar.Space * 2
 
     local anchor = S.CreateButton(UIParent, 16, "SoraActionBar")
     anchor:Hide()
