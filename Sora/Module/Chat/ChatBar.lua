@@ -2,92 +2,82 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local size = 15
 local channels = {"/s ", "/y ", "/p ", "/g ", "/raid ", "/1 ", "/2 "}
 local colors = {
-	{255 / 255, 255 / 255, 255 / 255},
-	{255 / 255, 64 / 255, 64 / 255},
-	{170 / 255, 170 / 255, 255 / 255},
-	{64 / 255, 255 / 255, 64 / 255},
-	{255 / 255, 127 / 255, 0 / 255},
-	{210 / 255, 180 / 255, 140 / 255},
-	{160 / 255, 120 / 255, 90 / 255},
-	{255 / 255, 255 / 255, 0 / 255}
+    {255 / 255, 255 / 255, 255 / 255}, {255 / 255, 64 / 255, 64 / 255}, {170 / 255, 170 / 255, 255 / 255},
+    {64 / 255, 255 / 255, 64 / 255}, {255 / 255, 127 / 255, 0 / 255}, {210 / 255, 180 / 255, 140 / 255},
+    {160 / 255, 120 / 255, 90 / 255}, {255 / 255, 255 / 255, 0 / 255}
 }
 
 -- Begin
-local function CreateChatbar()
-	local preBtn = nil
-
-	local parent = CreateFrame("Frame", nil, UIParent)
-	parent:SetSize(size * 9, size)
-	parent:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 84, 6)
-
-	local function OnEnter(self, ...)
-		if InCombatLockdown() then
-			self:SetAlpha(1.00)
-		else
-			UIFrameFadeIn(self, 0.25, 0.25, 1.00)
-		end
-	end
-
-	local function OnLeave(self, ...)
-		if InCombatLockdown() then
-			self:SetAlpha(0.25)
-		else
-			UIFrameFadeOut(self, 0.25, 1.00, 0.25)
-		end
-	end
-
-	for i = 1, 9 do
-		local btn = nil
-
-		if i <= 7 then
-			local function OnMouseUp(self, btn, ...)
-				ChatFrame_OpenChat(channels[i])
-			end
-
-			btn = CreateFrame("Button", nil, parent)
-			btn:SetSize(size, size)
-			btn:SetScript("OnMouseUp", OnMouseUp)
-		elseif i == 8 then
-			btn = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
-			btn:SetSize(size, size)
-			btn:SetAttribute("*type*", "macro")
-			btn:SetAttribute("macrotext", "/roll")
-		else
-			btn = _G["ChatFrameChannelButton"]
-			btn:ClearAllPoints()
-			btn:SetSize(size + 2, size + 2)
-		end
-
-		btn:SetAlpha(0.25)
-		btn:SetScript("OnEnter", OnEnter)
-		btn:SetScript("OnLeave", OnLeave)
-
-		if i <= 8 then
-			btn.backgourd = CreateFrame("StatusBar", nil, btn)
-			btn.backgourd:SetAllPoints()
-			btn.backgourd:SetFrameLevel(UIParent:GetFrameLevel() + 2)
-			btn.backgourd:SetStatusBarTexture(DB.Statusbar)
-			btn.backgourd:SetStatusBarColor(unpack(colors[i]))
-
-			btn.backgourd.shadow = S.MakeShadow(btn.backgourd, 2)
-			btn.backgourd.shadow:SetFrameLevel(UIParent:GetFrameLevel() + 1)
-		end
-
-		if i == 1 then
-			btn:SetPoint("TOP", parent, "TOP", 0, 0)
-		else
-			btn:SetPoint("RIGHT", preBtn, "LEFT", -4, 0)
-		end
-
-		preBtn = btn
-	end
-end
-
 local function OnPlayerLogin(self, event, ...)
-	CreateChatbar()
+    local btn = nil
+    local btns = {}
+
+    local anchor = CreateFrame("Frame", nil, UIParent)
+    anchor:SetSize(14 * 9 + 4 * 8, 14)
+    anchor:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 0, 4)
+
+    local function OnEnter(self, ...)
+        if InCombatLockdown() then
+            self:SetAlpha(1.00)
+        else
+            UIFrameFadeIn(self, 0.25, 0.25, 1.00)
+        end
+    end
+
+    local function OnLeave(self, ...)
+        if InCombatLockdown() then
+            self:SetAlpha(0.25)
+        else
+            UIFrameFadeOut(self, 0.25, 1.00, 0.25)
+        end
+    end
+
+    local function OnClick(self, btn, ...)
+        ChatFrame_OpenChat(channels[i])
+        PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
+    end
+
+    for i = 1, 9 do
+
+        if i < 8 then
+            btn = CreateFrame("Button", nil, anchor)
+            btn:SetSize(14, 14)
+            btn:SetScript("OnClick", OnClick)
+        elseif i == 8 then
+            btn = CreateFrame("Button", nil, anchor, "SecureActionButtonTemplate")
+            btn:SetSize(14, 14)
+            btn:SetAttribute("*type*", "macro")
+            btn:SetAttribute("macrotext", "/roll")
+        else
+            btn = _G["ChatFrameChannelButton"]
+            btn:ClearAllPoints()
+            btn:SetSize(14 + 2, 14 + 2)
+        end
+
+        btn:SetAlpha(0.25)
+        btn:SetScript("OnEnter", OnEnter)
+        btn:SetScript("OnLeave", OnLeave)
+
+        if i <= 8 then
+            btn.bg = btn:CreateTexture(nil, "BORDER")
+            btn.bg:SetAllPoints()
+            btn.bg:SetTexture(DB.Backdrop)
+            btn.bg:SetVertexColor(unpack(colors[i]))
+
+            btn.shadow = S.MakeShadow(btn, 2)
+            btn.shadow:SetFrameLevel(btn:GetFrameLevel())
+        end
+
+        if i == 1 then
+            btn:SetPoint("RIGHT", anchor, "RIGHT", 0, 0)
+        else
+            btn:SetPoint("RIGHT", btns[i - 1], "LEFT", -4, 0)
+        end
+
+        table.insert(btns, btn)
+    end
 end
 
 -- Handler

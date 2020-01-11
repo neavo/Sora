@@ -1,10 +1,6 @@
 ﻿-- Engines
 local S, C, L, DB = unpack(select(2, ...))
 
--- Initialize
-local _, class = UnitClass("player")
-local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
-
 -- Common
 local function CreateAnchor()
     local anchor = S.CreateButton(UIParent, 16, "SoraChat")
@@ -52,9 +48,8 @@ end
 
 local function SetChatFrame()
     for i = 1, NUM_CHAT_WINDOWS do
-        local ChatFrame = _G["ChatFrame" .. i]
-
         local p = C.Core.Pixel or 1.00
+        local ChatFrame = _G["ChatFrame" .. i]
         local _, fontSize = ChatFrame:GetFont()
 
         FCF_SetWindowAlpha(ChatFrame, 0)
@@ -64,7 +59,7 @@ local function SetChatFrame()
         ChatFrame:SetMaxResize(1920, 960)
         ChatFrame:SetClampedToScreen(false)
         ChatFrame:SetClampRectInsets(0, 0, 0, 0)
-        ChatFrame:SetFont(STANDARD_TEXT_FONT, (fontSize >= 10 and fontSize <= 18) and fontSize or 12, "OUTLINE")
+        ChatFrame:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
 
         for j = 1, #CHAT_FRAME_TEXTURES do
             S.KillFrame(_G["ChatFrame" .. i .. CHAT_FRAME_TEXTURES[j]])
@@ -81,22 +76,23 @@ local function SetChatFrame()
         S.KillFrame(_G["ChatFrame" .. i .. "TabHighlightRight"])
         S.KillFrame(_G["ChatFrame" .. i .. "TabHighlightMiddle"])
 
-        local function dummy()
-        end
+        local ChatFrameTabText = _G["ChatFrame" .. i .. "TabText"]
+        ChatFrameTabText:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
+        ChatFrameTabText:SetShadowOffset(1.00 * p, -1.00 * p)
+        ChatFrameTabText:SetShadowColor(0.00, 0.00, 0.00, 0.50)
 
-        _G["ChatFrame" .. i .. "TabText"].SetTextColor = dummy
-        _G["ChatFrame" .. i .. "TabText"]:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
-        _G["ChatFrame" .. i .. "TabText"]:SetShadowOffset(1.00 * p, -1.00 * p)
-        _G["ChatFrame" .. i .. "TabText"]:SetShadowColor(0.00, 0.00, 0.00, 0.50)
+        local x, a, y, xOffset, yOffset = ChatFrameTabText:GetPoint()
+        ChatFrameTabText:ClearAllPoints()
+        ChatFrameTabText:SetPoint(x, a, y, xOffset, yOffset + 3)
 
         local ScrollToBottomButton = ChatFrame.ScrollToBottomButton
         ScrollToBottomButton:ClearAllPoints()
         ScrollToBottomButton:SetPoint("BOTTOMLEFT", ChatFrame, "BOTTOMRIGHT", 2, 0)
 
         local EditBox = _G["ChatFrame" .. i .. "EditBox"]
-        EditBox:SetFont(STANDARD_TEXT_FONT, (fontSize >= 10 and fontSize <= 18) and fontSize or 12, "OUTLINE")
-        EditBox:SetShadowOffset(1.00 * p, -1.00 * p)
+        EditBox:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
         EditBox:SetShadowColor(0.00, 0.00, 0.00, 0.50)
+        EditBox:SetShadowOffset(1.00 * p, -1.00 * p)
         EditBox:ClearAllPoints()
         EditBox:EnableMouse(false)
         EditBox:SetAltArrowKeyMode(false)
@@ -104,9 +100,9 @@ local function SetChatFrame()
         EditBox:SetPoint("BOTTOMRIGHT", ChatFrame, "BOTTOMRIGHT", 8, -22)
 
         local EditBoxHeader = _G["ChatFrame" .. i .. "EditBoxHeader"]
-        EditBoxHeader:SetFont(STANDARD_TEXT_FONT, (fontSize >= 10 and fontSize <= 18) and fontSize or 12, "OUTLINE")
-        EditBoxHeader:SetShadowOffset(1.00 * p, -1.00 * p)
+        EditBoxHeader:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
         EditBoxHeader:SetShadowColor(0.00, 0.00, 0.00, 0.50)
+        EditBoxHeader:SetShadowOffset(1.00 * p, -1.00 * p)
 
         local EditBoxBG = CreateFrame("Frame", nil, ChatFrame)
         EditBoxBG:Hide()
@@ -171,6 +167,18 @@ local function SetChatFrame()
         S.KillFrame(_G["ChatFrame" .. i .. "EditBoxFocusMid"])
         S.KillFrame(_G["ChatFrame" .. i .. "EditBoxFocusLeft"])
         S.KillFrame(_G["ChatFrame" .. i .. "EditBoxFocusRight"])
+    end
+
+    for i = 1, 2 do
+        local p = C.Core.Pixel or 1.00
+        local btn = _G["CombatLogQuickButtonFrameButton" .. i]
+
+        local regions = S.GetRegions(btn, "FontString")
+        for k, v in pairs(regions) do
+            v:SetFont(ChatFrame2:GetFont())
+            v:SetShadowColor(0.00, 0.00, 0.00, 0.50)
+            v:SetShadowOffset(1.00 * p, -1.00 * p)
+        end
     end
 end
 

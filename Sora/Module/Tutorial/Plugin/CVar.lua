@@ -2,7 +2,11 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Begin
-local function OnTickder()
+local function OnPlayerLogin(self, event, ...)
+    if C.Tutorial.Initialized then
+        return 0
+    end
+
     -- 设置最大视野距离
     SetCVar("cameraDistanceMaxZoomFactor", 2.6)
 
@@ -60,23 +64,12 @@ local function OnTickder()
 
     -- 关闭 - 语言过滤器
     SetCVar("profanityFilter", 0)
-
-    -- 关闭 - 镜头跟随地形
-    SetCVar("cameraTerrainTilt", 0)
-end
-
-local function OnPlayerLogin(self, event, ...)
-    if C.Tutorial.Initialized then
-        return 0
-    end
-
-    C_Timer.NewTicker(0.50, OnTickder, 1)
 end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
--- EventHandler.Event.CVAR_UPDATE = function(self, event, ...)
---     print(...)
--- end
+EventHandler.Event.CVAR_UPDATE = function(self, event, ...)
+    print(...)
+end
 EventHandler:Register()

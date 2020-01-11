@@ -190,6 +190,34 @@ function S.GetClassColor()
     return RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
 end
 
+function S.GetRegions(target, objectType)
+    local result = {}
+
+    local function get(object, objectType)
+        if not object then
+            return 0
+        end
+
+        if object.GetChildren and #{object:GetChildren()} > 0 then
+            for k, v in pairs({object:GetChildren()}) do
+                get(v, objectType)
+            end
+        elseif object.GetRegions and #{object:GetRegions()} > 0 then
+            for k, v in pairs({object:GetRegions()}) do
+                get(v, objectType)
+            end
+        elseif object:GetObjectType() == objectType then
+            table.insert(result, object)
+        end
+    end
+
+    do
+        get(target, objectType)
+    end
+
+    return result
+end
+
 function S.KillFrame(frame)
     if frame.Show and frame.Hide then
         frame.Show = frame.Hide
@@ -332,4 +360,3 @@ function S.CreateEventHandler()
 
     return handler
 end
-

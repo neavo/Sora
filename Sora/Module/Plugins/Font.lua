@@ -37,40 +37,13 @@ do
 end
 
 -- Special for Blizzard_WarboardUI、Blizzard_QuestChoice
-local function FindAllText(frame)
-	local result = {}
-
-	local function FindText(object)
-		if not object then
-			return 0
-		end
-
-		if object.GetChildren and #{object:GetChildren()} > 0 then
-			for k, v in pairs({object:GetChildren()}) do
-				FindText(v)
-			end
-		elseif object.GetRegions and #{object:GetRegions()} > 0 then
-			for k, v in pairs({object:GetRegions()}) do
-				FindText(v)
-			end
-		elseif object:GetObjectType() == "FontString" then
-			table.insert(result, object)
-		end
-	end
-
-	do
-		FindText(frame)
-	end
-
-	return result
-end
 local function SetTextColor(r, g, b, a)
 	-- do nothing
 end
 local function HookQuestChoiceFrameUpdate()
-	local fontStrings = FindAllText(QuestChoiceFrame)
+	local regions = S.GetRegions(QuestChoiceFrame, "FontString")
 
-	for k, v in pairs(fontStrings) do
+	for k, v in pairs(regions) do
 		ProcessTextRegion(v, 1.00)
 
 		v:SetText((v:GetText() or ""):gsub("\r+", ""):gsub("\n+", ""))
@@ -80,9 +53,9 @@ local function HookQuestChoiceFrameUpdate()
 	end
 end
 local function HookWarboardQuestChoiceFrameUpdate()
-	local fontStrings = FindAllText(WarboardQuestChoiceFrame)
+	local regions = S.GetRegions(WarboardQuestChoiceFrame, "FontString")
 
-	for k, v in pairs(fontStrings) do
+	for k, v in pairs(regions) do
 		ProcessTextRegion(v, 1.00)
 
 		v:SetText((v:GetText() or ""):gsub("\r+", ""):gsub("\n+", ""))
