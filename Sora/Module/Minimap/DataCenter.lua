@@ -124,31 +124,31 @@ end
 
 local function UpdateAddon(self, ...)
     UpdateAddOnMemoryUsage()
-    local addonCount = GetNumAddOns()
 
-    if addonCount == #addons then
-        return
-    end
-
-    addons = {}
-    for i = 1, addonCount do
-        local _ = nil
+    for i = 1, GetNumAddOns() do
         local addon = {}
 
         addon.isLoaded = IsAddOnLoaded(i)
-        _, addon.addonName = GetAddOnInfo(i)
+        addon.addonName = select(2, GetAddOnInfo(i))
         addon.addonMemory = GetAddOnMemoryUsage(i)
 
         addons[i] = addon
     end
 
-    table.sort(
-        addons, function(l, r)
-            if l and r then
-                return l.addonMemory > r.addonMemory
-            end
+    local function OnSort(l, r)
+        local result = false
+
+        if l and r then
+            result = l.addonMemory > r.addonMemory
+        elseif l and not r then
+            result = true
+        elseif not l and r or (not l and not r) then
+            result = false
         end
-    )
+
+        return false
+    end
+    table.sort(addons, OnSort)
 
     local currMemory = 0
     for key, value in pairs(addons) do
@@ -156,7 +156,6 @@ local function UpdateAddon(self, ...)
     end
 
     local addon = anchors.First.addon
-
     addon:SetValue(currMemory)
     addon.text:SetText(S.FormatMemory(currMemory))
 
@@ -232,7 +231,7 @@ local function CreateAddon(self, ...)
     addon.bg:SetAllPoints()
     addon.bg:SetVertexColor(0.12, 0.12, 0.12)
 
-    local function OnAddonEnter(self, ...)
+    local function OnEnter(self, ...)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
         GameTooltip:ClearLines()
 
@@ -248,15 +247,34 @@ local function CreateAddon(self, ...)
             if value.isLoaded then
                 currMemory = currMemory + value.addonMemory
 
-                GameTooltip:AddDoubleLine(value.addonName, S.FormatMemory(value.addonMemory), 1.00, 1.00, 1.00, 0.00, 1.00, 0.00)
+                GameTooltip:AddDoubleLine(
+                    value.addonName,
+                    S.FormatMemory(value.addonMemory),
+                    1.00,
+                    1.00,
+                    1.00,
+                    0.00,
+                    1.00,
+                    0.00
+                )
             end
         end
 
         GameTooltip:Show()
     end
 
+    local function OnMouseDown(self, btn, ...)
+        local before = gcinfo()
+
+        collectgarbage()
+        print("|cff70C0F5[Sora's]|r |cffffff00您回收了内存：|r" .. S.FormatMemory(before - gcinfo()))
+
+        C_Timer.NewTicker(1.00, UpdateAddon, 1)
+    end
+
     addon:SetScript("OnLeave", OnLeave)
-    addon:SetScript("OnEnter", OnAddonEnter)
+    addon:SetScript("OnEnter", OnEnter)
+    addon:SetScript("OnMouseDown", OnMouseDown)
 
     anchor.addon = addon
 end
@@ -344,8 +362,14 @@ local function CreateGold(self, ...)
         GameTooltip:AddLine("货币：", 0.40, 0.78, 1.00)
         GameTooltip:AddLine(" ")
         GameTooltip:AddDoubleLine(
-            "金币：", ("%d|cffffd700G|r %d|cffc7c7cfS|r %d|cffb87333C|r"):format(gold, sliver, copper), 1.00, 1.00, 1.00,
-            1.00, 1.00, 1.00
+            "金币：",
+            ("%d|cffffd700G|r %d|cffc7c7cfS|r %d|cffb87333C|r"):format(gold, sliver, copper),
+            1.00,
+            1.00,
+            1.00,
+            1.00,
+            1.00,
+            1.00
         )
         GameTooltip:Show()
     end
@@ -610,6 +634,7 @@ local function RegisterStyle(self, ...)
 end
 
 -- Event
+
 local function OnPlayerLogin(self, event, ...)
     width, height, space = Minimap:GetWidth(), 6, 6
 
@@ -631,7 +656,8 @@ local function OnPlayerLogin(self, event, ...)
         UpdateClock(self)
         UpdateAddon(self)
     end
-    C_Timer.NewTicker(5.00, OnTicker)
+
+    C_Timer.NewTicker(3.00, OnTicker)
 end
 
 -- Handler
