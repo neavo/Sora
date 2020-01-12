@@ -74,42 +74,42 @@ end
 
 -- Auras
 S.NamePlates.CreateAuras = function(self, unit, ...)
-    local num, spacing = 7, 4
-    local size = (self:GetWidth() - spacing * (num - 1)) / num
+    local perRow, maxRow = 7, 2
+    local size = (self:GetWidth() - 4 * (perRow - 1)) / perRow
 
     local auras = CreateFrame("Frame", nil, self)
-    auras:SetSize(self:GetWidth(), size)
-    auras:SetPoint("TOP", self, "BOTTOM", 0, -spacing)
+    auras:SetSize(self:GetWidth(), size * maxRow + 4 * (maxRow - 1))
+    auras:SetPoint("TOP", self, "BOTTOM", 0, -4)
 
     auras.gap = true
     auras.size = size
-    auras.spacing = spacing
-    auras.numTotal = num
-    auras["growth-y"] = "UP"
+    auras.spacing = 4
+    auras.numTotal = perRow * maxRow
+    auras.numBuffs = perRow * maxRow
+    auras.numDebuffs = perRow * maxRow
+    auras["growth-y"] = "DOWN"
     auras["growth-x"] = "RIGHT"
-    auras.onlyShowPlayer = true
+    auras.initialAnchor = "TOPLEFT"
     auras.disableCooldown = false
-    auras.initialAnchor = "BOTTOMLEFT"
 
-    local PostCreateIcon = function(self, aura, ...)
-        if not aura.__isProcessed then
-            aura.shadow = S.MakeShadow(aura, 2)
-
-            aura.icon:SetAllPoints()
-            aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-
-            local anchor = CreateFrame("Frame", nil, aura)
-            anchor:SetAllPoints(aura)
-            anchor:SetFrameLevel(aura.cd:GetFrameLevel() + 1)
-
-            aura.count = S.MakeText(anchor, 5)
-            aura.count:SetPoint("BOTTOMRIGHT", 3, 0)
-
-            aura.__isProcessed = true
-        end
+    function auras.CustomFilter(self, unit, _, _, _, _, _, _, _, caster)
+        return caster == unit or caster == "player"
     end
 
-    auras.PostCreateIcon = PostCreateIcon
+    function auras.PostCreateIcon(self, aura, ...)
+        local anchor = CreateFrame("Frame", nil, aura)
+        anchor:SetAllPoints(aura)
+        anchor:SetFrameLevel(aura.cd:GetFrameLevel() + 1)
+
+        aura.icon:SetAllPoints()
+        aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+        aura.count = S.MakeText(anchor, 5)
+        aura.count:SetPoint("BOTTOMRIGHT", 3, 0)
+
+        aura.shadow = S.MakeShadow(aura, 2)
+        aura.shadow:SetFrameLevel(aura:GetFrameLevel())
+    end
 
     self.Auras = auras
 end
