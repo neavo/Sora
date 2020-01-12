@@ -10,6 +10,7 @@ local function CreateDB(self, ...)
     SoraDB.Minimap = SoraDB.Minimap or {}
 
     SoraDB.Minimap.Size = SoraDB.Minimap.Size or 150
+    SoraDB.Minimap.IconDrawerPerRow = SoraDB.Minimap.IconDrawerPerRow or 5
     SoraDB.Minimap.Postion = SoraDB.Minimap.Postion or {"TOPLEFT", "UIParent", "TOPLEFT", 8, -8}
 
     C.Minimap = S.Copy(SoraDB.Minimap)
@@ -35,7 +36,21 @@ local function CreateConfig(self, ...)
                     SoraDB.Minimap.Size = data.value
                 end
             end
-        }, {type = "space"}, {
+        },
+        {
+            type = "slider",
+            key = "SoraDB.Minimap.IconDrawerPerRow",
+            text = "图标抽屉每列数量",
+            step = 1,
+            maxValue = 8,
+            minValue = 2,
+            OnDataChanged = function(self, data, ...)
+                if data.value then
+                    SoraDB.Minimap.IconDrawerPerRow = data.value
+                end
+            end
+        },
+        {
             type = "button",
             text = "切换锚点显示状态",
             OnClick = function(self, btn, ...)
@@ -49,14 +64,17 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        }, {type = "space"}, {
+        },
+        {type = "space"},
+        {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -70,7 +88,8 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)

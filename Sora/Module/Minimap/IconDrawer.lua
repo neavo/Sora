@@ -3,61 +3,24 @@ local _, ns = ...
 local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
--- Begin
-local function findIcons()
-    local icons = {}
+-- Common
+local function CreateIcons(instance)
+    local perRow = C.Minimap.IconDrawerPerRow
+    local size = (Minimap:GetWidth() - 4 * (perRow - 1)) / perRow
 
-    local match = string.match
-    local insert = table.insert
-
+    local datas = {}
     for k, v in pairs(_G) do
-        if match(k, "LibDBIcon10_") and v:GetObjectType() == "Button" then
-            insert(icons, v)
+        if string.match(k, "LibDBIcon10_") and v:GetObjectType() == "Button" then
+            table.insert(datas, v)
         end
     end
 
-    return icons
-end
-
-local function getPerRowAndSpace(size)
-    local perRow = math.modf(Minimap:GetHeight() / size)
-    local space = (Minimap:GetHeight() - size * perRow) / (perRow - 1)
-
-    return perRow, space
-end
-
-local function ProcessButtons()
-    local size = 28
-    local icons = findIcons()
-    local perRow, space = getPerRowAndSpace(size)
-
-    local anchor = CreateFrame("Frame", nil, Minimap)
-    anchor:SetSize(size, Minimap:GetHeight())
-    anchor:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 0, 0)
-
-    local container = CreateFrame("Frame", nil, Minimap)
-    container:Hide()
-    container:EnableMouse(true)
-    container:SetAllPoints(Minimap)
-    container:SetFrameStrata("DIALOG")
-
-    container.bg = container:CreateTexture(nil, "BORDER")
-    container.bg:SetAllPoints()
-    container.bg:SetTexture(DB.Backdrop)
-    container.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-
-    container.shadow = S.MakeShadow(container, 2)
-    container.shadow:SetFrameLevel(container:GetFrameLevel() + 1)
-
-    local switch = S.CreateButton(Minimap, size - 8)
-    switch:SetSize(size - 8, size - 8)
-    switch:SetText("+")
-    table.insert(icons, perRow, switch)
-
     local function OnEnter(self, ...)
+        local text = instance.container:IsVisible() and "点击收起" or "点击展开"
+
         GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 4)
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(container:IsVisible() and "点击收起" or "点击展开", 0.75, 0.90, 1.00)
+        GameTooltip:AddLine(text, 0.75, 0.90, 1.00)
         GameTooltip:Show()
     end
 
@@ -66,50 +29,100 @@ local function ProcessButtons()
     end
 
     local function OnClick(self, key, ...)
-        if container:IsVisible() then
-            switch:SetText("+")
-            container:Hide()
+        if instance.container:IsVisible() then
+            self:SetText("+")
+            instance.container:Hide()
         else
-            switch:SetText("×")
-            container:Show()
+            self:SetText("×")
+            instance.container:Show()
         end
     end
 
-    switch:HookScript("OnEnter", OnEnter)
-    switch:HookScript("OnLeave", OnLeave)
-    switch:HookScript("OnClick", OnClick)
+    local data = {}
+    data.text = "+"
+    data.OnEnter = OnEnter
+    data.OnLeave = OnLeave
+    data.OnClick = OnClick
+    table.insert(datas, perRow, data)
 
-    for k, v in ipairs(icons) do
-        if k > perRow then
-            v:SetParent(container)
-        end
+    local icons = {}
+    for k, v in pairs(datas) do
+        local parent = k <= perRow and instance or instance.container
 
-        if k ~= perRow then
-            v:ClearAllPoints()
-            v:SetSize(size, size)
+        local icon = S.CreateButton(parent, 20)
+        icon:SetSize(size, size)
+        icon:SetFrameStrata("DIALOG")
+        icon:SetFrameLevel(parent:GetFrameLevel() + 1)
 
-            local function OnClick(self, key, ...)
-                container:Hide()
-                switch:SetText("+")
+        if v.text then
+            icon:SetText(v.text)
+            icon:HookScript("OnEnter", v.OnEnter)
+            icon:HookScript("OnLeave", v.OnLeave)
+            icon:HookScript("OnClick", v.OnClick)
+        else
+            local function OnEnter(self, ...)
+                local r, g, b = S.GetClassColor()
+
+                icon.bg:SetVertexColor(r / 4, g / 4, b / 4, 1.00)
+                icon.shadow:SetBackdropBorderColor(r, g, b, 1.00)
             end
 
-            v:HookScript("OnClick", OnClick)
+            local function OnLeave(self, ...)
+                icon.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+                icon.shadow:SetBackdropBorderColor(0.00, 0.00, 0.00, 1.00)
+            end
+
+            v:ClearAllPoints()
+            v:SetSize(size, size)
+            v:SetAlpha(0.00)
+            v:SetPoint("CENTER", icon)
+            v:SetParent(icon)
+            v:HookScript("OnEnter", OnEnter)
+            v:HookScript("OnLeave", OnLeave)
+
+            local function OnTicker()
+                icon:SetIcon(v.icon:GetTexture())
+            end
+            C_Timer.NewTicker(0.50, OnTicker)
         end
 
         if k == 1 then
-            v:SetPoint("TOP", anchor, "TOP", 0, 0)
-        elseif k == perRow then
-            v:SetPoint("TOP", icons[k - 1], "BOTTOM", 1.5, -(space + 8))
+            icon:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 4, 0)
         elseif mod(k, perRow) == 1 then
-            v:SetPoint("TOPRIGHT", icons[k - perRow], "TOPLEFT", -space, 0)
+            icon:SetPoint("TOPRIGHT", icons[k - perRow], "TOPLEFT", -4, 0)
         else
-            v:SetPoint("TOP", icons[k - 1], "BOTTOM", 0, -space)
+            icon:SetPoint("TOP", icons[k - 1], "BOTTOM", 0, -4)
         end
+
+        table.insert(icons, icon)
     end
 end
 
+local function CreateInstance(parent)
+    local instance = CreateFrame("Frame", nil, parent)
+
+    instance.container = CreateFrame("Frame", nil, parent)
+    instance.container:Hide()
+    instance.container:EnableMouse(true)
+    instance.container:SetAllPoints()
+    instance.container:SetFrameStrata("DIALOG")
+
+    instance.container.bg = instance.container:CreateTexture(nil, "BORDER")
+    instance.container.bg:SetAllPoints()
+    instance.container.bg:SetTexture(DB.Backdrop)
+    instance.container.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
+
+    instance.container.shadow = S.MakeShadow(instance.container, 2)
+    instance.container.shadow:SetFrameLevel(instance.container:GetFrameLevel())
+
+    return instance
+end
+
+-- Event
 local function OnPlayerLogin(self, event, ...)
-    ProcessButtons()
+    local instance = CreateInstance(Minimap)
+
+    CreateIcons(instance)
 end
 
 -- EventHandler

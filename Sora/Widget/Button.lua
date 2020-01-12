@@ -17,6 +17,14 @@ function BN.SetText(self, text)
     self.text:SetText(text)
 end
 
+function BN.GetIcon(self)
+    return self.icon:GetTexture()
+end
+
+function BN.SetIcon(self, icon)
+    self.icon:SetTexture(icon)
+end
+
 function BN.CreateInstance(parent, fontSize, name)
     local instance = CreateFrame("Button", name, parent)
     instance:SetFrameLevel(parent:GetFrameLevel() + 1)
@@ -28,6 +36,9 @@ function BN.CreateInstance(parent, fontSize, name)
 
     instance.text = S.MakeText(instance, fontSize)
     instance.text:SetPoint("CENTER", instance, "CENTER", 0, 0)
+
+    instance.icon = instance:CreateTexture(nil, "ARTWORK")
+    instance.icon:SetAllPoints()
 
     instance.shadow = S.MakeShadow(instance, 2)
     instance.shadow:SetFrameLevel(parent:GetFrameLevel() + 1)
@@ -58,6 +69,8 @@ function S.CreateButton(parent, fontSize, name)
 
     instance.GetText = BN.GetText
     instance.SetText = BN.SetText
+    instance.GetIcon = BN.GetIcon
+    instance.SetIcon = BN.SetIcon
 
     return instance
 end
