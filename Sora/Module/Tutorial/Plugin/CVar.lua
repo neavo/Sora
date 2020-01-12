@@ -69,7 +69,7 @@ end
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler.Event.CVAR_UPDATE = function(self, event, ...)
-    print(...)
-end
+-- EventHandler.Event.CVAR_UPDATE = function(self, event, ...)
+--     print(...)
+-- end
 EventHandler:Register()
