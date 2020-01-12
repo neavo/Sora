@@ -38,7 +38,8 @@ function BN.CreateInstance(parent, fontSize, name)
     instance.text:SetPoint("CENTER", instance, "CENTER", 0, 0)
 
     instance.icon = instance:CreateTexture(nil, "ARTWORK")
-    instance.icon:SetAllPoints()
+    instance.icon:SetPoint("TOPLEFT", instance, 2, -2)
+    instance.icon:SetPoint("BOTTOMRIGHT", instance, -2, 2)
 
     instance.shadow = S.MakeShadow(instance, 2)
     instance.shadow:SetFrameLevel(parent:GetFrameLevel() + 1)
