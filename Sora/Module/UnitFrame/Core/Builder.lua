@@ -11,9 +11,11 @@ local function IsCaster()
     local _, class = UnitClass("player")
     local specialization = GetSpecialization()
 
-    return select(5, GetSpecializationInfo(specialization)) == "HEALER" or (class == "MAGE")
-               or (class == "DRUID" and specialization == 1) or (class == "PRIEST")
-               or (class == "SHAMAN" and specialization == 1) or (class == "WARLOCK")
+    return select(5, GetSpecializationInfo(specialization)) == "HEALER" or (class == "MAGE") or
+        (class == "DRUID" and specialization == 1) or
+        (class == "PRIEST") or
+        (class == "SHAMAN" and specialization == 1) or
+        (class == "WARLOCK")
 end
 
 -- Power
@@ -131,48 +133,37 @@ end
 
 -- Auras
 S.UnitFrame.CreateAuras = function(self, unit, ...)
-    local spacing = 4
-    local size = (self:GetWidth() - 4 * 8) / 9
+    local perRow, maxRow = 9, 3
+    local size = (self:GetWidth() - 4 * (perRow - 1)) / perRow
 
     local auras = CreateFrame("Frame", nil, self)
-    auras:SetSize(self:GetWidth(), size * 3 + spacing * 2)
-    auras:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -spacing)
+    auras:SetSize(self:GetWidth(), size * maxRow + 4 * (maxRow - 1))
+    auras:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -4)
 
     auras.gap = true
     auras.size = size
-    auras.spacing = spacing
+    auras.spacing = 4
+    auras.numTotal = perRow * maxRow
+    auras.numBuffs = unit == "player" and 0 or perRow
+    auras.numDebuffs = perRow * maxRow
     auras["growth-y"] = "DOWN"
     auras["growth-x"] = "RIGHT"
-    auras.onlyShowPlayer = false
-    auras.disableCooldown = false
     auras.initialAnchor = "TOPLEFT"
+    auras.disableCooldown = false
 
-    local function PostCreateIcon(self, aura, ...)
-        if not aura.__isProcessed then
-            aura.shadow = S.MakeShadow(aura, 2)
+    function auras.PostCreateIcon(self, aura, ...)
+        local anchor = CreateFrame("Frame", nil, aura)
+        anchor:SetAllPoints(aura)
+        anchor:SetFrameLevel(aura.cd:GetFrameLevel() + 1)
 
-            aura.icon:SetAllPoints()
-            aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+        aura.icon:SetAllPoints()
+        aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-            local anchor = CreateFrame("Frame", nil, aura)
-            anchor:SetAllPoints(aura)
-            anchor:SetFrameLevel(aura.cd:GetFrameLevel() + 1)
+        aura.count = S.MakeText(anchor, 5)
+        aura.count:SetPoint("BOTTOMRIGHT", 3, 0)
 
-            aura.count = S.MakeText(anchor, 9)
-            aura.count:SetPoint("BOTTOMRIGHT", 3, 0)
-
-            aura.__isProcessed = true
-        end
-    end
-
-    auras.PostCreateIcon = PostCreateIcon
-
-    if unit ~= "player" then
-        auras.numBuffs = 9
-        auras.numTotal = 27
-    else
-        auras.numBuffs = 0
-        auras.numTotal = 27
+        aura.shadow = S.MakeShadow(aura, 2)
+        aura.shadow:SetFrameLevel(aura:GetFrameLevel())
     end
 
     self.Auras = auras
