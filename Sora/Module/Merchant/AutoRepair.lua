@@ -32,11 +32,11 @@ local function OnMerchantShow(self, event, ...)
 		if guildMoney > cost and CanGuildBankRepair() then
 			RepairAllItems(1)
 
-			print("|cff70C0F5[Sora's]|r |cffffff00您公会修理花费了：|r" .. getMoney(cost))
+			print("|cff70C0F5[Sora's]|r |cffffd700您公会修理花费了：|r" .. getMoney(cost))
 		elseif canRepair then
 			RepairAllItems(nil)
 
-			print("|cff70C0F5[Sora's]|r |cffffff00您自费修理花费了：|r" .. getMoney(cost))
+			print("|cff70C0F5[Sora's]|r |cffffd700您自费修理花费了：|r" .. getMoney(cost))
 		end
 	end
 end

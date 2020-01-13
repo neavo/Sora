@@ -36,7 +36,7 @@ local function OnMerchantShow(self, event, ...)
     end
 
     if cost > 0 then
-        print("|cff70C0F5[Sora's]|r |cffffff00您售出垃圾获得了：|r" .. getMoney(cost))
+        print("|cff70C0F5[Sora's]|r |cffffd700您售出垃圾获得了：|r" .. getMoney(cost))
     end
 end
 
