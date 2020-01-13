@@ -2,6 +2,14 @@
 
 	<Script file = "Config.lua" />
 
+	<Script file = "Widget\Addon.lua" />
+	<Script file = "Widget\System.lua" />
+	<Script file = "Widget\Currency.lua" />
+	<Script file = "Widget\Durability.lua" />
+	<Script file = "Widget\Experience.lua" />
+	<Script file = "Widget\Reputation.lua" />
+	<Script file = "Widget\ArtifactPower.lua" />
+
 	<Script file = "Core.lua" />
 	<Script file = "DataCenter.lua" />
 	<Script file = "IconDrawer.lua" />

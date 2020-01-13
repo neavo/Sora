@@ -27,6 +27,44 @@ local function CreateAnchor()
     end
 end
 
+local function CreateClock()
+    local clock = S.CreateButton(Minimap, 12)
+    clock:SetSize(48, 16)
+    clock:SetPoint("TOP", Minimap, 0, -4)
+    clock:SetFrameLevel(Minimap:GetFrameLevel() + 255)
+
+    local function OnTicker()
+        clock:SetText(GameTime_GetLocalTime(true))
+    end
+
+    local function OnEnter(self, ...)
+        local doubleLineColor = {0.90, 0.90, 0.90, 0.90, 0.90, 0.90}
+
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+        GameTooltip:ClearLines()
+
+        GameTooltip:AddLine(date("%Y年%m月%d日"), 0.44, 0.75, 0.96)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_LOCALTIME, GameTime_GetLocalTime(true), unpack(doubleLineColor))
+        GameTooltip:AddDoubleLine(TIMEMANAGER_TOOLTIP_REALMTIME, GameTime_GetGameTime(true), unpack(doubleLineColor))
+
+        GameTooltip:Show()
+    end
+
+    local function OnLeave(self, ...)
+        GameTooltip:Hide()
+    end
+
+    local function OnClick(self, btn, ...)
+        GameTimeFrame:Click()
+    end
+
+    C_Timer.NewTicker(1.00, OnTicker)
+    clock:HookScript("OnLeave", OnLeave)
+    clock:HookScript("OnEnter", OnEnter)
+    clock:HookScript("OnClick", OnClick)
+end
+
 local function SetMinimap()
     local anchor = SoraMinimap
 
@@ -136,6 +174,8 @@ end
 
 local function OnPlayerLogin(self, event, unit, ...)
     CreateAnchor()
+
+    CreateClock()
     SetMinimap()
     SetBlzFrame()
     HideBlzFrame()
