@@ -3,13 +3,6 @@ local _, ns = ...
 local oUF = ns.oUF or oUF
 local S, C, L, DB = unpack(select(2, ...))
 
--- Variables
-oUF.colors.power["MANA"] = {0.00, 0.56, 1.00}
-oUF.colors.power["RAGE"] = {1.00, 0.00, 0.00}
-oUF.colors.power["FOCUS"] = {1.00, 0.75, 0.25}
-oUF.colors.power["ENERGY"] = {0.65, 0.65, 0.35}
-oUF.colors.power["RUNIC_POWER"] = {0.44, 0.44, 0.44}
-
 -- Begin
 oUF.Tags.Methods["NamePlates:Rare"] = function(unit)
     local str = nil

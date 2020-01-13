@@ -38,7 +38,6 @@ S.UnitFrame.CreatePower = function(self, unit, ...)
     power.bg = power:CreateTexture(nil, "BACKGROUND")
     power.bg:SetTexture(DB.Statusbar)
     power.bg:SetAllPoints()
-    power.bg:SetVertexColor(0.12, 0.12, 0.12)
     power.bg.multiplier = 0.12
 
     power.Smooth = true
@@ -72,7 +71,6 @@ S.UnitFrame.CreateHealth = function(self, unit, ...)
     health.bg = health:CreateTexture(nil, "BACKGROUND")
     health.bg:SetAllPoints()
     health.bg:SetTexture(DB.Statusbar)
-    health.bg:SetVertexColor(0.12, 0.12, 0.12)
     health.bg.multiplier = 0.12
 
     health.Smooth = true
