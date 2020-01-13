@@ -159,8 +159,7 @@ local function CreateExtraBar(self, event, ...)
         "Sora", {
             frameScale = 1.0,
             framePoint = {
-                "BOTTOM", SoraBar2, "TOP", C.ActionBar.Size * 2 + C.ActionBar.Space * 3,
-                C.ActionBar.Size + C.ActionBar.Space * 2 + 16
+                "BOTTOM", SoraBar2, "TOP", 0, C.ActionBar.Size + C.ActionBar.Space * 2 + 16
             },
             framePadding = 0,
             buttonWidth = C.ActionBar.Size,
