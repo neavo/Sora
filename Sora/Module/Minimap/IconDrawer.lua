@@ -11,6 +11,14 @@ local function CreateIcons(instance)
     local datas = {}
     for k, v in pairs(_G) do
         if string.match(k, "LibDBIcon10_") and v:GetObjectType() == "Button" then
+            local regions = {v:GetRegions()}
+
+            for x, y in pairs(regions) do
+                if y ~= v.icon then
+                    S.KillFrame(y)
+                end
+            end
+
             table.insert(datas, v)
         end
     end
@@ -74,16 +82,10 @@ local function CreateIcons(instance)
 
             v:ClearAllPoints()
             v:SetSize(size, size)
-            v:SetAlpha(0.00)
-            v:SetPoint("CENTER", icon)
+            v:SetPoint("CENTER", icon, -2, 0)
             v:SetParent(icon)
             v:HookScript("OnEnter", OnEnter)
             v:HookScript("OnLeave", OnLeave)
-
-            local function OnTicker()
-                icon:SetIcon(v.icon:GetTexture())
-            end
-            C_Timer.NewTicker(0.50, OnTicker)
         end
 
         if k == 1 then
