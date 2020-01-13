@@ -76,7 +76,6 @@ function S.Minimap.CreateAddon(parent)
 
     local function OnEnter(self, ...)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:ClearLines()
 
         local curMemory = 0
         for k, v in pairs(instance.addons) do
@@ -94,8 +93,7 @@ function S.Minimap.CreateAddon(parent)
         end
 
         GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("操作指南：左键点击回收插件内存")
-
+        GameTooltip:AddLine("提示：左键点击回收插件内存", 1.00, 0.84, 0.00)
         GameTooltip:Show()
     end
 

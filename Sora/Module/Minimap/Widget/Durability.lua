@@ -68,7 +68,6 @@ function S.Minimap.CreateDurability(parent)
 
     local function OnEnter(self, ...)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:ClearLines()
         GameTooltip:AddLine("耐久：", 0.44, 0.75, 0.96)
         GameTooltip:AddLine(" ")
 

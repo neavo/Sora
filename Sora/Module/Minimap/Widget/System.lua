@@ -53,7 +53,6 @@ function S.Minimap.CreateSystem(parent)
 
     local function OnEnter(self, ...)
         GameTooltip:SetOwner(instance, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:ClearLines()
 
         local framerate = GetFramerate()
         local _, _, latencyHome, latencyWorld = GetNetStats()
@@ -65,8 +64,7 @@ function S.Minimap.CreateSystem(parent)
         GameTooltip:AddDoubleLine("实时帧数：", ("%.2f|cffffd700FPS|r"):format(framerate), 0.90, 0.90, 0.90, 0.90, 0.90, 0.90)
 
         GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("操作指南：左键点击切换 帧率/延迟 显示")
-
+        GameTooltip:AddLine("提示：左键点击切换 帧率/延迟 显示", 1.00, 0.84, 0.00)
         GameTooltip:Show()
     end
 

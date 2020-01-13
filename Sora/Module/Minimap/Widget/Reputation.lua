@@ -40,7 +40,6 @@ local function RegisterStyle(self, ...)
         local _, desc = GetFactionInfoByID(factionID)
 
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:ClearLines()
 
         GameTooltip:AddLine(self.onEnterInfoLine:GetText(), 0.44, 0.75, 0.96)
         GameTooltip:AddLine(" ")
