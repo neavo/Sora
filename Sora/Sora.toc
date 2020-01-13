@@ -1,4 +1,4 @@
-﻿## Interface: 80000
+﻿## Interface: 80205
 ## Title: |cff70C0F5Sora's|r
 ## Author: Neavo
 ## SavedVariables: SoraDB
