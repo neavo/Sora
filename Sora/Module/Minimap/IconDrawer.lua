@@ -84,6 +84,7 @@ local function CreateIcons(instance)
             v:SetSize(size, size)
             v:SetPoint("CENTER", icon, -2, 0)
             v:SetParent(icon)
+            v:RegisterForDrag(nil)
             v:HookScript("OnEnter", OnEnter)
             v:HookScript("OnLeave", OnLeave)
         end
