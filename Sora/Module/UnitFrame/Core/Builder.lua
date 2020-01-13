@@ -171,14 +171,17 @@ end
 
 -- Runes
 S.UnitFrame.CreateRunes = function(self, unit, ...)
-    if select(2, UnitClass("player")) ~= "DEATHKNIGHT" then
+    if S.GetClass() ~= "DEATHKNIGHT" then
         return 0
     end
 
     local runes = {}
-    local num, size = 6, (self:GetWidth() - (num - 1) * 4) / num
+    local size = (self:GetWidth() - (6 - 1) * 4) / 6
 
-    for i = 1, num do
+    runes.sortOrder = "asc"
+    runes.colorSpec = true
+
+    for i = 1, 6 do
         local rune = CreateFrame("StatusBar", nil, self)
         rune:SetSize(size, 4)
         rune:SetStatusBarTexture(DB.Statusbar)
@@ -188,7 +191,9 @@ S.UnitFrame.CreateRunes = function(self, unit, ...)
         rune.backgourd:SetFrameLevel(0)
         rune.backgourd:SetStatusBarTexture(DB.Statusbar)
         rune.backgourd:SetStatusBarColor(0.12, 0.12, 0.12)
+
         rune.backgourd.shadow = S.MakeShadow(rune.backgourd, 2)
+        rune.backgourd.shadow:SetFrameLevel(rune.backgourd:GetFrameLevel())
 
         if i == 1 then
             rune:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
@@ -196,10 +201,10 @@ S.UnitFrame.CreateRunes = function(self, unit, ...)
             rune:SetPoint("LEFT", runes[i - 1], "RIGHT", 4, 0)
         end
 
-        runes[i] = rune
+        table.insert(runes, rune)
     end
 
-    self.Runes = classPowers
+    self.Runes = runes
 end
 
 -- Totems
@@ -565,9 +570,11 @@ S.UnitFrame.CreateClassPowers = function(self, unit, ...)
         power.backgourd:SetFrameLevel(0)
         power.backgourd:SetStatusBarTexture(DB.Statusbar)
         power.backgourd:SetStatusBarColor(0.12, 0.12, 0.12)
-        power.backgourd.shadow = S.MakeShadow(power.backgourd, 2)
 
-        powers[i] = power
+        power.backgourd.shadow = S.MakeShadow(power.backgourd, 2)
+        power.backgourd.shadow:SetFrameLevel(power.backgourd:GetFrameLevel())
+
+        table.insert(powers, power)
     end
 
     local lastMax = nil

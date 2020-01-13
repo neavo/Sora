@@ -9,6 +9,11 @@ oUF.colors.power["RAGE"] = {1.00, 0.00, 0.00}
 oUF.colors.power["FOCUS"] = {1.00, 0.75, 0.25}
 oUF.colors.power["ENERGY"] = {0.65, 0.65, 0.35}
 oUF.colors.power["RUNIC_POWER"] = {0.44, 0.44, 0.44}
+oUF.colors.runes = {
+    {247 / 255 * 0.9, 65 / 255 * 0.9, 57 / 255 * 0.9}, -- blood
+    {148 / 255 * 0.9, 203 / 255 * 0.9, 247 / 255 * 0.9}, -- frost
+    {173 / 255 * 0.9, 235 / 255 * 0.9, 66 / 255 * 0.9} -- unholy
+}
 
 -- Functions
 local DyeText = function(unit, text, colorClass, colorReaction, colorDisabled)
