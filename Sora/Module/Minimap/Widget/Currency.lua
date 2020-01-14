@@ -56,21 +56,23 @@ function S.Minimap.CreateCurrency(parent)
         GameTooltip:AddLine(" ")
         GameTooltip:AddDoubleLine("金币：", FormatMoney(GetMoney()), 0.90, 0.90, 0.90, 0.90, 0.90, 0.90)
 
+        local start = false
         for i = 1, GetCurrencyListSize() do
             local name, isHeader, isExpanded, isUnused, isWatched, count, icon = GetCurrencyListInfo(i)
 
-            if i ~= 1 and isHeader then
+            if start and isHeader then
                 break
             end
 
             if not isHeader and not isUnused then
+                start = true
                 local iconStr = "|T" .. icon .. ":13:15:0:0:50:50:4:46:4:46|t"
                 GameTooltip:AddDoubleLine(name .. "：", count .. " " .. iconStr, 0.90, 0.90, 0.90, 0.90, 0.90, 0.90)
             end
         end
 
         GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("提示：自动监视最高优先级的货币分类", 1.00, 0.84, 0.00)
+        GameTooltip:AddLine("提示：自动监视第一个未折叠的货币分类", 1.00, 0.84, 0.00)
         GameTooltip:Show()
     end
 
