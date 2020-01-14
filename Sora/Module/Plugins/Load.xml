@@ -1,6 +1,7 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 
 	<Script file = "Font.lua" />
+	<Script file = "Reset.lua" />
 	<Script file = "Focuser.lua" />
 	<Script file = "ReloadUI.lua" />
 	<Script file = "DragEmAll.lua" />
