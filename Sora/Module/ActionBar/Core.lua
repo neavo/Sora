@@ -30,10 +30,59 @@ local function CreateAnchor()
     end
 end
 
+local function CreateAnchorLeftSide()
+    local width = C.ActionBar.Size
+    local height = C.ActionBar.Size * 12 + C.ActionBar.Space * 11
+
+    local anchor = S.CreateButton(UIParent, 16, "SoraActionBarLeftSide")
+    anchor:Hide()
+    anchor:SetText("左\n侧\n动\n作\n条")
+    anchor:SetSize(width, height)
+    anchor:SetPoint(unpack(SoraDB.ActionBar.PostionLeftSide))
+    anchor:SetMovable(true)
+    anchor:EnableMouse(true)
+    anchor:SetToplevel(true)
+    anchor:SetFrameStrata("DIALOG")
+    anchor:RegisterForDrag("LeftButton")
+    anchor:SetClampedToScreen(true)
+
+    if C.Config.ActionBar.Mover and C.Config.ActionBar.Mover.SoraActionBarLeftSide then
+        anchor:SetScript("OnDragStop", C.Config.ActionBar.Mover.SoraActionBarLeftSide.OnDragStop)
+        anchor:SetScript("OnDragStart", C.Config.ActionBar.Mover.SoraActionBarLeftSide.OnDragStart)
+
+        C.Config.ActionBar.Mover.SoraActionBarLeftSide.anchor = anchor
+    end
+end
+
+local function CreateAnchorRightSide()
+    local width = C.ActionBar.Size
+    local height = C.ActionBar.Size * 12 + C.ActionBar.Space * 11
+
+    local anchor = S.CreateButton(UIParent, 16, "SoraActionBarRightSide")
+    anchor:Hide()
+    anchor:SetText("右\n侧\n动\n作\n条")
+    anchor:SetSize(width, height)
+    anchor:SetPoint(unpack(SoraDB.ActionBar.PostionRightSide))
+    anchor:SetMovable(true)
+    anchor:EnableMouse(true)
+    anchor:SetToplevel(true)
+    anchor:SetFrameStrata("DIALOG")
+    anchor:RegisterForDrag("LeftButton")
+    anchor:SetClampedToScreen(true)
+
+    if C.Config.ActionBar.Mover and C.Config.ActionBar.Mover.SoraActionBarRightSide then
+        anchor:SetScript("OnDragStop", C.Config.ActionBar.Mover.SoraActionBarRightSide.OnDragStop)
+        anchor:SetScript("OnDragStart", C.Config.ActionBar.Mover.SoraActionBarRightSide.OnDragStart)
+
+        C.Config.ActionBar.Mover.SoraActionBarRightSide.anchor = anchor
+    end
+end
+
 -- Begin
 local function CreateMainBar(self, event, ...)
     rActionBar:CreateActionBar1(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
             framePoint = {SoraActionBar:GetPoint()},
             framePadding = 0,
@@ -46,7 +95,8 @@ local function CreateMainBar(self, event, ...)
     )
 
     rActionBar:CreateActionBar2(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
             framePoint = {"BOTTOM", SoraBar1, "TOP", 0, C.ActionBar.Space},
             framePadding = 0,
@@ -61,9 +111,10 @@ end
 
 local function CreateSideBar(self, event, ...)
     rActionBar:CreateActionBar4(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
-            framePoint = {"LEFT", UIParent, C.ActionBar.Space, 0},
+            framePoint = {SoraActionBarLeftSide:GetPoint()},
             framePadding = 0,
             buttonWidth = C.ActionBar.Size,
             buttonHeight = C.ActionBar.Size,
@@ -74,9 +125,10 @@ local function CreateSideBar(self, event, ...)
     )
 
     rActionBar:CreateActionBar5(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
-            framePoint = {"RIGHT", UIParent, -C.ActionBar.Space, 0},
+            framePoint = {SoraActionBarRightSide:GetPoint()},
             framePadding = 0,
             buttonWidth = C.ActionBar.Size,
             buttonHeight = C.ActionBar.Size,
@@ -89,7 +141,8 @@ end
 
 local function CreateFunctionBar(self, event, ...)
     rActionBar:CreateActionBar3(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
             framePoint = {"BOTTOMLEFT", SoraBar1, "BOTTOMRIGHT", C.ActionBar.Space * 3, 0},
             framePadding = 0,
@@ -125,7 +178,8 @@ end
 
 local function CreatePetBar(self, event, ...)
     rActionBar:CreatePetBar(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
             framePoint = {"BOTTOMLEFT", SoraBar2, "TOPLEFT", 0, C.ActionBar.Space},
             framePadding = 0,
@@ -136,12 +190,12 @@ local function CreatePetBar(self, event, ...)
             startPoint = "LEFT"
         }
     )
-
 end
 
 local function CreateStanceBar(self, event, ...)
     rActionBar:CreateStanceBar(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
             framePoint = {"BOTTOMLEFT", SoraBar2, "TOPLEFT", 0, C.ActionBar.Space},
             framePadding = 0,
@@ -156,10 +210,15 @@ end
 
 local function CreateExtraBar(self, event, ...)
     rActionBar:CreateExtraBar(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
             framePoint = {
-                "BOTTOM", SoraBar2, "TOP", 0, C.ActionBar.Size + C.ActionBar.Space * 2 + 16
+                "BOTTOM",
+                SoraBar2,
+                "TOP",
+                0,
+                C.ActionBar.Size + C.ActionBar.Space * 2 + 16
             },
             framePadding = 0,
             buttonWidth = C.ActionBar.Size,
@@ -173,7 +232,8 @@ end
 
 local function CreateVehicleExitBar(self, event, ...)
     rActionBar:CreateVehicleExitBar(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
             framePoint = {"BOTTOMRIGHT", SoraBar2, "TOPRIGHT", 0, C.ActionBar.Space},
             framePadding = 0,
@@ -188,7 +248,8 @@ end
 
 local function CreatePossessExitBar(self, event, ...)
     rActionBar:CreatePossessExitBar(
-        "Sora", {
+        "Sora",
+        {
             frameScale = 1.0,
             framePoint = {"BOTTOMRIGHT", SoraBar2, "TOPRIGHT", 0, C.ActionBar.Space},
             framePadding = 0,
@@ -209,6 +270,10 @@ local function OnMultiActionBarUpdateGridVisibility()
     local showgrid = tonumber(GetCVar("alwaysShowActionBars"))
 
     for i = 1, NUM_ACTIONBAR_BUTTONS do
+        -- local button = _G["ActionButton" .. i]
+        -- local button = _G["MultiBarLeftButton" .. i]
+        -- local button = _G["MultiBarRightButton" .. i]
+        -- local button = _G["MultiBarBottomLeftButton" .. i]
         local button = _G["MultiBarBottomRightButton" .. i]
 
         if not button then
@@ -229,6 +294,8 @@ end
 
 local function OnPlayerLogin(self, event, ...)
     CreateAnchor(self, event, ...)
+    CreateAnchorLeftSide(self, event, ...)
+    CreateAnchorRightSide(self, event, ...)
 
     CreateMainBar(self, event, ...)
     CreateSideBar(self, event, ...)

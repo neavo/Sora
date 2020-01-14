@@ -12,6 +12,8 @@ local function CreateDB(self, ...)
     SoraDB.ActionBar.Size = SoraDB.ActionBar.Size or 36
     SoraDB.ActionBar.Space = SoraDB.ActionBar.Space or 8
     SoraDB.ActionBar.Postion = SoraDB.ActionBar.Postion or {"BOTTOM", "UIParent", "BOTTOM", 0, 8}
+    SoraDB.ActionBar.PostionLeftSide = SoraDB.ActionBar.PostionLeftSide or {"LEFT", "UIParent", "LEFT", 0, 8}
+    SoraDB.ActionBar.PostionRightSide = SoraDB.ActionBar.PostionRightSide or {"RIGHT", "UIParent", "RIGHT", 0, 8}
 
     C.ActionBar = S.Copy(SoraDB.ActionBar)
 end
@@ -109,6 +111,28 @@ local function CreateConfig(self, ...)
 
                 SoraDB.ActionBar.Postion = {self:GetPoint()}
                 SoraDB.ActionBar.Postion[2] = "UIParent"
+            end,
+            OnDragStart = function(self, ...)
+                self:StartMoving()
+            end
+        },
+        SoraActionBarLeftSide = {
+            OnDragStop = function(self, ...)
+                self:StopMovingOrSizing()
+
+                SoraDB.ActionBar.PostionLeftSide = {self:GetPoint()}
+                SoraDB.ActionBar.PostionLeftSide[2] = "UIParent"
+            end,
+            OnDragStart = function(self, ...)
+                self:StartMoving()
+            end
+        },
+        SoraActionBarRightSide = {
+            OnDragStop = function(self, ...)
+                self:StopMovingOrSizing()
+
+                SoraDB.ActionBar.PostionRightSide = {self:GetPoint()}
+                SoraDB.ActionBar.PostionRightSide[2] = "UIParent"
             end,
             OnDragStart = function(self, ...)
                 self:StartMoving()
