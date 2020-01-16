@@ -12,8 +12,8 @@ local function CreateDB(self, ...)
     SoraDB.ActionBar.Size = SoraDB.ActionBar.Size or 36
     SoraDB.ActionBar.Space = SoraDB.ActionBar.Space or 8
     SoraDB.ActionBar.Postion = SoraDB.ActionBar.Postion or {"BOTTOM", "UIParent", "BOTTOM", 0, 8}
-    SoraDB.ActionBar.PostionLeftSide = SoraDB.ActionBar.PostionLeftSide or {"LEFT", "UIParent", "LEFT", 0, 8}
-    SoraDB.ActionBar.PostionRightSide = SoraDB.ActionBar.PostionRightSide or {"RIGHT", "UIParent", "RIGHT", 0, 8}
+    SoraDB.ActionBar.PostionLeftSide = SoraDB.ActionBar.PostionLeftSide or {"LEFT", "UIParent", "LEFT", 8, 0}
+    SoraDB.ActionBar.PostionRightSide = SoraDB.ActionBar.PostionRightSide or {"RIGHT", "UIParent", "RIGHT", -8, 0}
 
     C.ActionBar = S.Copy(SoraDB.ActionBar)
 end
@@ -37,7 +37,8 @@ local function CreateConfig(self, ...)
                     SoraDB.ActionBar.Size = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "slider",
             key = "SoraDB.ActionBar.Space",
             text = "动作条按钮间距",
@@ -49,7 +50,8 @@ local function CreateConfig(self, ...)
                     SoraDB.ActionBar.Space = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "button",
             text = "切换锚点显示状态",
             OnClick = function(self, btn, ...)
@@ -63,14 +65,17 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        },  {type = "space"},{
+        },
+        {type = "space"},
+        {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -84,7 +89,8 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)
