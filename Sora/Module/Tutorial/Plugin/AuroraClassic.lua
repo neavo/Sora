@@ -7,37 +7,36 @@ local function OnPlayerLogin(self, event, ...)
 		return 0
 	end
 
-	AuroraConfig = {
-		["useButtonGradientColour"] = false,
-		["shadow"] = true,
-		["reskinFont"] = false,
-		["uiScale"] = 0.7111111283302307,
-		["chatBubbles"] = true,
-		["bags"] = true,
-		["alpha"] = 0.5,
-		["fontScale"] = 1,
-		["objectiveTracker"] = true,
-		["buttonGradientColour"] = {
-			0.3, -- [1]
-			0.3, -- [2]
-			0.3, -- [3]
-			0.3 -- [4]
-		},
-		["loot"] = true,
-		["tooltips"] = false,
-		["useCustomColour"] = false,
-		["customColour"] = {
-			["b"] = 1,
-			["g"] = 1,
-			["r"] = 1
-		},
-		["bubbleColor"] = true,
-		["buttonSolidColour"] = {
+	AuroraClassicDB = {
+		["Shadow"] = true,
+		["FlatMode"] = true,
+		["ChatBubbles"] = true,
+		["FlatColor"] = {
 			0.2, -- [1]
 			0.2, -- [2]
 			0.2, -- [3]
-			0.6 -- [4]
-		}
+			0.6, -- [4]
+		},
+		["Bags"] = false,
+		["Alpha"] = 0.5,
+		["CustomColor"] = {
+			["r"] = 1,
+			["g"] = 1,
+			["b"] = 1,
+		},
+		["FontOutline"] = true,
+		["ObjectiveTracker"] = true,
+		["Loot"] = true,
+		["UIScale"] = 0.71111,
+		["FontScale"] = 1,
+		["GradientColor"] = {
+			0.3, -- [1]
+			0.3, -- [2]
+			0.3, -- [3]
+			0.3, -- [4]
+		},
+		["Tooltips"] = false,
+		["UseCustomColor"] = false,
 	}
 end
 
