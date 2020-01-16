@@ -18,8 +18,7 @@ local colors = {
 local function OnPlayerLogin(self, event, ...)
     local btn = nil
     local btns = {}
-    DBT_AllPersistentOptions["Default"]["DBM"].BarYOffset = 15
-    DBT_AllPersistentOptions["Default"]["DBM"].HugeBarYOffset = 15
+
     local anchor = CreateFrame("Frame", nil, UIParent)
     anchor:SetSize(14 * 9 + 4 * 8, 14)
     anchor:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 0, 4)
