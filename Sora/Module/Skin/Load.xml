@@ -1,5 +1,5 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 	
-	<!-- <Script file = "AdiBags.lua"/> -->
+	<Script file = "AdiBags.lua"/>
 	
 </Ui>
