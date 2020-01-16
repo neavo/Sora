@@ -360,3 +360,11 @@ function S.CreateEventHandler()
 
     return handler
 end
+
+function S.HexToRGB(hex)
+    local r = tonumber(string.sub(hex, 1, 2), 16)
+    local g = tonumber(string.sub(hex, 3, 4), 16)
+    local b = tonumber(string.sub(hex, 5, 6), 16)
+
+    return r / 255, g / 255, b / 255
+end
