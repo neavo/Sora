@@ -4,16 +4,22 @@ local S, C, L, DB = unpack(select(2, ...))
 -- Variables
 local channels = {"/s ", "/y ", "/p ", "/g ", "/raid ", "/1 ", "/2 "}
 local colors = {
-    {255 / 255, 255 / 255, 255 / 255}, {255 / 255, 64 / 255, 64 / 255}, {170 / 255, 170 / 255, 255 / 255},
-    {64 / 255, 255 / 255, 64 / 255}, {255 / 255, 127 / 255, 0 / 255}, {210 / 255, 180 / 255, 140 / 255},
-    {160 / 255, 120 / 255, 90 / 255}, {255 / 255, 255 / 255, 0 / 255}
+    {255 / 255, 255 / 255, 255 / 255},
+    {255 / 255, 64 / 255, 64 / 255},
+    {170 / 255, 170 / 255, 255 / 255},
+    {64 / 255, 255 / 255, 64 / 255},
+    {255 / 255, 127 / 255, 0 / 255},
+    {210 / 255, 180 / 255, 140 / 255},
+    {160 / 255, 120 / 255, 90 / 255},
+    {255 / 255, 255 / 255, 0 / 255}
 }
 
 -- Begin
 local function OnPlayerLogin(self, event, ...)
     local btn = nil
     local btns = {}
-
+    DBT_AllPersistentOptions["Default"]["DBM"].BarYOffset = 15
+    DBT_AllPersistentOptions["Default"]["DBM"].HugeBarYOffset = 15
     local anchor = CreateFrame("Frame", nil, UIParent)
     anchor:SetSize(14 * 9 + 4 * 8, 14)
     anchor:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 0, 4)
@@ -34,12 +40,11 @@ local function OnPlayerLogin(self, event, ...)
         end
     end
 
-    local function OnClick(self, btn, ...)
-        ChatFrame_OpenChat(channels[i])
-        PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
-    end
-
     for i = 1, 9 do
+        local function OnClick(self, btn, ...)
+            PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
+            ChatFrame_OpenChat(channels[i], SELECTED_DOCK_FRAME)
+        end
 
         if i < 8 then
             btn = CreateFrame("Button", nil, anchor)
