@@ -3,6 +3,7 @@
 	<Script file = "Config.lua"/>
 
 	<Script file = "Core.lua"/>
+	<Script file = "Plugin\DBM.lua"/>
 	<Script file = "Plugin\CVar.lua"/>
 	<Script file = "Plugin\Chat.lua"/>
 	<Script file = "Plugin\AdiBags.lua"/>
