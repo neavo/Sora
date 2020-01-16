@@ -249,9 +249,7 @@ C.themes["Blizzard_Communities"] = function()
 	F.Reskin(CommunitiesFrame.CommunitiesControlFrame.GuildControlButton)
 	F.Reskin(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton)
 	F.Reskin(CommunitiesFrame.CommunitiesControlFrame.CommunitiesSettingsButton)
-	if C.isNewPatch then
-		F.ReskinDropDown(CommunitiesFrame.CommunityMemberListDropDownMenu)
-	end
+	F.ReskinDropDown(CommunitiesFrame.CommunityMemberListDropDownMenu)
 
 	local detailFrame = CommunitiesFrame.GuildMemberDetailFrame
 	F.StripTextures(detailFrame)
@@ -313,9 +311,9 @@ C.themes["Blizzard_Communities"] = function()
 					end
 
 					if avatarButton.Selected:IsShown() then
-						avatarButton.bg:SetVertexColor(r, g, b)
+						avatarButton.bg:SetBackdropBorderColor(r, g, b)
 					else
-						avatarButton.bg:SetVertexColor(0, 0, 0)
+						avatarButton.bg:SetBackdropBorderColor(0, 0, 0)
 					end
 				end
 			end

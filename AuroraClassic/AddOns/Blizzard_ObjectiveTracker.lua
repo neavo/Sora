@@ -1,7 +1,7 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
-	if not AuroraConfig.objectiveTracker then return end
+	if not AuroraClassicDB.ObjectiveTracker then return end
 
 	local r, g, b = C.r, C.g, C.b
 
@@ -122,7 +122,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		if not block.bg then
 			block.bg = F.CreateBDFrame(block.GlowTexture)
 			block.bg:SetPoint("TOPLEFT", block.GlowTexture, 4, -2)
-			block.bg:SetPoint("BOTTOMRIGHT", block.GlowTexture, -4, 0)
+			block.bg:SetPoint("BOTTOMRIGHT", block.GlowTexture, -4, 2)
 			F.CreateSD(block.bg)
 		end
 	end)
