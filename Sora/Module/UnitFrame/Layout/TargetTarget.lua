@@ -18,6 +18,7 @@ local function RegisterStyle(self, unit, ...)
     S.UnitFrame.CreateHealth(self,unit, ...)
 
     S.UnitFrame.CreateTag(self,unit, ...)
+    S.UnitFrame.CreatePortrait(self,unit, ...)
     S.UnitFrame.CreateQuickMark(self,unit, ...)
     S.UnitFrame.CreateRaidTargetIndicator(self,unit, ...)
 end

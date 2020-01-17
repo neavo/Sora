@@ -95,7 +95,7 @@ oUF.Tags.Methods["UnitFrame:ShortName"] = function(unit)
     local name = UnitName(unit) or ""
 
     if name then
-        name = S.SubString(name, 3, "...")
+        name = S.SubString(name, 5, "...")
     end
 
     return DyeText(unit, name)
@@ -115,9 +115,23 @@ oUF.Tags.Methods["UnitFrame:PerHealth"] = function(unit)
     if curValue and maxValue and curValue > 0 and maxValue > 0 then
         percent = math.floor(curValue / maxValue * 100 + 0.5)
     end
+
     return DyeText(unit, S.FormatInteger(percent) .. "%")
 end
 oUF.Tags.Events["UnitFrame:PerHealth"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_FACTION"
+
+oUF.Tags.Methods["UnitFrame:ShortPerHealth"] = function(unit)
+    local percent = 0
+    local curValue = UnitHealth(unit)
+    local maxValue = UnitHealthMax(unit)
+
+    if curValue and maxValue and curValue > 0 and maxValue > 0 then
+        percent = math.floor(curValue / maxValue * 100 + 0.5)
+    end
+
+    return (percent > 0 and percent < 100) and DyeText(unit, S.FormatInteger(percent) .. "%") or ""
+end
+oUF.Tags.Events["UnitFrame:ShortPerHealth"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_FACTION"
 
 oUF.Tags.Methods["UnitFrame:Power"] = function(unit)
     return DyeText(unit, S.FormatInteger(UnitPower(unit)))

@@ -109,15 +109,20 @@ S.UnitFrame.CreateTag = function(self, unit, ...)
         self.powerTag = powerTag
         self.healthTag = healthTag
     elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
-        local nameTag = S.MakeText(self.Health, 9.5)
-        nameTag:SetPoint("TOPLEFT", -2, 2)
+        local nameTag = S.MakeText(self.Health, 10)
+        nameTag:SetAlpha(0.00)
+        nameTag:SetPoint("CENTER", 0, 0)
         self:Tag(nameTag, "[UnitFrame:ShortName]")
 
         local healthTag = S.MakeText(self.Health, 8.5)
-        healthTag:SetPoint("BOTTOMRIGHT", self.Health, 5, -2)
-        self:Tag(healthTag, "[UnitFrame:PerHealth]")
+        healthTag:SetAlpha(0.00)
+        healthTag:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT", 0, 2)
+        self:Tag(healthTag, "[UnitFrame:ShortPerHealth]")
+
+        self.nameTag = nameTag
+        self.healthTag = healthTag
     elseif unit == "raid" then
-        local nameTag = S.MakeText(self.Health, 10.5)
+        local nameTag = S.MakeText(self.Health, 11)
         nameTag:SetPoint("CENTER", 0, 0)
         self:Tag(nameTag, "[UnitFrame:Name]")
 
