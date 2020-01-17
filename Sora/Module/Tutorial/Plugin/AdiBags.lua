@@ -55,6 +55,18 @@ local function OnPlayerLogin(self, event, ...)
 				["scale"] = 1,
 				["maxHeight"] = 0.90,
 				["skin"] = {
+					["BackpackColor"] = {
+						0, -- [1]
+						0, -- [2]
+						0, -- [3]
+						0.75 -- [4]
+					},
+					["BankColor"] = {
+						0, -- [1]
+						0, -- [2]
+						0, -- [3]
+						0.75 -- [4]
+					},
 					["border"] = "None",
 					["borderWidth"] = 1,
 					["insets"] = 0
