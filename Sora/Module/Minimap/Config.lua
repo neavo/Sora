@@ -43,7 +43,7 @@ local function CreateConfig(self, ...)
             type = "dropdown",
             text = "图标抽屉位置",
             key = "SoraDB.Minimap.IconDrawerSide",
-            options = {["小地图左侧"] = 1, ["小地图右侧"] = 2},
+            options = {["小地图右侧"] = 1, ["小地图左侧"] = 2},
             OnDataChanged = function(self, data, ...)
                 if data.value ~= nil then
                     SoraDB.Minimap.IconDrawerSide = data.value
