@@ -6,24 +6,25 @@ local function IsTextRegion(k, v)
 	return type(v) == "table" and v.GetObjectType and v:GetObjectType() == "Font" and v.GetFont
 end
 
-local function ProcessTextRegion(text, scale)
-	if text.__Processed then
+local function ProcessTextRegion(fontString, scale)
+	if fontString.__Processed then
 		return 0
 	end
 
-	local font, size, flag = text:GetFont()
+	local font, size, flag = fontString:GetFont()
 
 	if size <= 0 then
 		return 0
 	end
 
-	local p = C.Core.Pixel or 1.00
+	local s = C.Core.FontShadow == nil and true or C.Core.FontShadow
+	local o = C.Core.FontOutline == nil and true or C.Core.FontOutline
 
-	text:SetFont(STANDARD_TEXT_FONT, size * scale, "OUTLINE")
-	text:SetShadowOffset(1.00 * p, -1.00 * p)
-	text:SetShadowColor(0.00, 0.00, 0.00, 0.50)
+	fontString:SetShadowOffset(1.00, -1.00)
+	fontString:SetShadowColor(0.00, 0.00, 0.00, s and 1.00 or 0.00)
+	fontString:SetFont(STANDARD_TEXT_FONT, size * scale, o and "OUTLINE" or nil)
 
-	text.__Processed = true
+	fontString.__Processed = true
 end
 
 -- Special for PaperDollFrame

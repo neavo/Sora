@@ -8,7 +8,10 @@ C.Core = C.Core or {}
 local function CreateDB(self, ...)
     SoraDB = SoraDB or {}
     SoraDB.Core = SoraDB.Core or {}
+
     SoraDB.Core.UIScale = SoraDB.Core.UIScale or 1.00
+    SoraDB.Core.FontShadow = SoraDB.Core.FontShadow == nil and true or SoraDB.Core.FontShadow
+    SoraDB.Core.FontOutline = SoraDB.Core.FontOutline == nil and true or SoraDB.Core.FontOutline
     SoraDB.Core.Pixel = 1080 / select(2, GetPhysicalScreenSize()) -- 考虑到分辨率会变动，像素尺寸应该在每次加载时实时计算
 
     C.Core = S.Copy(SoraDB.Core)
@@ -34,14 +37,37 @@ local function CreateConfig(self, ...)
                     SoraDB.Core.UIScale = data.value
                 end
             end
-        }, {type = "space"}, {
+        },
+        {type = "space"},
+        {
+            type = "checkbox",
+            key = "SoraDB.Core.FontShadow",
+            text = "全局字体阴影",
+            OnDataChanged = function(self, data, ...)
+                if S.ToBoolean(data.value) ~= nil then
+                    SoraDB.Core.FontShadow = data.value
+                end
+            end
+        },
+        {
+            type = "checkbox",
+            key = "SoraDB.Core.FontOutline",
+            text = "全局字体描边",
+            OnDataChanged = function(self, data, ...)
+                if S.ToBoolean(data.value) ~= nil then
+                    SoraDB.Core.FontOutline = data.value
+                end
+            end
+        },
+        {
             type = "button",
             text = "重置全部设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "即将为您重置全部 |cff70C0F5Sora's|r 设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -56,7 +82,8 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)

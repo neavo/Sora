@@ -83,11 +83,12 @@ local function CreateCheckBoxUnit(self, data)
     data.value = GetData(data.key)
     unit.core = S.CreateCheckBox(unit)
     unit.core:SetData(data)
-    unit.core:SetPoint("CENTER", unit, "CENTER", 0, 0)
     unit.core:SetBoxSize(14, 14)
 
     unit.core.text = S.MakeText(unit.core, 12)
     unit.core.text:SetText(data.text)
+
+    unit.core:SetPoint("CENTER", unit, "CENTER", -(unit.core.text:GetWidth() + 12) / 2, 0)
     unit.core.text:SetPoint("LEFT", unit.core, "RIGHT", 12, 0)
 
     return unit

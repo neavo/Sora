@@ -6,13 +6,14 @@ local void = CreateFrame("Frame", nil, nil)
 
 -- Common
 function S.MakeText(parent, size)
-    local p = C.Core.Pixel or 1.00
+    local s = C.Core.FontShadow == nil and true or C.Core.FontShadow
+    local o = C.Core.FontOutline == nil and true or C.Core.FontOutline
 
     local fontString = parent:CreateFontString(nil, "ARTWORK")
-    fontString:SetTextColor(0.90, 0.90, 0.90)
-    fontString:SetShadowOffset(1.00 * p, -1.00 * p)
-    fontString:SetShadowColor(0.00, 0.00, 0.00, 0.50)
-    fontString:SetFont(STANDARD_TEXT_FONT, size, "OUTLINE")
+    fontString:SetTextColor(0.90, 0.90, 0.90, 1.00)
+    fontString:SetShadowOffset(1.00, -1.00)
+    fontString:SetShadowColor(0.00, 0.00, 0.00, s and 1.00 or 0.00)
+    fontString:SetFont(STANDARD_TEXT_FONT, size, o and "OUTLINE" or nil)
 
     return fontString
 end
