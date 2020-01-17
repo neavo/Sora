@@ -10,6 +10,7 @@ local function CreateDB(self, ...)
     SoraDB.Minimap = SoraDB.Minimap or {}
 
     SoraDB.Minimap.Size = SoraDB.Minimap.Size or 150
+    SoraDB.Minimap.IconDrawerSide = SoraDB.Minimap.IconDrawerSide or 1
     SoraDB.Minimap.IconDrawerPerRow = SoraDB.Minimap.IconDrawerPerRow or 5
     SoraDB.Minimap.Postion = SoraDB.Minimap.Postion or {"TOPLEFT", "UIParent", "TOPLEFT", 8, -8}
 
@@ -34,6 +35,18 @@ local function CreateConfig(self, ...)
             OnDataChanged = function(self, data, ...)
                 if data.value then
                     SoraDB.Minimap.Size = data.value
+                end
+            end
+        },
+        {type = "space"},
+        {
+            type = "dropdown",
+            text = "图标抽屉位置",
+            key = "SoraDB.Minimap.IconDrawerSide",
+            options = {["小地图左侧"] = 1, ["小地图右侧"] = 2},
+            OnDataChanged = function(self, data, ...)
+                if data.value ~= nil then
+                    SoraDB.Minimap.IconDrawerSide = data.value
                 end
             end
         },

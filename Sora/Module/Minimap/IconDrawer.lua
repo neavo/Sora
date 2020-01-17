@@ -89,12 +89,22 @@ local function CreateIcons(instance)
             v:HookScript("OnLeave", OnLeave)
         end
 
-        if k == 1 then
-            icon:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 4, 0)
-        elseif mod(k, perRow) == 1 then
-            icon:SetPoint("TOPRIGHT", icons[k - perRow], "TOPLEFT", -4, 0)
-        else
-            icon:SetPoint("TOP", icons[k - 1], "BOTTOM", 0, -4)
+        if C.Minimap.IconDrawerSide == 1 then
+            if k == 1 then
+                icon:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 4, 0)
+            elseif mod(k, perRow) == 1 then
+                icon:SetPoint("TOPRIGHT", icons[k - perRow], "TOPLEFT", -4, 0)
+            else
+                icon:SetPoint("TOP", icons[k - 1], "BOTTOM", 0, -4)
+            end
+        elseif C.Minimap.IconDrawerSide == 2 then
+            if k == 1 then
+                icon:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -4, 0)
+            elseif mod(k, perRow) == 1 then
+                icon:SetPoint("TOPLEFT", icons[k - perRow], "TOPRIGHT", 4, 0)
+            else
+                icon:SetPoint("TOP", icons[k - 1], "BOTTOM", 0, -4)
+            end
         end
 
         table.insert(icons, icon)
