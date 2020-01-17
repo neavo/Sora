@@ -11,8 +11,7 @@ local function IsCaster()
     local _, class = UnitClass("player")
     local specialization = GetSpecialization()
 
-    return select(5, GetSpecializationInfo(specialization)) == "HEALER" or (class == "MAGE") or
-        (class == "DRUID" and specialization == 1) or
+    return select(5, GetSpecializationInfo(specialization)) == "HEALER" or (class == "MAGE") or (class == "DRUID" and specialization == 1) or
         (class == "PRIEST") or
         (class == "SHAMAN" and specialization == 1) or
         (class == "WARLOCK")
@@ -73,6 +72,9 @@ S.UnitFrame.CreateHealth = function(self, unit, ...)
     health.bg:SetTexture(DB.Statusbar)
     health.bg.multiplier = 0.12
 
+    health.shadow = S.MakeShadow(health, 2)
+    health.shadow:SetFrameLevel(health:GetFrameLevel())
+
     health.Smooth = true
     health.colorTapping = true
     health.colorDisconnected = true
@@ -81,7 +83,6 @@ S.UnitFrame.CreateHealth = function(self, unit, ...)
     health.colorSmooth = true
     health.colorHealth = true
     health.frequentUpdates = true
-    health.shadow = S.MakeShadow(health, 2)
 
     self.Health = health
 end
@@ -108,20 +109,20 @@ S.UnitFrame.CreateTag = function(self, unit, ...)
         self.powerTag = powerTag
         self.healthTag = healthTag
     elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
-        local nameTag = S.MakeText(self.Health, 9)
-        nameTag:SetPoint("TOPLEFT", 1, -1)
+        local nameTag = S.MakeText(self.Health, 9.5)
+        nameTag:SetPoint("TOPLEFT", -2, 2)
         self:Tag(nameTag, "[UnitFrame:ShortName]")
 
-        local healthTag = S.MakeText(self.Health, 8)
-        healthTag:SetPoint("BOTTOMRIGHT", self.Health, 1, -1)
+        local healthTag = S.MakeText(self.Health, 8.5)
+        healthTag:SetPoint("BOTTOMRIGHT", self.Health, 5, -2)
         self:Tag(healthTag, "[UnitFrame:PerHealth]")
     elseif unit == "raid" then
-        local nameTag = S.MakeText(self.Health, 10)
+        local nameTag = S.MakeText(self.Health, 10.5)
         nameTag:SetPoint("CENTER", 0, 0)
         self:Tag(nameTag, "[UnitFrame:Name]")
 
-        local statusTag = S.MakeText(self.Health, 7)
-        statusTag:SetPoint("CENTER", 0, -10)
+        local statusTag = S.MakeText(self.Health, 8.0)
+        statusTag:SetPoint("CENTER", 0, -12)
         self:Tag(statusTag, "[UnitFrame:Status]")
 
         self.NameTag = nameTag
@@ -157,8 +158,8 @@ S.UnitFrame.CreateAuras = function(self, unit, ...)
         aura.icon:SetAllPoints()
         aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-        aura.count = S.MakeText(anchor, 5)
-        aura.count:SetPoint("BOTTOMRIGHT", 3, 0)
+        aura.count = S.MakeText(anchor, 7)
+        aura.count:SetPoint("BOTTOMRIGHT", 4, -2)
 
         aura.shadow = S.MakeShadow(aura, 2)
         aura.shadow:SetFrameLevel(aura:GetFrameLevel())
