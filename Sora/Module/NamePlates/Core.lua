@@ -105,7 +105,7 @@ S.NamePlates.CreateAuras = function(self, unit, ...)
         aura.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
         aura.count = S.MakeText(anchor, 5)
-        aura.count:SetPoint("BOTTOMRIGHT", 3, 0)
+        aura.count:SetPoint("BOTTOMRIGHT", 3, -2)
 
         aura.shadow = S.MakeShadow(aura, 2)
         aura.shadow:SetFrameLevel(aura:GetFrameLevel())
