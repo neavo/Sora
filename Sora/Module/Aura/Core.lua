@@ -5,8 +5,14 @@ local S, C, L, DB = unpack(select(2, ...))
 local size, space, postion = nil, nil, nil
 
 -- Common
-local function Initialize()
-    size, space, postion = C.Aura.Size, C.Aura.Space, C.Aura.Postion
+local function DoSkin(aura, i)
+    aura.count:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
+    aura.count:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+    aura.count:SetShadowOffset(1.00, -1.00)
+
+    aura.duration:SetFont(DB.AuraFont, 12, "OUTLINE")
+    aura.duration:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+    aura.duration:SetShadowOffset(1.00, -1.00)
 end
 
 local function CreateAnchor()
@@ -42,8 +48,6 @@ local function HookAuraButtonUpdateDuration(self, timeLeft, ...)
 end
 
 local function HookDebuffButtonUpdateAnchors(name, index, ...)
-    local anchor = SoraAura
-
     for i = 1, DEBUFF_MAX_DISPLAY do
         local aura = _G["DebuffButton" .. i]
 
@@ -51,26 +55,28 @@ local function HookDebuffButtonUpdateAnchors(name, index, ...)
             return 0
         end
 
+        if not aura.__skined then
+            DoSkin(aura)
+            aura.__skined = true
+        end
+
         aura:ClearAllPoints()
         aura:SetSize(size, size)
 
+        aura.count:ClearAllPoints()
+        aura.count:SetPoint("TOPRIGHT", -1, -1)
+
         if i == 1 then
-            aura:SetPoint("TOPRIGHT", anchor, "TOPRIGHT", 0, -(size * 3 + space * 3))
+            aura:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, -(size * 3 + space * 3))
         elseif mod(i, 12) == 1 then
             aura:SetPoint("TOP", _G["DebuffButton" .. (i - 12)], "BOTTOM", 0, -space)
         else
             aura:SetPoint("RIGHT", _G["DebuffButton" .. (i - 1)], "LEFT", -space, 0)
         end
-
-        aura.duration:SetShadowOffset(1, -1)
-        aura.duration:SetShadowColor(0, 0, 0, 0.5)
-        aura.duration:SetFont(DB.AuraFont, 12, "OUTLINE")
     end
 end
 
 local function HookBuffFrameUpdateAllBuffAnchors(self, ...)
-    local anchor = SoraAura
-
     for i = 1, BUFF_MAX_DISPLAY do
         local aura = _G["BuffButton" .. i]
 
@@ -78,26 +84,34 @@ local function HookBuffFrameUpdateAllBuffAnchors(self, ...)
             return 0
         end
 
+        if not aura.__skined then
+            DoSkin(aura)
+            aura.__skined = true
+        end
+
         aura:ClearAllPoints()
         aura:SetSize(size, size)
 
+        aura.count:ClearAllPoints()
+        aura.count:SetPoint("TOPRIGHT", -1, -1)
+
         if i == 1 then
-            aura:SetPoint("TOPRIGHT", anchor, "TOPRIGHT", 0, 0)
+            aura:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, 0)
         elseif mod(i, 12) == 1 then
             aura:SetPoint("TOP", _G["BuffButton" .. (i - 12)], "BOTTOM", 0, -space)
         else
             aura:SetPoint("RIGHT", _G["BuffButton" .. (i - 1)], "LEFT", -space, 0)
         end
-
-        aura.duration:SetShadowOffset(1, -1)
-        aura.duration:SetShadowColor(0, 0, 0, 0.5)
-        aura.duration:SetFont(DB.AuraFont, 12, "OUTLINE")
     end
 end
 
 -- Event
+local function OnInitialize()
+    size, space, postion = C.Aura.Size, C.Aura.Space, C.Aura.Postion
+end
+
 local function OnPlayerLogin(self, event, ...)
-    Initialize()
+    OnInitialize()
     CreateAnchor()
 
     hooksecurefunc("AuraButton_UpdateDuration", HookAuraButtonUpdateDuration)
@@ -107,5 +121,6 @@ end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
+EventHandler.Event.INITIALIZE = OnInitialize
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
 EventHandler.Register()
