@@ -7,7 +7,7 @@ S.Minimap = S.Minimap or {}
 -- Common
 local function CreateInstance(parent)
     local instance = CreateFrame("StatusBar", nil, parent)
-    instance:SetMinMaxValues(0, 128 * 1024)
+    instance:SetMinMaxValues(0, 192 * 1024)
     instance:SetStatusBarTexture(DB.Statusbar)
     instance:SetStatusBarColor(0.00, 0.40, 1.00)
 
