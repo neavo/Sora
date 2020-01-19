@@ -32,7 +32,7 @@ end
 
 local function CreateReady(instance)
     local btn = S.CreateButton(instance, 12)
-    btn:SetText("准备")
+    btn:SetText("就位")
     btn:SetSize(36, 20)
     btn:SetPoint("LEFT", 8, 0)
 
