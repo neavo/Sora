@@ -12,6 +12,10 @@ local function IsPlayerMaxLevel()
     return maxLevel == UnitLevel("player")
 end
 
+local function ShouldShowHonor()
+    return IsPlayerMaxLevel() and (IsWatchingHonorAsXP() or InActiveBattlefield() or IsInActiveWorldPVP())
+end
+
 -- Event
 local function OnPlayerLogin(self, event, ...)
     local unit = nil
@@ -33,6 +37,10 @@ local function OnPlayerLogin(self, event, ...)
     unit = S.Minimap.CreateDurability(Minimap)
     unit:SetSize((Minimap:GetWidth() - 8) / 2, 6)
     unit:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, yOffset * row + 4)
+
+    unit = S.Minimap.CreateHonor(Minimap)
+    unit:SetSize(Minimap:GetWidth(), 6)
+    table.insert(units, unit)
 
     unit = S.Minimap.CreateExperience(Minimap)
     unit:SetSize(Minimap:GetWidth(), 6)
@@ -56,19 +64,24 @@ local function OnPlayerLogin(self, event, ...)
         end
 
         row = 2
-        if not IsPlayerMaxLevel() then
+        if ShouldShowHonor() then
             row = row + 1
             units[1]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
 
-        if select(1, GetWatchedFactionInfo()) then
+        if not IsPlayerMaxLevel() then
             row = row + 1
             units[2]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
 
-        if HasArtifactEquipped() or C_AzeriteItem.FindActiveAzeriteItem() then
+        if select(1, GetWatchedFactionInfo()) then
             row = row + 1
             units[3]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
+        end
+
+        if HasArtifactEquipped() or C_AzeriteItem.FindActiveAzeriteItem() then
+            row = row + 1
+            units[4]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
     end
 

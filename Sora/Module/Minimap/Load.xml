@@ -3,6 +3,7 @@
 	<Script file = "Config.lua" />
 
 	<Script file = "Widget\Addon.lua" />
+	<Script file = "Widget\Honor.lua" />
 	<Script file = "Widget\System.lua" />
 	<Script file = "Widget\Currency.lua" />
 	<Script file = "Widget\Durability.lua" />

@@ -30,27 +30,20 @@ local function RegisterStyle(self, ...)
     experience.bg:SetAllPoints()
     experience.bg:SetVertexColor(0.12, 0.12, 0.12)
 
-    experience.onEnterInfoLine = S.MakeText(experience, 10)
-    experience.onEnterInfoLine:Hide()
-    self:Tag(experience.onEnterInfoLine, "[class] - Lv.[level]")
-
-    experience.onEnterValueLine = S.MakeText(experience, 10)
-    experience.onEnterValueLine:Hide()
-    self:Tag(experience.onEnterValueLine, "[experience:cur]/[experience:max] - [experience:per]%")
-
-    experience.onEnterRestedLine = S.MakeText(experience, 10)
-    experience.onEnterRestedLine:Hide()
-    self:Tag(experience.onEnterRestedLine, "[experience:currested] - [experience:perrested]%")
+    experience.datas = {}
+    experience.datas[1] = S.MakeText(experience, 10)
+    experience.datas[2] = S.MakeText(experience, 10)
+    experience.datas[3] = S.MakeText(experience, 10)
+    self:Tag(experience.datas[1], "等级 - Lv.[experience:level]")
+    self:Tag(experience.datas[2], "[experience:cur]/[experience:max] - [experience:per]%")
+    self:Tag(experience.datas[3], "[experience:currested] - [experience:perrested]%")
 
     local function OverrideUpdateTooltip(self, event, ...)
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:ClearLines()
-
-        GameTooltip:AddLine(self.onEnterInfoLine:GetText(), 0.44, 0.75, 0.96)
+        GameTooltip:AddLine(self.datas[1]:GetText(), 0.44, 0.75, 0.96)
         GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine("经验：", self.onEnterValueLine:GetText(), 0.90, 0.90, 0.90)
-        GameTooltip:AddDoubleLine("休息：", self.onEnterRestedLine:GetText(), 0.90, 0.90, 0.90)
-
+        GameTooltip:AddDoubleLine("经验：", self.datas[2]:GetText(), 0.90, 0.90, 0.90)
+        GameTooltip:AddDoubleLine("休息：", self.datas[3]:GetText(), 0.90, 0.90, 0.90)
         GameTooltip:Show()
     end
 
