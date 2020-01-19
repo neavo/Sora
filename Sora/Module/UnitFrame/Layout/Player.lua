@@ -45,6 +45,7 @@ local function RegisterStyle(self, unit, ...)
     S.UnitFrame.CreatePortrait(self, unit, ...)
     S.UnitFrame.CreateQuickMark(self, unit, ...)
     S.UnitFrame.CreateClassPowers(self, unit, ...)
+    S.UnitFrame.CreateAdditionalPower(self, unit, ...)
 
     S.UnitFrame.CreateRaidRoleIndicator(self, unit, ...)
     S.UnitFrame.CreateGroupRoleIndicator(self, unit, ...)

@@ -41,7 +41,6 @@ S.UnitFrame.CreatePower = function(self, unit, ...)
 
     power.Smooth = true
     power.colorPower = true
-    power.colorSmooth = true
     power.frequentUpdates = true
 
     power.shadow = S.MakeShadow(power, 2)
@@ -80,7 +79,6 @@ S.UnitFrame.CreateHealth = function(self, unit, ...)
     health.colorDisconnected = true
     health.colorClass = true
     health.colorReaction = true
-    health.colorSmooth = true
     health.colorHealth = true
     health.frequentUpdates = true
 
@@ -612,6 +610,28 @@ S.UnitFrame.CreateClassPowers = function(self, unit, ...)
 
     self.ClassPower = powers
     self.ClassPower.PostUpdate = PostUpdate
+end
+
+-- CreateAdditionalPower
+S.UnitFrame.CreateAdditionalPower = function(self, unit, ...)
+    local power = CreateFrame("StatusBar", nil, self)
+    power:SetPoint("BOTTOM", self, "TOP", 0, 4)
+    power:SetSize(self:GetWidth(), 4)
+    power:SetStatusBarTexture(DB.Statusbar)
+
+    power.bg = power:CreateTexture(nil, "BACKGROUND")
+    power.bg:SetTexture(DB.Statusbar)
+    power.bg:SetAllPoints()
+    power.bg.multiplier = 0.12
+
+    power.Smooth = true
+    power.colorPower = true
+    power.frequentUpdates = true
+
+    power.shadow = S.MakeShadow(power, 2)
+    power.shadow:SetFrameLevel(power:GetFrameLevel())
+
+    self.AdditionalPower = power
 end
 
 -- RaidRoleIndicator
