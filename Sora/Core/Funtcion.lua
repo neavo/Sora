@@ -72,12 +72,11 @@ function S.CreateEasyMenu()
     local menuList = {}
     local menuFrame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate")
 
-    local p = C.Core.Pixel or 1.00
     local font = CreateFont("MenuListFont")
     font:SetTextColor(0.90, 0.90, 0.90)
-    font:SetShadowOffset(1.00 * p, -1.00 * p)
-    font:SetShadowColor(0.00, 0.00, 0.00, 0.50)
-    font:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+    font:SetShadowOffset(1.00, -1.00)
+    font:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+    font:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
 
     local function Set(i, k, v)
         menuList[i][k] = v
