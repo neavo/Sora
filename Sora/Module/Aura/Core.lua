@@ -5,14 +5,24 @@ local S, C, L, DB = unpack(select(2, ...))
 local size, space, postion = nil, nil, nil
 
 -- Common
-local function DoSkin(aura, i)
-    aura.count:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
+local function Dummy()
+end
+
+local function DoSkin(aura)
+    aura.count:ClearAllPoints()
+    aura.count:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
+    aura.count:SetPoint("TOPRIGHT", -1.0, -1.5)
     aura.count:SetShadowColor(0.00, 0.00, 0.00, 1.00)
     aura.count:SetShadowOffset(1.00, -1.00)
+    aura.count.SetFont = Dummy
+    aura.count.SetPoint = Dummy
+    aura.count.ClearAllPoints = Dummy
 
+    aura.duration:ClearAllPoints()
     aura.duration:SetFont(DB.AuraFont, 12, "OUTLINE")
     aura.duration:SetShadowColor(0.00, 0.00, 0.00, 1.00)
     aura.duration:SetShadowOffset(1.00, -1.00)
+    aura.duration.SetFont = Dummy
 end
 
 local function CreateAnchor()
@@ -63,9 +73,6 @@ local function HookDebuffButtonUpdateAnchors(name, index, ...)
         aura:ClearAllPoints()
         aura:SetSize(size, size)
 
-        aura.count:ClearAllPoints()
-        aura.count:SetPoint("TOPRIGHT", -1, -1)
-
         if i == 1 then
             aura:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, -(size * 3 + space * 3))
         elseif mod(i, 12) == 1 then
@@ -91,9 +98,6 @@ local function HookBuffFrameUpdateAllBuffAnchors(self, ...)
 
         aura:ClearAllPoints()
         aura:SetSize(size, size)
-
-        aura.count:ClearAllPoints()
-        aura.count:SetPoint("TOPRIGHT", -1, -1)
 
         if i == 1 then
             aura:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, 0)
