@@ -35,7 +35,10 @@ C.themes["Blizzard_AuctionHouseUI"] = function()
 		end
 		F.ReskinDropDown(frame.DurationDropDown.DropDown)
 		F.Reskin(frame.PostButton)
-		if frame.BuyoutModeCheckButton then F.ReskinCheck(frame.BuyoutModeCheckButton) end
+		if frame.BuyoutModeCheckButton then
+			F.ReskinCheck(frame.BuyoutModeCheckButton)
+			frame.BuyoutModeCheckButton:SetSize(28, 28)
+		end
 	end
 
 	local function reskinListIcon(frame)
@@ -185,6 +188,14 @@ C.themes["Blizzard_AuctionHouseUI"] = function()
 	F.CreateBDFrame(wowTokenResults.TokenDisplay, .25)
 	F.Reskin(wowTokenResults.Buyout)
 	F.ReskinScroll(wowTokenResults.DummyScrollBar)
+
+	local gameTimeTutorial = wowTokenResults.GameTimeTutorial
+	F.ReskinPortraitFrame(gameTimeTutorial)
+	F.Reskin(gameTimeTutorial.RightDisplay.StoreButton)
+	gameTimeTutorial.LeftDisplay.Label:SetTextColor(1, 1, 1)
+	gameTimeTutorial.LeftDisplay.Tutorial1:SetTextColor(1, .8, 0)
+	gameTimeTutorial.RightDisplay.Label:SetTextColor(1, 1, 1)
+	gameTimeTutorial.RightDisplay.Tutorial1:SetTextColor(1, .8, 0)
 
 	reskinSellPanel(AuctionHouseFrame.ItemSellFrame)
 	reskinSellPanel(AuctionHouseFrame.CommoditiesSellFrame)
