@@ -9,8 +9,9 @@ local function CreateDB(self, ...)
     SoraDB = SoraDB or {}
     SoraDB.Announcer = SoraDB.Announcer or {}
 
-    SoraDB.Announcer.OnlyPlayer = SoraDB.Announcer.OnlyPlayer or false
-    SoraDB.Announcer.AlertForPlayer = SoraDB.Announcer.AlertForPlayer or false
+    SoraDB.Announcer.AlertMode = SoraDB.Announcer.AlertMode or 2
+    SoraDB.Announcer.OnlyPlayer = SoraDB.Announcer.OnlyPlayer ~= nil and SoraDB.Announcer.OnlyPlayer or false
+    SoraDB.Announcer.AlertForPlayer = SoraDB.Announcer.AlertForPlayer ~= nil and SoraDB.Announcer.AlertForPlayer or false
 
     C.Announcer = S.Copy(SoraDB.Announcer)
 end
@@ -32,7 +33,8 @@ local function CreateConfig(self, ...)
                     SoraDB.Announcer.OnlyPlayer = S.ToBoolean(data.value)
                 end
             end
-        }, {
+        },
+        {
             type = "dropdown",
             text = "通报频道",
             key = "SoraDB.Announcer.AlertForPlayer",
@@ -42,14 +44,28 @@ local function CreateConfig(self, ...)
                     SoraDB.Announcer.AlertForPlayer = S.ToBoolean(data.value)
                 end
             end
-        }, {
+        },
+        {
+            type = "dropdown",
+            text = "通报方式",
+            key = "SoraDB.Announcer.AlertMode",
+            options = {["仅文字"] = 1, ["文字 + 声音"] = 2},
+            OnDataChanged = function(self, data, ...)
+                if data.value ~= nil then
+                    SoraDB.Announcer.AlertMode = data.value
+                end
+            end
+        },
+        {type = "space"},
+        {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -63,7 +79,8 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)

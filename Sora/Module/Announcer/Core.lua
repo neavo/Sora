@@ -2,13 +2,12 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
--- Initialize
 local lastMsgTime = nil
 local completedQuests = {}
 
--- Functions
-local SendMessage = function(msg, sound)
-    if sound then
+-- Common
+local function SendMessage(msg, sound)
+    if sound and SoraDB.Announcer.AlertMode == 2 then
         PlaySound(SOUNDKIT.RAID_WARNING, "Master")
     end
 
@@ -29,7 +28,7 @@ local SendMessage = function(msg, sound)
 end
 
 -- Quest Accept
-local OnQuestAccepted = function(self, event, questIndex, questId)
+local function OnQuestAccepted(self, event, questIndex, questId)
     local link = GetQuestLink(questId)
     local frequency = select(7, GetQuestLogTitle(questIndex))
 
@@ -50,18 +49,23 @@ local OnQuestAccepted = function(self, event, questIndex, questId)
     end
 end
 -- Quest Progress
-local FitPattern = function(p)
+local function FitPattern(p)
     p = string.gsub(p, "%%s", "(.+)")
     p = string.gsub(p, "%%d", "(%%d+)")
 
     return "^" .. p .. "$"
 end
 local QuestPatterns = {
-    FitPattern(ERR_QUEST_ADD_ITEM_SII), FitPattern(ERR_QUEST_ADD_KILL_SII), FitPattern(ERR_QUEST_ADD_FOUND_SII),
-    FitPattern(ERR_QUEST_ADD_PLAYER_KILL_SII), FitPattern(ERR_QUEST_FAILED_S), FitPattern(ERR_QUEST_COMPLETE_S),
-    FitPattern(ERR_QUEST_UNKNOWN_COMPLETE), FitPattern(ERR_QUEST_OBJECTIVE_COMPLETE_S)
+    FitPattern(ERR_QUEST_ADD_ITEM_SII),
+    FitPattern(ERR_QUEST_ADD_KILL_SII),
+    FitPattern(ERR_QUEST_ADD_FOUND_SII),
+    FitPattern(ERR_QUEST_ADD_PLAYER_KILL_SII),
+    FitPattern(ERR_QUEST_FAILED_S),
+    FitPattern(ERR_QUEST_COMPLETE_S),
+    FitPattern(ERR_QUEST_UNKNOWN_COMPLETE),
+    FitPattern(ERR_QUEST_OBJECTIVE_COMPLETE_S)
 }
-local OnUIInfoMessage = function(self, event, errorType, msg)
+local function OnUIInfoMessage(self, event, errorType, msg)
     for _, pattern in pairs(QuestPatterns) do
         if string.match(msg, pattern) then
             SendMessage(msg, true)
@@ -71,7 +75,7 @@ local OnUIInfoMessage = function(self, event, errorType, msg)
 end
 
 -- Quest Complete
-local OnQuestTurnedIn = function(self, event, questID, xpReward, moneyReward)
+local function OnQuestTurnedIn(self, event, questID, xpReward, moneyReward)
     local link = GetQuestLink(questID) or completedQuests[questID]
 
     if link then
@@ -79,7 +83,7 @@ local OnQuestTurnedIn = function(self, event, questID, xpReward, moneyReward)
     end
 end
 
-local OnQuestLogUpdate = function(self, event, ...)
+local function OnQuestLogUpdate(self, event, ...)
     for i = 1, GetNumQuestLogEntries() do
         local _, _, _, _, _, isComplete, _, questID = GetQuestLogTitle(i)
         local link = GetQuestLink(questID)
@@ -91,7 +95,7 @@ local OnQuestLogUpdate = function(self, event, ...)
 end
 
 -- Dispel、Stolen、Interrupt
-local OnCombarLogEventUnfiltered = function(self, event, ...)
+local function OnCombarLogEventUnfiltered(self, event, ...)
     local timestamp, event, _, _, sourceName, _, _, _, destName = CombatLogGetCurrentEventInfo()
 
     if event ~= "SPELL_DISPEL" and event ~= "SPELL_STOLEN" and event ~= "SPELL_INTERRUPT" then
