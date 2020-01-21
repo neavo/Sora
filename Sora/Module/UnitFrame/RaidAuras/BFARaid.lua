@@ -2,11 +2,12 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Event
-local function OnPlayerLogin(self, event, ...)
-	-- Initialize
+local function OnInitialize(self, event, ...)
 	C.UnitFrame = C.UnitFrame or {}
 	C.UnitFrame.RaidAuras = C.UnitFrame.RaidAuras or {}
+end
 
+local function OnPlayerLogin(self, event, ...)
 	-- Hack
 	local zoneid = 0
 	local GridStatusRaidDebuff = {}
@@ -15,6 +16,111 @@ local function OnPlayerLogin(self, event, ...)
 	end
 	GridStatusRaidDebuff.BossNameId = function(self, zoneid, _, name)
 		-- do nothing
+	end
+
+	-- BFA Raid
+	-- The Waking City
+	do
+		-- Wrathion
+		GridStatusRaidDebuff:DebuffId(zoneid, 306015, 11) -- Searing Armor
+		GridStatusRaidDebuff:DebuffId(zoneid, 306111, 12) -- Incineration
+		GridStatusRaidDebuff:DebuffId(zoneid, 307013, 13) -- Burning Madness
+		GridStatusRaidDebuff:DebuffId(zoneid, 314347, 14) -- Noxious Choke
+
+		-- Maut
+		GridStatusRaidDebuff:DebuffId(zoneid, 307805, 21) -- Devour Magic
+		GridStatusRaidDebuff:DebuffId(zoneid, 307399, 22) -- Shadow Wounds
+		GridStatusRaidDebuff:DebuffId(zoneid, 306301, 23) -- Forbidden Mana
+		GridStatusRaidDebuff:DebuffId(zoneid, 314992, 24) -- Drain Essence
+
+		-- The Prophet Skitra
+		GridStatusRaidDebuff:DebuffId(zoneid, 307937, 31) -- Shred Psyche
+		GridStatusRaidDebuff:DebuffId(zoneid, 307977, 33) -- Shadow Shock
+		GridStatusRaidDebuff:DebuffId(zoneid, 309687, 34) -- Psychic Outburst
+		GridStatusRaidDebuff:DebuffId(zoneid, 307445, 35) -- Illusionary Projection
+		GridStatusRaidDebuff:DebuffId(zoneid, 307784, 36) -- Clouded Mind
+		GridStatusRaidDebuff:DebuffId(zoneid, 307785, 37) -- Twisted Mind
+		GridStatusRaidDebuff:DebuffId(zoneid, 309657, 38) -- Dark Ritual
+
+		-- Dark Inquisitor
+		GridStatusRaidDebuff:DebuffId(zoneid, 311551, 41) -- Abyssal Strike
+		GridStatusRaidDebuff:DebuffId(zoneid, 311383, 42) -- Torment
+		GridStatusRaidDebuff:DebuffId(zoneid, 312406, 43) -- Voidwoken
+		GridStatusRaidDebuff:DebuffId(zoneid, 313198, 44) -- Void-Touched
+
+		-- The Hivemind
+		GridStatusRaidDebuff:DebuffId(zoneid, 315311, 51) -- Ravage
+		GridStatusRaidDebuff:DebuffId(zoneid, 307637, 52) -- Accelerated Evolution
+		GridStatusRaidDebuff:DebuffId(zoneid, 313652, 53) -- Mind-Numbing Nova
+		GridStatusRaidDebuff:DebuffId(zoneid, 313460, 54) -- Nullification
+		GridStatusRaidDebuff:DebuffId(zoneid, 313461, 55) -- Corrosion
+
+		-- Shad'har the Insatiable
+		GridStatusRaidDebuff:DebuffId(zoneid, 307471, 61) -- Crush
+		GridStatusRaidDebuff:DebuffId(zoneid, 307472, 62) -- Dissolve
+		GridStatusRaidDebuff:DebuffId(zoneid, 307358, 63) -- Debilitating Spit
+		GridStatusRaidDebuff:DebuffId(zoneid, 312099, 64) -- Tasty Morsel
+		GridStatusRaidDebuff:DebuffId(zoneid, 312332, 65) -- Slimy Residue
+		GridStatusRaidDebuff:DebuffId(zoneid, 308177, 66) -- Entropic Buildup
+		GridStatusRaidDebuff:DebuffId(zoneid, 306934, 67) -- Entropic Mantle
+		GridStatusRaidDebuff:DebuffId(zoneid, 306930, 68) -- Entropic Breath
+		GridStatusRaidDebuff:DebuffId(zoneid, 306929, 69) -- Bubbling Breath
+
+		-- Drest'agath
+		GridStatusRaidDebuff:DebuffId(zoneid, 310277, 71) -- Volatile Seed
+		GridStatusRaidDebuff:DebuffId(zoneid, 310406, 72) -- Void Glare
+		GridStatusRaidDebuff:DebuffId(zoneid, 310358, 73) -- Mutterings of Insanity
+		GridStatusRaidDebuff:DebuffId(zoneid, 310563, 74) -- Mutterings of Betrayal
+		GridStatusRaidDebuff:DebuffId(zoneid, 310552, 75) -- Mind Flay
+		GridStatusRaidDebuff:DebuffId(zoneid, 308377, 76) -- Void Infused Ichor
+		GridStatusRaidDebuff:DebuffId(zoneid, 317001, 77) -- Umbral Aversion
+		GridStatusRaidDebuff:DebuffId(zoneid, 308377, 78) -- Void Infused Ichor
+
+		-- Il'gynoth
+		GridStatusRaidDebuff:DebuffId(zoneid, 309961, 81) -- Eye of N'Zoth
+		GridStatusRaidDebuff:DebuffId(zoneid, 318396, 82) -- Reconstituted Blood
+		GridStatusRaidDebuff:DebuffId(zoneid, 311159, 83) -- Cursed Blood
+		GridStatusRaidDebuff:DebuffId(zoneid, 312486, 84) -- Recurring Nightmare
+
+		-- Vexiona
+		GridStatusRaidDebuff:DebuffId(zoneid, 307359, 91) -- Despair
+		GridStatusRaidDebuff:DebuffId(zoneid, 307019, 92) -- Void Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 307421, 93) -- Annihilation
+		GridStatusRaidDebuff:DebuffId(zoneid, 307284, 94) -- Terrifying Presence
+
+		-- Ra-den
+		GridStatusRaidDebuff:DebuffId(zoneid, 306819, 101) -- Nullifying Strike
+		GridStatusRaidDebuff:DebuffId(zoneid, 313227, 102) -- Decaying Wound
+		GridStatusRaidDebuff:DebuffId(zoneid, 313109, 103) -- Unstable Nightmare
+		GridStatusRaidDebuff:DebuffId(zoneid, 306257, 104) -- Unstable Vita
+		GridStatusRaidDebuff:DebuffId(zoneid, 315258, 105) -- Dread Inferno
+		GridStatusRaidDebuff:DebuffId(zoneid, 310019, 106) -- Charged Bonds
+		GridStatusRaidDebuff:DebuffId(zoneid, 309852, 107) -- Ruin
+		GridStatusRaidDebuff:DebuffId(zoneid, 306733, 108) -- Void Empowered
+		GridStatusRaidDebuff:DebuffId(zoneid, 316065, 109) -- Corrupted Existence
+		GridStatusRaidDebuff:DebuffId(zoneid, 306279, 110) -- Instability Exposure
+		GridStatusRaidDebuff:DebuffId(zoneid, 309777, 111) -- Void Defilement
+		GridStatusRaidDebuff:DebuffId(zoneid, 306184, 112) -- Unleashed Void
+
+		-- Carapace of N'Zoth
+		GridStatusRaidDebuff:DebuffId(zoneid, 315954, 111) -- Black Scar
+		GridStatusRaidDebuff:DebuffId(zoneid, 306984, 112) -- Insanity Bomb
+		GridStatusRaidDebuff:DebuffId(zoneid, 316847, 113) -- Adaptive Membrane
+		GridStatusRaidDebuff:DebuffId(zoneid, 313330, 114) -- Grace of the Black Prince
+		GridStatusRaidDebuff:DebuffId(zoneid, 307044, 115) -- Nightmare Antibody
+		GridStatusRaidDebuff:DebuffId(zoneid, 313334, 116) -- Gift of N'Zoth
+		GridStatusRaidDebuff:DebuffId(zoneid, 313364, 117) -- Mental Decay
+		GridStatusRaidDebuff:DebuffId(zoneid, 317627, 118) -- Infinite Void
+
+		-- N'Zoth
+		GridStatusRaidDebuff:DebuffId(zoneid, 316711, 121) -- Mindwrack
+		GridStatusRaidDebuff:DebuffId(zoneid, 313184, 122) -- Synaptic Shock
+		GridStatusRaidDebuff:DebuffId(zoneid, 317874, 123) -- Stupefying Glare
+		GridStatusRaidDebuff:DebuffId(zoneid, 309980, 124) -- Paranoia
+		GridStatusRaidDebuff:DebuffId(zoneid, 309991, 125) -- Anguish
+		GridStatusRaidDebuff:DebuffId(zoneid, 313609, 126) -- Gift of N'Zoth
+		GridStatusRaidDebuff:DebuffId(zoneid, 313400, 127) -- Corrupted Mind
+		GridStatusRaidDebuff:DebuffId(zoneid, 313610, 128) -- Mental Decay
 	end
 
 	-- BFA Raid
@@ -93,35 +199,35 @@ local function OnPlayerLogin(self, event, ...)
 		GridStatusRaidDebuff:DebuffId(zoneid, 295822, 1, 5, 5, true) --Conductive Pulse
 
 		-- Trash
-		GridStatusRaidDebuff:DebuffId(zoneid, 303298, 1, 5, 5, true) --Hunter's Quarry
-		GridStatusRaidDebuff:DebuffId(zoneid, 303296, 1, 5, 5, true) --Poison-Dipped Arrow
-		GridStatusRaidDebuff:DebuffId(zoneid, 304245, 1, 5, 5, true) --Toxic Spear
-		GridStatusRaidDebuff:DebuffId(zoneid, 301968, 1, 4, 4, true) --Bioluminescence
-		GridStatusRaidDebuff:DebuffId(zoneid, 304189, 1, 5, 5, true) --Frostbolt
-		GridStatusRaidDebuff:DebuffId(zoneid, 303316, 1, 6, 6, true) --Hindering Resonance
-		GridStatusRaidDebuff:DebuffId(zoneid, 292127, 1, 6, 6, true) --Darkest Depths
-		GridStatusRaidDebuff:DebuffId(zoneid, 304026, 1, 6, 6, true) --Arcane Bomb
-		GridStatusRaidDebuff:DebuffId(zoneid, 304297, 1, 5, 5, true) --Disgusting Mucus
-		GridStatusRaidDebuff:DebuffId(zoneid, 302989, 1, 5, 5, true) --Briny Bubble
-		GridStatusRaidDebuff:DebuffId(zoneid, 302992, 1, 5, 5, true) --Briny Bubble
-		GridStatusRaidDebuff:DebuffId(zoneid, 304027, 1, 5, 5, true) --Arcane Bomb
-		GridStatusRaidDebuff:DebuffId(zoneid, 295779, 1, 5, 5, true) --Aqua Lance
-		GridStatusRaidDebuff:DebuffId(zoneid, 292307, 1, 5, 5, true) --Gaze from Below
-		GridStatusRaidDebuff:DebuffId(zoneid, 298459, 1, 5, 5, true) --Amniotic Eruption
-		GridStatusRaidDebuff:DebuffId(zoneid, 300244, 1, 5, 5, true) --Raging Rapids
-		GridStatusRaidDebuff:DebuffId(zoneid, 303630, 1, 5, 5, true) --Explosive Darkness
-		GridStatusRaidDebuff:DebuffId(zoneid, 303422, 1, 5, 5, true) --Blizzard
-		GridStatusRaidDebuff:DebuffId(zoneid, 303625, 1, 5, 5, true) --Aura of Suffering
-		GridStatusRaidDebuff:DebuffId(zoneid, 303747, 1, 5, 5, true) --Ice Tomb
-		GridStatusRaidDebuff:DebuffId(zoneid, 303373, 1, 5, 5, true) --Toxic Bolt Volley
-		GridStatusRaidDebuff:DebuffId(zoneid, 304765, 1, 5, 5, true) --Filth
-		GridStatusRaidDebuff:DebuffId(zoneid, 303382, 1, 5, 5, true) --Venom Bomb
-		GridStatusRaidDebuff:DebuffId(zoneid, 303619, 1, 5, 5, true) --Dread
-		GridStatusRaidDebuff:DebuffId(zoneid, 303501, 1, 5, 5, true) --Rending Strike
-		GridStatusRaidDebuff:DebuffId(zoneid, 303958, 1, 5, 5, true) --Nightmare Pool
-		GridStatusRaidDebuff:DebuffId(zoneid, 6136, 1, 5, 5, true) --Chilled
-		GridStatusRaidDebuff:DebuffId(zoneid, 303942, 1, 5, 5, true) --Coalesced Nightmares
-		GridStatusRaidDebuff:DebuffId(zoneid, 303913, 1, 5, 5, true) --Lingering Soul
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303298, 1, 5, 5, true) --Hunter's Quarry
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303296, 1, 5, 5, true) --Poison-Dipped Arrow
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 304245, 1, 5, 5, true) --Toxic Spear
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 301968, 1, 4, 4, true) --Bioluminescence
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 304189, 1, 5, 5, true) --Frostbolt
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303316, 1, 6, 6, true) --Hindering Resonance
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 292127, 1, 6, 6, true) --Darkest Depths
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 304026, 1, 6, 6, true) --Arcane Bomb
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 304297, 1, 5, 5, true) --Disgusting Mucus
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 302989, 1, 5, 5, true) --Briny Bubble
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 302992, 1, 5, 5, true) --Briny Bubble
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 304027, 1, 5, 5, true) --Arcane Bomb
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 295779, 1, 5, 5, true) --Aqua Lance
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 292307, 1, 5, 5, true) --Gaze from Below
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 298459, 1, 5, 5, true) --Amniotic Eruption
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 300244, 1, 5, 5, true) --Raging Rapids
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303630, 1, 5, 5, true) --Explosive Darkness
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303422, 1, 5, 5, true) --Blizzard
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303625, 1, 5, 5, true) --Aura of Suffering
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303747, 1, 5, 5, true) --Ice Tomb
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303373, 1, 5, 5, true) --Toxic Bolt Volley
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 304765, 1, 5, 5, true) --Filth
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303382, 1, 5, 5, true) --Venom Bomb
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303619, 1, 5, 5, true) --Dread
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303501, 1, 5, 5, true) --Rending Strike
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303958, 1, 5, 5, true) --Nightmare Pool
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 6136, 1, 5, 5, true) --Chilled
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303942, 1, 5, 5, true) --Coalesced Nightmares
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 303913, 1, 5, 5, true) --Lingering Soul
 
 		-- Abyssal Commander Sivara
 		GridStatusRaidDebuff:BossNameId(zoneid, 10, "Abyssal Commander Sivara")
@@ -225,11 +331,11 @@ local function OnPlayerLogin(self, event, ...)
 	-- Cruicible of Storms
 	do
 		-- Trash
-		GridStatusRaidDebuff:DebuffId(zoneid, 294009, 1, 5, 5, true) --Mind Sear
-		GridStatusRaidDebuff:DebuffId(zoneid, 293957, 1, 5, 5, true) --Maddening Gaze
-		GridStatusRaidDebuff:DebuffId(zoneid, 294141, 1, 5, 5, true) --Embrace Madness
-		GridStatusRaidDebuff:DebuffId(zoneid, 293796, 1, 5, 5, true) --Dark Corruption
-		GridStatusRaidDebuff:DebuffId(zoneid, 294175, 1, 5, 5, true) --Mind Shatter
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 294009, 1, 5, 5, true) --Mind Sear
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 293957, 1, 5, 5, true) --Maddening Gaze
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 294141, 1, 5, 5, true) --Embrace Madness
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 293796, 1, 5, 5, true) --Dark Corruption
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 294175, 1, 5, 5, true) --Mind Shatter
 
 		-- The Restless Cabal
 		GridStatusRaidDebuff:BossNameId(zoneid, 10, "The Restless Cabal")
@@ -256,31 +362,31 @@ local function OnPlayerLogin(self, event, ...)
 	-- Battle of Dazar'alor
 	do
 		-- Trash
-		GridStatusRaidDebuff:DebuffId(zoneid, 289384, 1, 5, 5, true) --Savage Swipe
-		GridStatusRaidDebuff:DebuffId(zoneid, 287437, 1, 5, 5, true) --Frozen Beam
-		GridStatusRaidDebuff:DebuffId(zoneid, 287294, 1, 5, 5, true) --Blizzard
-		GridStatusRaidDebuff:DebuffId(zoneid, 286740, 1, 5, 5, true) --Light's Fury
-		GridStatusRaidDebuff:DebuffId(zoneid, 285250, 1, 5, 5, true) --Sundering Slam
-		GridStatusRaidDebuff:DebuffId(zoneid, 289645, 1, 5, 5, true) --Polymorph
-		GridStatusRaidDebuff:DebuffId(zoneid, 289578, 1, 5, 5, true) --Lit Torch
-		GridStatusRaidDebuff:DebuffId(zoneid, 287325, 1, 5, 5, true) --Comet Storm
-		GridStatusRaidDebuff:DebuffId(zoneid, 289772, 1, 5, 5, true) --Impale
-		GridStatusRaidDebuff:DebuffId(zoneid, 285292, 1, 5, 5, true) --Frozen Tides
-		GridStatusRaidDebuff:DebuffId(zoneid, 285280, 1, 5, 5, true) --Searing Waves
-		GridStatusRaidDebuff:DebuffId(zoneid, 287147, 1, 5, 5, true) --Dread Reaping
-		GridStatusRaidDebuff:DebuffId(zoneid, 284573, 1, 5, 5, true) --Tailwinds
-		GridStatusRaidDebuff:DebuffId(zoneid, 253562, 1, 5, 5, true) --Wildfire
-		GridStatusRaidDebuff:DebuffId(zoneid, 289917, 1, 5, 5, true) --Bwonsamdi's Pact
-		GridStatusRaidDebuff:DebuffId(zoneid, 289418, 1, 5, 5, true) --Predator's Gaze
-		GridStatusRaidDebuff:DebuffId(zoneid, 287295, 1, 5, 5, true) --Chilled
-		GridStatusRaidDebuff:DebuffId(zoneid, 289937, 1, 5, 5, true) --Thundering Slam
-		GridStatusRaidDebuff:DebuffId(zoneid, 289514, 1, 5, 5, true) --Molten Ground
-		GridStatusRaidDebuff:DebuffId(zoneid, 289512, 1, 5, 5, true) --Molten Punch
-		GridStatusRaidDebuff:DebuffId(zoneid, 289373, 1, 5, 5, true) --Lacerating Pounce
-		GridStatusRaidDebuff:DebuffId(zoneid, 287456, 1, 5, 5, true) --Frost Nova
-		GridStatusRaidDebuff:DebuffId(zoneid, 287556, 1, 5, 5, true) --Soul Barrage
-		GridStatusRaidDebuff:DebuffId(zoneid, 289484, 1, 5, 5, true) --Burning Bite
-		GridStatusRaidDebuff:DebuffId(zoneid, 289918, 1, 5, 5, true) --Bwonsamdi's Bargain
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289384, 1, 5, 5, true) --Savage Swipe
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 287437, 1, 5, 5, true) --Frozen Beam
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 287294, 1, 5, 5, true) --Blizzard
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 286740, 1, 5, 5, true) --Light's Fury
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 285250, 1, 5, 5, true) --Sundering Slam
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289645, 1, 5, 5, true) --Polymorph
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289578, 1, 5, 5, true) --Lit Torch
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 287325, 1, 5, 5, true) --Comet Storm
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289772, 1, 5, 5, true) --Impale
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 285292, 1, 5, 5, true) --Frozen Tides
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 285280, 1, 5, 5, true) --Searing Waves
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 287147, 1, 5, 5, true) --Dread Reaping
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 284573, 1, 5, 5, true) --Tailwinds
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 253562, 1, 5, 5, true) --Wildfire
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289917, 1, 5, 5, true) --Bwonsamdi's Pact
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289418, 1, 5, 5, true) --Predator's Gaze
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 287295, 1, 5, 5, true) --Chilled
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289937, 1, 5, 5, true) --Thundering Slam
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289514, 1, 5, 5, true) --Molten Ground
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289512, 1, 5, 5, true) --Molten Punch
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289373, 1, 5, 5, true) --Lacerating Pounce
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 287456, 1, 5, 5, true) --Frost Nova
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 287556, 1, 5, 5, true) --Soul Barrage
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289484, 1, 5, 5, true) --Burning Bite
+		-- GridStatusRaidDebuff:DebuffId(zoneid, 289918, 1, 5, 5, true) --Bwonsamdi's Bargain
 
 		-- Champion of the Light
 		GridStatusRaidDebuff:BossNameId(zoneid, 10, "Champion of the Light")
@@ -466,5 +572,6 @@ end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
+EventHandler.Event.INITIALIZE = OnInitialize
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
 EventHandler.Register()
