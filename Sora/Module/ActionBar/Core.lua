@@ -209,10 +209,28 @@ local function CreateStanceBar(self, event, ...)
 end
 
 local function CreateExtraBar(self, event, ...)
+    ExtraActionButton1:SetMovable(true)
+    ExtraActionButton1:EnableMouse(true)
+    ExtraActionButton1:SetToplevel(true)
+    ExtraActionButton1:SetFrameStrata("HIGH")
+    ExtraActionButton1:RegisterForDrag("LeftButton")
+    ExtraActionButton1:SetClampedToScreen(true)
+
+    local function OnDragStop(self, button, ...)
+        self:StopMovingOrSizing()
+    end
+
+    local function OnDragStart(self, button, ...)
+        self:StartMoving()
+    end
+
+    ExtraActionButton1:SetScript("OnDragStop", OnDragStop)
+    ExtraActionButton1:SetScript("OnDragStart", OnDragStart)
+
     rActionBar:CreateExtraBar(
         "Sora",
         {
-            frameScale = 1.0,
+            frameScale = 0.80,
             framePoint = {
                 "BOTTOM",
                 SoraBar2,
@@ -221,8 +239,8 @@ local function CreateExtraBar(self, event, ...)
                 C.ActionBar.Size + C.ActionBar.Space * 2 + 16
             },
             framePadding = 0,
-            buttonWidth = C.ActionBar.Size,
-            buttonHeight = C.ActionBar.Size,
+            buttonWidth = ExtraActionButton1:GetWidth(),
+            buttonHeight = ExtraActionButton1:GetHeight(),
             buttonMargin = C.ActionBar.Space,
             numCols = 1,
             startPoint = "LEFT"
