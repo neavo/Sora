@@ -89,7 +89,7 @@ oUF.Tags.Methods["UnitFrame:Name"] = function(unit)
 
     return DyeText(unit, name)
 end
-oUF.Tags.Events["UnitFrame:Name"] = "UNIT_NAME_UPDATE UNIT_FACTION"
+oUF.Tags.Events["UnitFrame:Name"] = "UNIT_NAME_UPDATE"
 
 oUF.Tags.Methods["UnitFrame:ShortName"] = function(unit)
     local name = UnitName(unit) or ""
@@ -105,7 +105,7 @@ oUF.Tags.Events["UnitFrame:ShortName"] = "UNIT_NAME_UPDATE"
 oUF.Tags.Methods["UnitFrame:Health"] = function(unit)
     return DyeText(unit, S.FormatInteger(UnitHealth(unit)))
 end
-oUF.Tags.Events["UnitFrame:Health"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_FACTION"
+oUF.Tags.Events["UnitFrame:Health"] = "UNIT_HEALTH UNIT_MAXHEALTH"
 
 oUF.Tags.Methods["UnitFrame:PerHealth"] = function(unit)
     local percent = 0
@@ -118,7 +118,7 @@ oUF.Tags.Methods["UnitFrame:PerHealth"] = function(unit)
 
     return DyeText(unit, S.FormatInteger(percent) .. "%")
 end
-oUF.Tags.Events["UnitFrame:PerHealth"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_FACTION"
+oUF.Tags.Events["UnitFrame:PerHealth"] = "UNIT_HEALTH UNIT_MAXHEALTH"
 
 oUF.Tags.Methods["UnitFrame:ShortPerHealth"] = function(unit)
     local percent = 0
@@ -131,12 +131,12 @@ oUF.Tags.Methods["UnitFrame:ShortPerHealth"] = function(unit)
 
     return (percent > 0 and percent < 100) and DyeText(unit, S.FormatInteger(percent) .. "%") or ""
 end
-oUF.Tags.Events["UnitFrame:ShortPerHealth"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_FACTION"
+oUF.Tags.Events["UnitFrame:ShortPerHealth"] = "UNIT_HEALTH UNIT_MAXHEALTH"
 
 oUF.Tags.Methods["UnitFrame:Power"] = function(unit)
     return DyeText(unit, S.FormatInteger(UnitPower(unit)))
 end
-oUF.Tags.Events["UnitFrame:Power"] = "UNIT_POWER_UPDATE UNIT_FACTION"
+oUF.Tags.Events["UnitFrame:Power"] = "UNIT_POWER_UPDATE UNIT_MAXPOWER"
 
 oUF.Tags.Methods["UnitFrame:PerPower"] = function(unit)
     local percent = 0
@@ -149,7 +149,7 @@ oUF.Tags.Methods["UnitFrame:PerPower"] = function(unit)
 
     return DyeText(unit, S.FormatInteger(percent) .. "%")
 end
-oUF.Tags.Events["UnitFrame:PerPower"] = "UNIT_POWER_UPDATE UNIT_FACTION"
+oUF.Tags.Events["UnitFrame:PerPower"] = "UNIT_POWER_UPDATE UNIT_MAXPOWER"
 
 oUF.Tags.Methods["UnitFrame:Status"] = function(unit)
     local str = ""
@@ -164,4 +164,4 @@ oUF.Tags.Methods["UnitFrame:Status"] = function(unit)
 
     return DyeText(unit, str, false, false, true)
 end
-oUF.Tags.Events["UnitFrame:Status"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_FACTION"
+oUF.Tags.Events["UnitFrame:Status"] = "UNIT_HEALTH PLAYER_UPDATE_RESTING UNIT_CONNECTION"
