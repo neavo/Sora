@@ -63,4 +63,4 @@ oUF.Tags.Methods["NamePlates:Name"] = function(unit)
 
     return string.format(str, r * 255, g * 255, b * 255) .. name .. "|r"
 end
-oUF.Tags.Events["NamePlates:Name"] = "UNIT_NAME_UPDATE UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_FACTION"
+oUF.Tags.Events["NamePlates:Name"] = "UNIT_NAME_UPDATE UNIT_HEALTH UNIT_MAXHEALTH UNIT_HEALTH PLAYER_UPDATE_RESTING UNIT_CONNECTION"
