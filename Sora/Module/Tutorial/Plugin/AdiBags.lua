@@ -8,81 +8,49 @@ local function OnPlayerLogin(self, event, ...)
 	end
 
 	AdiBagsDB = {
-		["namespaces"] = {
-			["ItemLevel"] = {},
-			["FilterOverride"] = {
-				["profiles"] = {
-					["Default"] = {
-						["version"] = 3
-					}
-				}
-			},
-			["ItemCategory"] = {
-				["profiles"] = {
-					["Default"] = {
-						["splitBySubclass"] = {
-							["雕文"] = true,
-							["消耗品"] = true,
-							["杂项"] = true,
-							["商业技能"] = true,
-							["宝石"] = true,
-							["配方"] = true
-						}
-					}
-				}
-			},
-			["NewItem"] = {},
-			["AdiBags_TooltipInfo"] = {},
-			["MoneyFrame"] = {},
-			["CurrencyFrame"] = {},
-			["DataSource"] = {},
-			["ItemSets"] = {},
-			["Junk"] = {},
-			["Equipment"] = {
-				["profiles"] = {
-					["Default"] = {
-						["armorTypes"] = true
-					}
-				}
-			}
-		},
-		["profileKeys"] = {},
 		["profiles"] = {
 			["Default"] = {
 				["virtualStacks"] = {
 					["freeSpace"] = false
 				},
 				["scale"] = 1,
-				["maxHeight"] = 0.90,
+				["maxHeight"] = 0.9,
 				["skin"] = {
 					["BackpackColor"] = {
-						0, -- [1]
-						0, -- [2]
-						0, -- [3]
+						nil, -- [1]
+						nil, -- [2]
+						nil, -- [3]
 						0.75 -- [4]
 					},
 					["BankColor"] = {
-						0, -- [1]
-						0, -- [2]
+						nil, -- [1]
+						nil, -- [2]
 						0, -- [3]
 						0.75 -- [4]
 					},
-					["border"] = "None",
 					["borderWidth"] = 1,
+					["border"] = "None",
 					["insets"] = 0
 				},
 				["bagFont"] = {
 					["size"] = 12
 				},
+				["positions"] = {
+					["Backpack"] = {
+						["xOffset"] = -128,
+						["yOffset"] = 128
+					}
+				},
 				["sectionFont"] = {
 					["size"] = 12
 				},
+				["qualityHighlight"] = false,
+				["compactLayout"] = true,
 				["columnWidth"] = {
-					["Backpack"] = 14,
-					["Bank"] = 14
+					["Bank"] = 14,
+					["Backpack"] = 14
 				},
 				["positionMode"] = "manual",
-				["compactLayout"] = true,
 				["modules"] = {
 					["CurrencyFrame"] = false
 				}

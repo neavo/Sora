@@ -12,10 +12,10 @@ local function OnPlayerLogin(self, event, ...)
 			["FogClear"] = {
 				["profiles"] = {
 					["Default"] = {
-						["colorB"] = 0,
+						["colorB"] = 0.12,
 						["colorA"] = 0.50,
-						["colorG"] = 0,
-						["colorR"] = 0
+						["colorG"] = 0.12,
+						["colorR"] = 0.12
 					}
 				}
 			},
