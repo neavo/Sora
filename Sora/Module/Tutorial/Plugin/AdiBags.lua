@@ -8,13 +8,63 @@ local function OnPlayerLogin(self, event, ...)
 	end
 
 	AdiBagsDB = {
+		["namespaces"] = {
+			["ItemLevel"] = {},
+			["FilterOverride"] = {
+				["profiles"] = {
+					["Default"] = {
+						["version"] = 3
+					}
+				}
+			},
+			["ItemCategory"] = {
+				["profiles"] = {
+					["Default"] = {
+						["splitBySubclass"] = {
+							["雕文"] = true,
+							["消耗品"] = true,
+							["杂项"] = true,
+							["商业技能"] = true,
+							["配方"] = true,
+							["宝石"] = true
+						}
+					}
+				}
+			},
+			["NewItem"] = {
+				["profiles"] = {
+					["Default"] = {
+						["highlight"] = "none"
+					}
+				}
+			},
+			["AdiBags_TooltipInfo"] = {},
+			["Equipment"] = {
+				["profiles"] = {
+					["Default"] = {
+						["armorTypes"] = true
+					}
+				}
+			},
+			["ItemSets"] = {},
+			["CurrencyFrame"] = {},
+			["DataSource"] = {},
+			["Junk"] = {},
+			["MoneyFrame"] = {}
+		},
+		["profileKeys"] = {},
 		["profiles"] = {
 			["Default"] = {
 				["virtualStacks"] = {
 					["freeSpace"] = false
 				},
-				["scale"] = 1,
-				["maxHeight"] = 0.9,
+				["columnWidth"] = {
+					["Bank"] = 14,
+					["Backpack"] = 14
+				},
+				["modules"] = {
+					["CurrencyFrame"] = false
+				},
 				["skin"] = {
 					["BackpackColor"] = {
 						nil, -- [1]
@@ -44,16 +94,11 @@ local function OnPlayerLogin(self, event, ...)
 				["sectionFont"] = {
 					["size"] = 12
 				},
-				["qualityHighlight"] = false,
 				["compactLayout"] = true,
-				["columnWidth"] = {
-					["Bank"] = 14,
-					["Backpack"] = 14
-				},
+				["maxHeight"] = 0.9,
+				["scale"] = 1,
 				["positionMode"] = "manual",
-				["modules"] = {
-					["CurrencyFrame"] = false
-				}
+				["qualityHighlight"] = false
 			}
 		}
 	}
