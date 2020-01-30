@@ -227,20 +227,24 @@ end
 
 -- RaidTargetIndicator
 S.NamePlates.CreateRaidTargetIndicator = function(self, unit, ...)
-    local size, base = 10, self.Health
+    local indicator = self:CreateTexture(nil, "ARTWORK")
+    indicator:SetSize(10, 10)
+    indicator:SetPoint("LEFT", self.NameTag, "RIGHT", 2, 0)
 
-    local anchor = CreateFrame("Frame", nil, self)
-    anchor:SetAllPoints(base)
-    anchor:SetFrameLevel(base:GetFrameLevel() + 1)
-
-    local raidTargetIndicator = anchor:CreateTexture(nil, "ARTWORK")
-    raidTargetIndicator:SetSize(size, size)
-    raidTargetIndicator:SetPoint("LEFT", self.NameTag, "RIGHT", 2, 1)
-
-    self.RaidTargetIndicator = raidTargetIndicator
+    self.RaidTargetIndicator = indicator
 end
 
--- Begin
+-- QuestTargetIndicator
+S.NamePlates.CreateQuestTargetIndicator = function(self, unit, ...)
+    local indicator = self:CreateTexture(nil, "ARTWORK")
+    indicator:SetSize(10, 10)
+    indicator:SetPoint("RIGHT", self.NameTag, "LEFT", -2, 0)
+    indicator:SetTexture([[Interface\TargetingFrame\PortraitQuestBadge]])
+
+    self.QuestTargetIndicator = indicator
+end
+
+-- Event
 local function RegisterStyle(self, unit, ...)
     self.unit = unit
     self:SetSize(width, height)
@@ -254,14 +258,53 @@ local function RegisterStyle(self, unit, ...)
     S.NamePlates.CreateThreat(self, unit, ...)
     S.NamePlates.CreateCastbar(self, unit, ...)
     S.NamePlates.CreateRaidTargetIndicator(self, unit, ...)
+    S.NamePlates.CreateQuestTargetIndicator(self, unit, ...)
+end
+
+local function OnPostUpdate(self, event, unit, ...)
+    if not self or not self.QuestTargetIndicator then
+        return 0
+    end
+
+    local indicator = self.QuestTargetIndicator
+
+    if not indicator.tooltip then
+        indicator.tooltip = CreateFrame("GameTooltip", "SoraNamePlatesTooltip", nil, "GameTooltipTemplate")
+    end
+
+    local tooltip = indicator.tooltip
+    tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+    tooltip:SetUnit(unit or self.unit)
+
+    local flag = false
+
+    for i = 2, tooltip:NumLines() do
+        local text = _G["SoraNamePlatesTooltipTextLeft" .. i]
+        local title = text:GetText()
+
+        if not title or title == "" then
+            break
+        end
+
+        local r, g, b = text:GetTextColor()
+        flag = flag or (r >= 0.99 and g >= 0.82 and g <= 0.83 and b <= 0.01) -- ugly, but useful
+    end
+
+    if flag then
+        indicator:Show()
+    else
+        indicator:Hide()
+    end
+end
+
+local function OnInitialize(self, event, ...)
+    width, height = C.NamePlates.Width, C.NamePlates.Height
 end
 
 local function OnPlayerLogin(self, event, ...)
-    width, height = C.NamePlates.Width, C.NamePlates.Height
-
     oUF:RegisterStyle("oUF_Sora_", RegisterStyle)
     oUF:SetActiveStyle("oUF_Sora_")
-    oUF:SpawnNamePlates("oUF_Sora_")
+    oUF:SpawnNamePlates("oUF_Sora_", OnPostUpdate)
 
     SetCVar("namePlateMinScale", 1) -- 固定大小，提高性能
     SetCVar("namePlateMaxScale", 1) -- 固定大小，提高性能
@@ -272,5 +315,6 @@ end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
+EventHandler.Event.INITIALIZE = OnInitialize
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
 EventHandler:Register()
