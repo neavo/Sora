@@ -19,108 +19,135 @@ local function OnPlayerLogin(self, event, ...)
 	end
 
 	-- BFA Raid
-	-- The Waking City
+	-- Ny'alotha, The Waking City
 	do
 		-- Wrathion
-		GridStatusRaidDebuff:DebuffId(zoneid, 306015, 11) -- Searing Armor
-		GridStatusRaidDebuff:DebuffId(zoneid, 306111, 12) -- Incineration
-		GridStatusRaidDebuff:DebuffId(zoneid, 307013, 13) -- Burning Madness
-		GridStatusRaidDebuff:DebuffId(zoneid, 314347, 14) -- Noxious Choke
+		GridStatusRaidDebuff:BossNameId(zoneid, 10, "Wrathion")
+		GridStatusRaidDebuff:DebuffId(zoneid, 306015, 11, 5, 5, true, true) --Searing Armor
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 12, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 318391, 13, 5, 5, true) --Great Worm's Foul Stench
+		GridStatusRaidDebuff:DebuffId(zoneid, 306163, 14, 5, 5, true) --Incineration
+		GridStatusRaidDebuff:DebuffId(zoneid, 313959, 15, 5, 5, true) --Scorching Blister
+		GridStatusRaidDebuff:DebuffId(zoneid, 307013, 16, 5, 5, true, true) --Burning Madness
 
 		-- Maut
-		GridStatusRaidDebuff:DebuffId(zoneid, 307805, 21) -- Devour Magic
-		GridStatusRaidDebuff:DebuffId(zoneid, 307399, 22) -- Shadow Wounds
-		GridStatusRaidDebuff:DebuffId(zoneid, 306301, 23) -- Forbidden Mana
-		GridStatusRaidDebuff:DebuffId(zoneid, 314992, 24) -- Drain Essence
+		GridStatusRaidDebuff:BossNameId(zoneid, 20, "Maut")
+		GridStatusRaidDebuff:DebuffId(zoneid, 307399, 21, 5, 5, true, true) --Shadow Wounds
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 22, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 310611, 23, 5, 5, true) --Forbidden Mana
+		GridStatusRaidDebuff:DebuffId(zoneid, 307586, 24, 5, 5, true) --Devoured Abyss
+		GridStatusRaidDebuff:DebuffId(zoneid, 307806, 25, 5, 5, true) --Devour Magic
+		GridStatusRaidDebuff:DebuffId(zoneid, 308158, 26, 5, 5, true) --Consuming Shadows
 
-		-- The Prophet Skitra
-		GridStatusRaidDebuff:DebuffId(zoneid, 307937, 31) -- Shred Psyche
-		GridStatusRaidDebuff:DebuffId(zoneid, 307977, 33) -- Shadow Shock
-		GridStatusRaidDebuff:DebuffId(zoneid, 309687, 34) -- Psychic Outburst
-		GridStatusRaidDebuff:DebuffId(zoneid, 307445, 35) -- Illusionary Projection
-		GridStatusRaidDebuff:DebuffId(zoneid, 307784, 36) -- Clouded Mind
-		GridStatusRaidDebuff:DebuffId(zoneid, 307785, 37) -- Twisted Mind
-		GridStatusRaidDebuff:DebuffId(zoneid, 309657, 38) -- Dark Ritual
-
-		-- Dark Inquisitor
-		GridStatusRaidDebuff:DebuffId(zoneid, 311551, 41) -- Abyssal Strike
-		GridStatusRaidDebuff:DebuffId(zoneid, 311383, 42) -- Torment
-		GridStatusRaidDebuff:DebuffId(zoneid, 312406, 43) -- Voidwoken
-		GridStatusRaidDebuff:DebuffId(zoneid, 313198, 44) -- Void-Touched
-
-		-- The Hivemind
-		GridStatusRaidDebuff:DebuffId(zoneid, 315311, 51) -- Ravage
-		GridStatusRaidDebuff:DebuffId(zoneid, 307637, 52) -- Accelerated Evolution
-		GridStatusRaidDebuff:DebuffId(zoneid, 313652, 53) -- Mind-Numbing Nova
-		GridStatusRaidDebuff:DebuffId(zoneid, 313460, 54) -- Nullification
-		GridStatusRaidDebuff:DebuffId(zoneid, 313461, 55) -- Corrosion
+		-- Prophet Skitra
+		GridStatusRaidDebuff:BossNameId(zoneid, 30, "Prophet Skitra")
+		GridStatusRaidDebuff:DebuffId(zoneid, 308059, 31, 5, 5, true, true) --Shadow Shock
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 32, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 307785, 33, 5, 5, true) --Twisted Mind
+		GridStatusRaidDebuff:DebuffId(zoneid, 307784, 34, 5, 5, true) --Clouded Mind
+		GridStatusRaidDebuff:DebuffId(zoneid, 309652, 35, 5, 5, true) --Illusionary Bolt
+		GridStatusRaidDebuff:DebuffId(zoneid, 309657, 36, 5, 5, true, true) --Dark Ritual
+		GridStatusRaidDebuff:DebuffId(zoneid, 307950, 36, 5, 5, true) --Shred Psyche
 
 		-- Shad'har the Insatiable
-		GridStatusRaidDebuff:DebuffId(zoneid, 307471, 61) -- Crush
-		GridStatusRaidDebuff:DebuffId(zoneid, 307472, 62) -- Dissolve
-		GridStatusRaidDebuff:DebuffId(zoneid, 307358, 63) -- Debilitating Spit
-		GridStatusRaidDebuff:DebuffId(zoneid, 312099, 64) -- Tasty Morsel
-		GridStatusRaidDebuff:DebuffId(zoneid, 312332, 65) -- Slimy Residue
-		GridStatusRaidDebuff:DebuffId(zoneid, 308177, 66) -- Entropic Buildup
-		GridStatusRaidDebuff:DebuffId(zoneid, 306934, 67) -- Entropic Mantle
-		GridStatusRaidDebuff:DebuffId(zoneid, 306930, 68) -- Entropic Breath
-		GridStatusRaidDebuff:DebuffId(zoneid, 306929, 69) -- Bubbling Breath
+		GridStatusRaidDebuff:BossNameId(zoneid, 40, "Shad'har the Insatiable")
+		GridStatusRaidDebuff:DebuffId(zoneid, 312590, 41, 5, 5, true) --Bitten Hand
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 42, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 306934, 43, 5, 5, true) --Entropic Mantle
+		GridStatusRaidDebuff:DebuffId(zoneid, 307358, 44, 5, 5, true) --Debilitating Spit
+		GridStatusRaidDebuff:DebuffId(zoneid, 307471, 45, 5, 5, true) --Crush
+		GridStatusRaidDebuff:DebuffId(zoneid, 307472, 46, 5, 5, true, true) --Dissolve
+		GridStatusRaidDebuff:DebuffId(zoneid, 306932, 47, 5, 5, true) --Noxious Mantle
+		GridStatusRaidDebuff:DebuffId(zoneid, 318078, 48, 5, 5, true) --Fixate
+		GridStatusRaidDebuff:DebuffId(zoneid, 308177, 49, 5, 5, true) --Entropic Buildup
+		GridStatusRaidDebuff:DebuffId(zoneid, 306448, 50, 5, 5, true) --Umbral Mantle
+		GridStatusRaidDebuff:DebuffId(zoneid, 306930, 51, 5, 5, true) --Entropic Breath
+		GridStatusRaidDebuff:DebuffId(zoneid, 309704, 52, 5, 5, true) --Caustic Coating
+		GridStatusRaidDebuff:DebuffId(zoneid, 306928, 53, 5, 5, true) --Umbral Breath
+		GridStatusRaidDebuff:DebuffId(zoneid, 306929, 54, 5, 5, true) --Bubbling Breath
+		GridStatusRaidDebuff:DebuffId(zoneid, 314736, 55, 5, 5, true) --Bubbling Overflow
 
-		-- Drest'agath
-		GridStatusRaidDebuff:DebuffId(zoneid, 310277, 71) -- Volatile Seed
-		GridStatusRaidDebuff:DebuffId(zoneid, 310406, 72) -- Void Glare
-		GridStatusRaidDebuff:DebuffId(zoneid, 310358, 73) -- Mutterings of Insanity
-		GridStatusRaidDebuff:DebuffId(zoneid, 310563, 74) -- Mutterings of Betrayal
-		GridStatusRaidDebuff:DebuffId(zoneid, 310552, 75) -- Mind Flay
-		GridStatusRaidDebuff:DebuffId(zoneid, 308377, 76) -- Void Infused Ichor
-		GridStatusRaidDebuff:DebuffId(zoneid, 317001, 77) -- Umbral Aversion
-		GridStatusRaidDebuff:DebuffId(zoneid, 308377, 78) -- Void Infused Ichor
-
-		-- Il'gynoth
-		GridStatusRaidDebuff:DebuffId(zoneid, 309961, 81) -- Eye of N'Zoth
-		GridStatusRaidDebuff:DebuffId(zoneid, 318396, 82) -- Reconstituted Blood
-		GridStatusRaidDebuff:DebuffId(zoneid, 311159, 83) -- Cursed Blood
-		GridStatusRaidDebuff:DebuffId(zoneid, 312486, 84) -- Recurring Nightmare
+		-- Dark Inquisitor Xanesh
+		GridStatusRaidDebuff:BossNameId(zoneid, 60, "Dark Inquisitor Xanesh")
+		GridStatusRaidDebuff:DebuffId(zoneid, 311551, 61, 5, 5, true) --Abyssal Strike
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 62, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 312406, 63, 5, 5, true) --Voidwoken
+		GridStatusRaidDebuff:DebuffId(zoneid, 306311, 64, 5, 5, true) --Soul Flay
 
 		-- Vexiona
-		GridStatusRaidDebuff:DebuffId(zoneid, 307359, 91) -- Despair
-		GridStatusRaidDebuff:DebuffId(zoneid, 307019, 92) -- Void Corruption
-		GridStatusRaidDebuff:DebuffId(zoneid, 307421, 93) -- Annihilation
-		GridStatusRaidDebuff:DebuffId(zoneid, 307284, 94) -- Terrifying Presence
+		GridStatusRaidDebuff:BossNameId(zoneid, 70, "Vexiona")
+		GridStatusRaidDebuff:DebuffId(zoneid, 307019, 71, 5, 5, true, true) --Void Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 72, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 307284, 73, 5, 5, true) --Terrifying Presence
+		GridStatusRaidDebuff:DebuffId(zoneid, 307343, 74, 5, 5, true) --Shadowy Residue
+		GridStatusRaidDebuff:DebuffId(zoneid, 306981, 75, 5, 5, true) --Gift of the Void
+		GridStatusRaidDebuff:DebuffId(zoneid, 307359, 76, 5, 5, true) --Despair
+		GridStatusRaidDebuff:DebuffId(zoneid, 307020, 77, 5, 5, true) --Twilight Breath
+		GridStatusRaidDebuff:DebuffId(zoneid, 307250, 78, 5, 5, true) --Twilight Decimator
+		GridStatusRaidDebuff:DebuffId(zoneid, 307645, 79, 5, 5, true) --Heart of Darkness
+		GridStatusRaidDebuff:DebuffId(zoneid, 315769, 80, 5, 5, true) --Decimation
 
-		-- Ra-den
-		GridStatusRaidDebuff:DebuffId(zoneid, 306819, 101) -- Nullifying Strike
-		GridStatusRaidDebuff:DebuffId(zoneid, 313227, 102) -- Decaying Wound
-		GridStatusRaidDebuff:DebuffId(zoneid, 313109, 103) -- Unstable Nightmare
-		GridStatusRaidDebuff:DebuffId(zoneid, 306257, 104) -- Unstable Vita
-		GridStatusRaidDebuff:DebuffId(zoneid, 315258, 105) -- Dread Inferno
-		GridStatusRaidDebuff:DebuffId(zoneid, 310019, 106) -- Charged Bonds
-		GridStatusRaidDebuff:DebuffId(zoneid, 309852, 107) -- Ruin
-		GridStatusRaidDebuff:DebuffId(zoneid, 306733, 108) -- Void Empowered
-		GridStatusRaidDebuff:DebuffId(zoneid, 316065, 109) -- Corrupted Existence
-		GridStatusRaidDebuff:DebuffId(zoneid, 306279, 110) -- Instability Exposure
-		GridStatusRaidDebuff:DebuffId(zoneid, 309777, 111) -- Void Defilement
-		GridStatusRaidDebuff:DebuffId(zoneid, 306184, 112) -- Unleashed Void
+		-- The Hivemind
+		GridStatusRaidDebuff:BossNameId(zoneid, 90, "The Hivemind")
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 91, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 313461, 92, 5, 5, true) --Corrosion
+
+		-- Ra-den the Despoiled
+		GridStatusRaidDebuff:BossNameId(zoneid, 100, "Ra-den the Despoiled")
+		GridStatusRaidDebuff:DebuffId(zoneid, 306819, 101, 5, 5, true) --Nullifying Strike
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 102, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 310022, 103, 5, 5, true) --Charged Bonds
+		GridStatusRaidDebuff:DebuffId(zoneid, 306184, 104, 5, 5, true) --Unleashed Void
+		GridStatusRaidDebuff:DebuffId(zoneid, 313227, 105, 5, 5, true) --Decaying Wound
+		GridStatusRaidDebuff:DebuffId(zoneid, 310022, 106, 5, 5, true) --Charged Bonds
+		GridStatusRaidDebuff:DebuffId(zoneid, 306273, 107, 5, 5, true, true) --Unstable Vita
+		GridStatusRaidDebuff:DebuffId(zoneid, 309777, 108, 5, 5, true) --Void Defilement
+
+		-- Drest'agath
+		GridStatusRaidDebuff:BossNameId(zoneid, 110, "Drest'agath")
+		GridStatusRaidDebuff:DebuffId(zoneid, 308377, 111, 5, 5, true) --Void Infused Ichor
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 112, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 310309, 113, 5, 5, true) --Volatile Vulnerability
+		GridStatusRaidDebuff:DebuffId(zoneid, 310277, 114, 5, 5, true) --Volatile Seed
+		GridStatusRaidDebuff:DebuffId(zoneid, 310358, 115, 5, 5, true) --Mutterings of Insanity
+		GridStatusRaidDebuff:DebuffId(zoneid, 310361, 116, 5, 5, true) --Unleashed Insanity
+		GridStatusRaidDebuff:DebuffId(zoneid, 310406, 117, 5, 5, true) --Void Glare
+
+		-- Il'gynoth, Corruption Reborn
+		GridStatusRaidDebuff:BossNameId(zoneid, 120, "Il'gynoth, Corruption Reborn")
+		GridStatusRaidDebuff:DebuffId(zoneid, 315094, 121, 5, 5, true) --Fixate
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 122, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 309961, 123, 5, 5, true) --Eye of N'Zoth
+		GridStatusRaidDebuff:DebuffId(zoneid, 312486, 124, 5, 5, true, true) --Recurring Nightmare
+		GridStatusRaidDebuff:DebuffId(zoneid, 310322, 125, 5, 5, true) --Morass of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 311159, 126, 5, 5, true) --Cursed Blood
 
 		-- Carapace of N'Zoth
-		GridStatusRaidDebuff:DebuffId(zoneid, 315954, 111) -- Black Scar
-		GridStatusRaidDebuff:DebuffId(zoneid, 306984, 112) -- Insanity Bomb
-		GridStatusRaidDebuff:DebuffId(zoneid, 316847, 113) -- Adaptive Membrane
-		GridStatusRaidDebuff:DebuffId(zoneid, 313330, 114) -- Grace of the Black Prince
-		GridStatusRaidDebuff:DebuffId(zoneid, 307044, 115) -- Nightmare Antibody
-		GridStatusRaidDebuff:DebuffId(zoneid, 313334, 116) -- Gift of N'Zoth
-		GridStatusRaidDebuff:DebuffId(zoneid, 313364, 117) -- Mental Decay
-		GridStatusRaidDebuff:DebuffId(zoneid, 317627, 118) -- Infinite Void
+		GridStatusRaidDebuff:BossNameId(zoneid, 130, "Carapace of N'Zoth")
+		GridStatusRaidDebuff:DebuffId(zoneid, 307044, 131, 5, 5, true, true) --Nightmare Antibody
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 132, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 315954, 133, 5, 5, true) --Black Scar
+		GridStatusRaidDebuff:DebuffId(zoneid, 313364, 134, 5, 5, true) --Mental Decay
+		GridStatusRaidDebuff:DebuffId(zoneid, 307061, 135, 5, 5, true) --Mycelial Growth
+		GridStatusRaidDebuff:DebuffId(zoneid, 306973, 136, 5, 5, true) --Madness Bomb
+		GridStatusRaidDebuff:DebuffId(zoneid, 306984, 137, 5, 5, true) --Insanity Bomb
 
-		-- N'Zoth
-		GridStatusRaidDebuff:DebuffId(zoneid, 316711, 121) -- Mindwrack
-		GridStatusRaidDebuff:DebuffId(zoneid, 313184, 122) -- Synaptic Shock
-		GridStatusRaidDebuff:DebuffId(zoneid, 317874, 123) -- Stupefying Glare
-		GridStatusRaidDebuff:DebuffId(zoneid, 309980, 124) -- Paranoia
-		GridStatusRaidDebuff:DebuffId(zoneid, 309991, 125) -- Anguish
-		GridStatusRaidDebuff:DebuffId(zoneid, 313609, 126) -- Gift of N'Zoth
-		GridStatusRaidDebuff:DebuffId(zoneid, 313400, 127) -- Corrupted Mind
-		GridStatusRaidDebuff:DebuffId(zoneid, 313610, 128) -- Mental Decay
+		-- N'Zoth the Corruptor
+		GridStatusRaidDebuff:BossNameId(zoneid, 140, "N'Zoth the Corruptor")
+		GridStatusRaidDebuff:DebuffId(zoneid, 308996, 141, 5, 5, true) --Servant of N'Zoth
+		GridStatusRaidDebuff:DebuffId(zoneid, 315161, 142, 5, 5, true) --Eye of Corruption
+		GridStatusRaidDebuff:DebuffId(zoneid, 313400, 143, 5, 5, true) --Corrupted Mind
+		GridStatusRaidDebuff:DebuffId(zoneid, 313609, 144, 5, 5, true) --Gift of N'Zoth
+		GridStatusRaidDebuff:DebuffId(zoneid, 316542, 145, 5, 5, true) --Paranoia
+		GridStatusRaidDebuff:DebuffId(zoneid, 316711, 146, 5, 5, true) --Mindwrack
+		GridStatusRaidDebuff:DebuffId(zoneid, 309991, 147, 5, 5, true) --Anguish
+		GridStatusRaidDebuff:DebuffId(zoneid, 313610, 148, 5, 5, true) --Mental Decay
+		GridStatusRaidDebuff:DebuffId(zoneid, 310042, 149, 5, 5, true) --Tumultuous Burst
+		GridStatusRaidDebuff:DebuffId(zoneid, 309698, 150, 5, 5, true) --Void Lash
+		GridStatusRaidDebuff:DebuffId(zoneid, 302565, 151, 5, 5, true) --Conductive Ink
+		GridStatusRaidDebuff:DebuffId(zoneid, 310073, 152, 5, 5, true) --Mindgrasp
+		GridStatusRaidDebuff:DebuffId(zoneid, 313793, 153, 5, 5, true) --Flames of Insanity
+		GridStatusRaidDebuff:DebuffId(zoneid, 313663, 153, 5, 5, true) --Psyche Shredder
 	end
 
 	-- BFA Raid
@@ -197,37 +224,6 @@ local function OnPlayerLogin(self, event, ...)
 		GridStatusRaidDebuff:DebuffId(zoneid, 118905, 1, 5, 5, true) --Static Charge
 		GridStatusRaidDebuff:DebuffId(zoneid, 304771, 1, 5, 5, true) --Queen's Disgust
 		GridStatusRaidDebuff:DebuffId(zoneid, 295822, 1, 5, 5, true) --Conductive Pulse
-
-		-- Trash
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303298, 1, 5, 5, true) --Hunter's Quarry
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303296, 1, 5, 5, true) --Poison-Dipped Arrow
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 304245, 1, 5, 5, true) --Toxic Spear
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 301968, 1, 4, 4, true) --Bioluminescence
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 304189, 1, 5, 5, true) --Frostbolt
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303316, 1, 6, 6, true) --Hindering Resonance
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 292127, 1, 6, 6, true) --Darkest Depths
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 304026, 1, 6, 6, true) --Arcane Bomb
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 304297, 1, 5, 5, true) --Disgusting Mucus
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 302989, 1, 5, 5, true) --Briny Bubble
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 302992, 1, 5, 5, true) --Briny Bubble
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 304027, 1, 5, 5, true) --Arcane Bomb
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 295779, 1, 5, 5, true) --Aqua Lance
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 292307, 1, 5, 5, true) --Gaze from Below
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 298459, 1, 5, 5, true) --Amniotic Eruption
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 300244, 1, 5, 5, true) --Raging Rapids
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303630, 1, 5, 5, true) --Explosive Darkness
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303422, 1, 5, 5, true) --Blizzard
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303625, 1, 5, 5, true) --Aura of Suffering
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303747, 1, 5, 5, true) --Ice Tomb
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303373, 1, 5, 5, true) --Toxic Bolt Volley
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 304765, 1, 5, 5, true) --Filth
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303382, 1, 5, 5, true) --Venom Bomb
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303619, 1, 5, 5, true) --Dread
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303501, 1, 5, 5, true) --Rending Strike
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303958, 1, 5, 5, true) --Nightmare Pool
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 6136, 1, 5, 5, true) --Chilled
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303942, 1, 5, 5, true) --Coalesced Nightmares
-		-- GridStatusRaidDebuff:DebuffId(zoneid, 303913, 1, 5, 5, true) --Lingering Soul
 
 		-- Abyssal Commander Sivara
 		GridStatusRaidDebuff:BossNameId(zoneid, 10, "Abyssal Commander Sivara")
