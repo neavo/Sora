@@ -32,19 +32,23 @@ local function SetAuraButtonStyle()
         file = ""
     }
 
-    auraButton.symbol = {
-        alpha = 1.0
+    auraButton.count = {
+        font = {STANDARD_TEXT_FONT, 10, "OUTLINE"},
+        points = {
+            {"TOPRIGHT", -1.0, -1.5}
+        }
     }
 
-    auraButton.count = {
-        font = {DB.AuraFont, 12, "THINOUTLINE"},
+    auraButton.symbol = {
+        font = {STANDARD_TEXT_FONT, 12, "OUTLINE"},
+        alpha = 1.0,
         points = {
             {"TOPRIGHT", 3, -1}
         }
     }
 
     auraButton.duration = {
-        font = {DB.AuraFont, 12, "THINOUTLINE"},
+        font = {DB.AuraFont, 12, "OUTLINE"},
         points = {
             {"BOTTOM", 2, -10}
         }

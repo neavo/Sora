@@ -9,20 +9,11 @@ local function Dummy()
 end
 
 local function DoSkin(aura)
-    aura.count:ClearAllPoints()
-    aura.count:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
-    aura.count:SetPoint("TOPRIGHT", -1.0, -1.5)
     aura.count:SetShadowColor(0.00, 0.00, 0.00, 1.00)
     aura.count:SetShadowOffset(1.00, -1.00)
-    aura.count.SetFont = Dummy
-    aura.count.SetPoint = Dummy
-    aura.count.ClearAllPoints = Dummy
 
-    aura.duration:ClearAllPoints()
-    aura.duration:SetFont(DB.AuraFont, 12, "OUTLINE")
     aura.duration:SetShadowColor(0.00, 0.00, 0.00, 1.00)
     aura.duration:SetShadowOffset(1.00, -1.00)
-    aura.duration.SetFont = Dummy
 end
 
 local function CreateAnchor()
@@ -48,12 +39,14 @@ end
 
 -- Hook
 local function HookAuraButtonUpdateDuration(self, timeLeft, ...)
-    if timeLeft then
-        if timeLeft < BUFF_DURATION_WARNING_TIME then
-            self.duration:SetTextColor(1.00, 0.00, 0.00)
-        else
-            self.duration:SetTextColor(0.96, 0.82, 0.10)
-        end
+    if not timeLeft then
+        return 0
+    end
+
+    if timeLeft < BUFF_DURATION_WARNING_TIME then
+        self.duration:SetTextColor(1.00, 0.00, 0.00)
+    else
+        self.duration:SetTextColor(1.00, 0.84, 0.00)
     end
 end
 
