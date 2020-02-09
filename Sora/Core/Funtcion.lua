@@ -251,6 +251,10 @@ function S.ToBoolean(v)
 end
 
 function S.SubString(str, lenght, postfix)
+    if str == nil or string.len(str) == 0 then
+        return ""
+    end
+
     local cache = {}
     local result = ""
 
@@ -274,6 +278,10 @@ function S.SubString(str, lenght, postfix)
 end
 
 function S.CountString(str)
+    if str == nil or string.len(str) == 0 then
+        return 0
+    end
+
     local num = 0
 
     for char in string.gmatch(str, "[%z\1-\127\194-\244][\128-\191]*") do
