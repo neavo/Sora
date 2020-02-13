@@ -36,6 +36,7 @@ local function RegisterStyle(self, unit, ...)
 
     S.UnitFrame.CreatePower(self, unit, ...)
     S.UnitFrame.CreateHealth(self, unit, ...)
+    S.UnitFrame.CreateHealthPrediction(self, unit, ...)
 
     S.UnitFrame.CreateTag(self, unit, ...)
     S.UnitFrame.CreateAuras(self, unit, ...)
@@ -75,8 +76,16 @@ local function OnPlayerLogin(self, event, ...)
         self:StartMoving()
     end
 
+    local function HookUnitPowerBarAltSetup(self, barID)
+        if self.statusFrame.enabled then
+            self.statusFrame:Show()
+            self.statusFrame.Hide = self.statusFrame.Show
+        end
+    end
+
     PlayerPowerBarAlt:SetScript("OnDragStop", OnDragStop)
     PlayerPowerBarAlt:SetScript("OnDragStart", OnDragStart)
+    hooksecurefunc("UnitPowerBarAlt_SetUp", HookUnitPowerBarAltSetup)
 end
 
 -- EventHandler

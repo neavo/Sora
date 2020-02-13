@@ -295,6 +295,7 @@ local function RegisterStyle(self, unit, ...)
 
     S.UnitFrame.CreatePower(self, unit, ...)
     S.UnitFrame.CreateHealth(self, unit, ...)
+    S.UnitFrame.CreateHealthPrediction(self, unit, ...)
 
     S.UnitFrame.CreateTag(self, unit, ...)
     S.UnitFrame.CreateRaidRoleIndicator(self, unit, ...)
