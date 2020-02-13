@@ -61,6 +61,46 @@ S.NamePlates.CreateHealth = function(self, unit, ...)
     self.Health = health
 end
 
+-- HealthPrediction
+S.NamePlates.CreateHealthPrediction = function(self, unit, ...)
+    local myBar = CreateFrame("StatusBar", nil, self.Health)
+    myBar:SetSize(self.Health:GetSize())
+    myBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
+    myBar:SetFrameLevel(self.Health:GetFrameLevel())
+    myBar:SetStatusBarTexture(DB.Statusbar)
+    myBar:SetStatusBarColor(125 / 255, 255 / 255, 50 / 255, 0.50)
+
+    local otherBar = CreateFrame("StatusBar", nil, self.Health)
+    otherBar:SetSize(self.Health:GetSize())
+    otherBar:SetPoint("LEFT", myBar:GetStatusBarTexture(), "RIGHT")
+    otherBar:SetFrameLevel(self.Health:GetFrameLevel())
+    otherBar:SetStatusBarTexture(DB.Statusbar)
+    otherBar:SetStatusBarColor(100 / 255, 235 / 255, 200 / 255, 0.50)
+
+    local absorbBar = CreateFrame("StatusBar", nil, self.Health)
+    absorbBar:SetSize(self.Health:GetSize())
+    absorbBar:SetPoint("LEFT", otherBar:GetStatusBarTexture(), "RIGHT")
+    absorbBar:SetFrameLevel(self.Health:GetFrameLevel())
+    absorbBar:SetStatusBarTexture(DB.Statusbar)
+    absorbBar:SetStatusBarColor(180 / 255, 255 / 255, 205 / 255, 0.35)
+
+    local healAbsorbBar = CreateFrame("StatusBar", nil, self.Health)
+    healAbsorbBar:SetSize(self.Health:GetSize())
+    healAbsorbBar:SetPoint("RIGHT", self.Health:GetStatusBarTexture())
+    healAbsorbBar:SetFrameLevel(self.Health:GetFrameLevel())
+    healAbsorbBar:SetReverseFill(true)
+    healAbsorbBar:SetStatusBarTexture(DB.Statusbar)
+    healAbsorbBar:SetStatusBarColor(183 / 255, 244 / 255, 255 / 255, 0.35)
+
+    self.HealthPrediction = {}
+    self.HealthPrediction.myBar = myBar
+    self.HealthPrediction.otherBar = otherBar
+    self.HealthPrediction.absorbBar = absorbBar
+    self.HealthPrediction.healAbsorbBar = healAbsorbBar
+    self.HealthPrediction.maxOverflow = 1.00
+    self.HealthPrediction.frequentUpdates = true
+end
+
 -- Tag
 S.NamePlates.CreateTag = function(self, unit, ...)
     self.RaraTag = S.MakeText(self.Health, 7)
@@ -252,6 +292,7 @@ local function RegisterStyle(self, unit, ...)
 
     S.NamePlates.CreatePower(self, unit, ...)
     S.NamePlates.CreateHealth(self, unit, ...)
+    S.NamePlates.CreateHealthPrediction(self, unit, ...)
 
     S.NamePlates.CreateTag(self, unit, ...)
     S.NamePlates.CreateAuras(self, unit, ...)
