@@ -1,6 +1,0 @@
-## Interface: 80200
-## Title: AutoLootPlus
-## Notes: Improves the speed of Blizzard's auto looting
-## Version: 2.0.0-80200
-
-AutoLootPlus.lua
