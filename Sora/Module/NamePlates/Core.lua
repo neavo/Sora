@@ -6,11 +6,8 @@ local S, C, L, DB = unpack(select(2, ...))
 -- Variables
 local width, height = nil, nil
 
--- Initialize
-S.NamePlates = S.NamePlates or {}
-
 -- Power
-S.NamePlates.CreatePower = function(self, unit, ...)
+local function CreatePower(self, unit, ...)
     local power = CreateFrame("StatusBar", nil, self)
     power:SetPoint("BOTTOM")
     power:SetSize(width, 1)
@@ -34,7 +31,7 @@ S.NamePlates.CreatePower = function(self, unit, ...)
 end
 
 -- Health
-S.NamePlates.CreateHealth = function(self, unit, ...)
+local function CreateHealth(self, unit, ...)
     local health = CreateFrame("StatusBar", nil, self)
     health:SetPoint("TOP")
     health:SetSize(width, height - 2)
@@ -58,11 +55,21 @@ S.NamePlates.CreateHealth = function(self, unit, ...)
     health.shadow = S.MakeShadow(health, 2)
     health.shadow:SetFrameLevel(health:GetFrameLevel())
 
+    local function PostUpdate(self, unit, cur, max)
+        local guid = UnitGUID(unit)
+        local _, _, _, _, _, id = strsplit("-", guid or "")
+
+        if id == "120651" then
+            self:SetStatusBarColor(0.00, 0.90, 0.00, 1.00)
+        end
+    end
+
     self.Health = health
+    self.Health.PostUpdate = PostUpdate
 end
 
 -- HealthPrediction
-S.NamePlates.CreateHealthPrediction = function(self, unit, ...)
+local function CreateHealthPrediction(self, unit, ...)
     local myBar = CreateFrame("StatusBar", nil, self.Health)
     myBar:SetSize(self.Health:GetSize())
     myBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
@@ -102,7 +109,7 @@ S.NamePlates.CreateHealthPrediction = function(self, unit, ...)
 end
 
 -- Tag
-S.NamePlates.CreateTag = function(self, unit, ...)
+local function CreateTag(self, unit, ...)
     self.RaraTag = S.MakeText(self.Health, 7)
     self.RaraTag:SetPoint("RIGHT", self, "LEFT", -4, 0.5)
     self:Tag(self.RaraTag, "[NamePlates:Rare]")
@@ -113,7 +120,7 @@ S.NamePlates.CreateTag = function(self, unit, ...)
 end
 
 -- Auras
-S.NamePlates.CreateAuras = function(self, unit, ...)
+local function CreateAuras(self, unit, ...)
     local perRow, maxRow = 7, 2
     local size = (self:GetWidth() - 4 * (perRow - 1)) / perRow
 
@@ -176,7 +183,7 @@ local function OnTicker(ticker)
 end
 C_Timer.NewTicker(1.00, OnTicker)
 
-S.NamePlates.CreateThreat = function(self, unit, ...)
+local function CreateThreat(self, unit, ...)
     local threat = CreateFrame("StatusBar", nil, self)
     threat:SetSize(height, height)
     threat:SetStatusBarTexture(DB.Statusbar)
@@ -191,7 +198,7 @@ S.NamePlates.CreateThreat = function(self, unit, ...)
 end
 
 -- Castbar
-S.NamePlates.CreateCastbar = function(self, unit, ...)
+local function CreateCastbar(self, unit, ...)
     local spacing, barHeight = self.Auras.spacing, 12
 
     local castbar = CreateFrame("StatusBar", nil, self)
@@ -266,7 +273,7 @@ S.NamePlates.CreateCastbar = function(self, unit, ...)
 end
 
 -- RaidTargetIndicator
-S.NamePlates.CreateRaidTargetIndicator = function(self, unit, ...)
+local function CreateRaidTargetIndicator(self, unit, ...)
     local indicator = self:CreateTexture(nil, "ARTWORK")
     indicator:SetSize(10, 10)
     indicator:SetPoint("LEFT", self.NameTag, "RIGHT", 2, 0)
@@ -275,7 +282,7 @@ S.NamePlates.CreateRaidTargetIndicator = function(self, unit, ...)
 end
 
 -- QuestTargetIndicator
-S.NamePlates.CreateQuestTargetIndicator = function(self, unit, ...)
+local function CreateQuestTargetIndicator(self, unit, ...)
     local indicator = self:CreateTexture(nil, "ARTWORK")
     indicator:SetSize(10, 10)
     indicator:SetPoint("RIGHT", self.NameTag, "LEFT", -2, 0)
@@ -284,25 +291,8 @@ S.NamePlates.CreateQuestTargetIndicator = function(self, unit, ...)
     self.QuestTargetIndicator = indicator
 end
 
--- Event
-local function RegisterStyle(self, unit, ...)
-    self.unit = unit
-    self:SetSize(width, height)
-    self:SetPoint("BOTTOM", C_NamePlate.GetNamePlateForUnit(unit), "BOTTOM", 0, 0)
-
-    S.NamePlates.CreatePower(self, unit, ...)
-    S.NamePlates.CreateHealth(self, unit, ...)
-    S.NamePlates.CreateHealthPrediction(self, unit, ...)
-
-    S.NamePlates.CreateTag(self, unit, ...)
-    S.NamePlates.CreateAuras(self, unit, ...)
-    S.NamePlates.CreateThreat(self, unit, ...)
-    S.NamePlates.CreateCastbar(self, unit, ...)
-    S.NamePlates.CreateRaidTargetIndicator(self, unit, ...)
-    S.NamePlates.CreateQuestTargetIndicator(self, unit, ...)
-end
-
-local function OnPostUpdate(self, event, unit, ...)
+-- Common
+local function UpdateQuestTargetIndicator(self, unit, ...)
     if not self or not self.QuestTargetIndicator then
         return 0
     end
@@ -336,6 +326,28 @@ local function OnPostUpdate(self, event, unit, ...)
     else
         indicator:Hide()
     end
+end
+
+-- Event
+local function RegisterStyle(self, unit, ...)
+    self.unit = unit
+    self:SetSize(width, height)
+    self:SetPoint("BOTTOM", C_NamePlate.GetNamePlateForUnit(unit), "BOTTOM", 0, 0)
+
+    CreatePower(self, unit, ...)
+    CreateHealth(self, unit, ...)
+    CreateHealthPrediction(self, unit, ...)
+
+    CreateTag(self, unit, ...)
+    CreateAuras(self, unit, ...)
+    CreateThreat(self, unit, ...)
+    CreateCastbar(self, unit, ...)
+    CreateRaidTargetIndicator(self, unit, ...)
+    CreateQuestTargetIndicator(self, unit, ...)
+end
+
+local function OnPostUpdate(self, event, unit, ...)
+    UpdateQuestTargetIndicator(self, unit, ...)
 end
 
 local function OnInitialize(self, event, ...)
