@@ -48,7 +48,6 @@ end
 
 local function SetChatFrame()
     for i = 1, NUM_CHAT_WINDOWS do
-        local p = C.Core.Pixel or 1.00
         local ChatFrame = _G["ChatFrame" .. i]
         local _, fontSize = ChatFrame:GetFont()
 
@@ -78,8 +77,8 @@ local function SetChatFrame()
 
         local ChatFrameTabText = _G["ChatFrame" .. i .. "TabText"]
         ChatFrameTabText:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
-        ChatFrameTabText:SetShadowOffset(1.00 * p, -1.00 * p)
-        ChatFrameTabText:SetShadowColor(0.00, 0.00, 0.00, 0.50)
+        ChatFrameTabText:SetShadowOffset(1.00, -1.00)
+        ChatFrameTabText:SetShadowColor(0.00, 0.00, 0.00, 1.00)
 
         local x, a, y, xOffset, yOffset = ChatFrameTabText:GetPoint()
         ChatFrameTabText:ClearAllPoints()
@@ -91,8 +90,8 @@ local function SetChatFrame()
 
         local EditBox = _G["ChatFrame" .. i .. "EditBox"]
         EditBox:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
-        EditBox:SetShadowColor(0.00, 0.00, 0.00, 0.50)
-        EditBox:SetShadowOffset(1.00 * p, -1.00 * p)
+        EditBox:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+        EditBox:SetShadowOffset(1.00, -1.00)
         EditBox:ClearAllPoints()
         EditBox:EnableMouse(false)
         EditBox:SetAltArrowKeyMode(false)
@@ -101,8 +100,8 @@ local function SetChatFrame()
 
         local EditBoxHeader = _G["ChatFrame" .. i .. "EditBoxHeader"]
         EditBoxHeader:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
-        EditBoxHeader:SetShadowColor(0.00, 0.00, 0.00, 0.50)
-        EditBoxHeader:SetShadowOffset(1.00 * p, -1.00 * p)
+        EditBoxHeader:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+        EditBoxHeader:SetShadowOffset(1.00, -1.00)
 
         local EditBoxBG = CreateFrame("Frame", nil, ChatFrame)
         EditBoxBG:Hide()
@@ -170,14 +169,13 @@ local function SetChatFrame()
     end
 
     for i = 1, 2 do
-        local p = C.Core.Pixel or 1.00
         local btn = _G["CombatLogQuickButtonFrameButton" .. i]
 
         local regions = S.GetRegions(btn, "FontString")
         for k, v in pairs(regions) do
             v:SetFont(ChatFrame2:GetFont())
-            v:SetShadowColor(0.00, 0.00, 0.00, 0.50)
-            v:SetShadowOffset(1.00 * p, -1.00 * p)
+            v:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+            v:SetShadowOffset(1.00, -1.00)
         end
     end
 end

@@ -19,9 +19,11 @@ local function OnPlayerLogin(self, event, ...)
     local btn = nil
     local btns = {}
 
+    local sise = (ChatFrame1:GetHeight() - 4 * (9 - 1)) / 9
+
     local anchor = CreateFrame("Frame", nil, UIParent)
-    anchor:SetSize(14 * 9 + 4 * 8, 14)
-    anchor:SetPoint("BOTTOMRIGHT", ChatFrame1, "TOPRIGHT", 0, 4)
+    anchor:SetSize(sise, sise * 9 + 4 * (9 - 1))
+    anchor:SetPoint("TOPLEFT", ChatFrame1, "TOPRIGHT", 24, 0)
 
     local function OnEnter(self, ...)
         if InCombatLockdown() then
@@ -47,17 +49,17 @@ local function OnPlayerLogin(self, event, ...)
 
         if i < 8 then
             btn = CreateFrame("Button", nil, anchor)
-            btn:SetSize(14, 14)
+            btn:SetSize(sise, sise)
             btn:SetScript("OnClick", OnClick)
         elseif i == 8 then
             btn = CreateFrame("Button", nil, anchor, "SecureActionButtonTemplate")
-            btn:SetSize(14, 14)
+            btn:SetSize(sise, sise)
             btn:SetAttribute("*type*", "macro")
             btn:SetAttribute("macrotext", "/roll")
         else
             btn = _G["ChatFrameChannelButton"]
             btn:ClearAllPoints()
-            btn:SetSize(14 + 2, 14 + 2)
+            btn:SetSize(sise + 2, sise + 2)
         end
 
         btn:SetAlpha(0.25)
@@ -75,9 +77,9 @@ local function OnPlayerLogin(self, event, ...)
         end
 
         if i == 1 then
-            btn:SetPoint("RIGHT", anchor, "RIGHT", 0, 0)
+            btn:SetPoint("TOP", anchor, "TOP", 0, 0)
         else
-            btn:SetPoint("RIGHT", btns[i - 1], "LEFT", -4, 0)
+            btn:SetPoint("TOP", btns[i - 1], "BOTTOM", 0, -4)
         end
 
         table.insert(btns, btn)
