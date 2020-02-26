@@ -6,7 +6,7 @@ addon.db = {
     general = {
         scale             = 1,                      --縮放
         mask              = true,                   --頂部遮罩層
-        bgfile            = "rock",                 --背景w
+        bgfile            = "rock",                 --背景
         background        = {0, 0, 0, 0.7},         --背景顔色和透明度
         borderSize        = 1,                      --邊框大小（直角邊框才生效）
         borderCorner      = "default",              --邊框類型 default|angular:直角邊框
@@ -20,7 +20,7 @@ addon.db = {
         statusbarText     = false,                  --HP文字
         statusbarColor    = "auto",                 --HP顔色 default|auto|smooth
         statusbarTexture  = "Interface\\AddOns\\TinyTooltip\\texture\\StatusBar", --HP材質
-        anchor            = { position = "cursorRight", hiddenInCombat = true, returnInCombat = true, returnOnUnitFrame = false, cp = "BOTTOM", p = "BOTTOMRIGHT", }, --鼠標位置 default|cursor|static|cursorRight
+        anchor            = { position = "cursorRight", hiddenInCombat = false, returnInCombat = true, returnOnUnitFrame = false, cp = "BOTTOM", p = "BOTTOMRIGHT", }, --鼠標位置 default|cursor|static|cursorRight
         alwaysShowIdInfo  = true,
         skinMoreFrames    = true,
         headerFont        = "default",
@@ -38,7 +38,7 @@ addon.db = {
             anchor = { position = "inherit", hiddenInCombat = false, returnInCombat = false, returnOnUnitFrame = false, cp = "BOTTOM", p = "BOTTOMRIGHT", },
             showTarget = true,                      --顯示目標
             showTargetBy = true,                    --顯示被關注
-            showModel = false,                       --顯示模型
+            showModel = true,                       --顯示模型
             grayForDead = false,                    --灰色死亡目標
             elements = {
                 raidIcon    = { enable = true, filter = "none" },

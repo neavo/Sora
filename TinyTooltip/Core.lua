@@ -24,7 +24,6 @@ local BASE_MOVEMENT_SPEED = BASE_MOVEMENT_SPEED or 7
 --BLZ function (Fixed for classic WOW)
 local UnitEffectiveLevel = UnitEffectiveLevel or function() end
 local UnitGroupRolesAssigned = UnitGroupRolesAssigned or function() end
-local UnitGroupRolesAssigned = UnitGroupRolesAssigned  or function() end
 local UnitIsQuestBoss = UnitIsQuestBoss or function() end
 local IsFlying = IsFlying or function() end
 
@@ -638,6 +637,10 @@ end)
 
 local defaultHeaderFont, defaultHeaderSize, defaultHeaderFlag = GameTooltipHeaderText:GetFont()
 LibEvent:attachTrigger("tooltip.style.font.header", function(self, frame, fontObject, fontSize, fontFlag)
+    --没有配置的直接返回,防止SetFont后字体集无法自动匹配
+    if (fontObject == "default" and fontSize == "default" and fontFlag == "default") then
+        return
+    end
     local font, size, flag = GameTooltipHeaderText:GetFont()
     font = addon:GetFont(fontObject, defaultHeaderFont)
     if (fontSize == "default") then
@@ -789,7 +792,7 @@ LibEvent:attachTrigger("tooltip.style.init", function(self, tip)
             tip.BigFactionIcon = tip:CreateTexture(nil, "OVERLAY")
             tip.BigFactionIcon:SetPoint("TOPRIGHT", tip, "TOPRIGHT", 18, 0)
             tip.BigFactionIcon:SetBlendMode("ADD")
-            tip.BigFactionIcon:SetScale(0.25)
+            tip.BigFactionIcon:SetScale(0.24)
             tip.BigFactionIcon:SetAlpha(0.40)
         end
     end
