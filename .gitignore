@@ -4,21 +4,24 @@
 /Auction*
 /Azerite*
 /Details*
+/WeakAuras*
 /HandyNotes*
 /SilverDragon*
 /Overachiever*
 /MeetingStone*
+/LargerMacroIconSelection*
 
 /*Commander*
 
-/ACU
 /MTG
-/Clique
-/WowLua
 /Decursive
 /ExtVendor
-/SharedMedia
+/EasyScrap
 /WorldFlightMap
 /!WorldFlightMapLoader
+/FakeAchievement
+/Simulationcraft
+/DungeonWatchDog
 /InstancePortals
+/PersonalLootHelper
 /AdvancedInterfaceOptions
