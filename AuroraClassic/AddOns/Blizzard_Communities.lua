@@ -65,6 +65,7 @@ C.themes["Blizzard_Communities"] = function()
 			if frame.FindAGuildButton then F.Reskin(frame.FindAGuildButton) end
 			if frame.AcceptButton then F.Reskin(frame.AcceptButton) end
 			if frame.DeclineButton then F.Reskin(frame.DeclineButton) end
+			if frame.ApplyButton then F.Reskin(frame.ApplyButton) end
 
 			local optionsList = frame.OptionsList
 			if optionsList then
@@ -376,9 +377,9 @@ C.themes["Blizzard_Communities"] = function()
 
 	local factionFrameBar = CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar
 	F.StripTextures(factionFrameBar)
-	F.CreateBDFrame(factionFrameBar, .25)
+	local bg = F.CreateBDFrame(factionFrameBar, .25)
 	factionFrameBar.Progress:SetTexture(C.media.backdrop)
-	factionFrameBar.Progress:SetAllPoints()
+	bg:SetOutside(factionFrameBar.Progress)
 
 	hooksecurefunc("CommunitiesGuildPerks_Update", function(self)
 		local buttons = self.Container.buttons
@@ -464,6 +465,15 @@ C.themes["Blizzard_Communities"] = function()
 	F.CreateBDFrame(CommunitiesGuildLogFrame.Container, .25)
 	local closeButton = select(3, CommunitiesGuildLogFrame:GetChildren())
 	F.Reskin(closeButton)
+
+	local bossModel = CommunitiesFrameGuildDetailsFrameNews.BossModel
+	F.StripTextures(bossModel)
+	bossModel:ClearAllPoints()
+	bossModel:SetPoint("LEFT", CommunitiesFrame, "RIGHT", 40, 0)
+	local textFrame = bossModel.TextFrame
+	F.StripTextures(textFrame)
+	local bg = F.SetBD(bossModel)
+	bg:SetOutside(bossModel, nil, nil, textFrame)
 
 	-- Recruitment dialog
 	do
