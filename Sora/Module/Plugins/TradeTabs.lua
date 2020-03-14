@@ -1,6 +1,9 @@
 -- Engine
 local S, C, L, DB = unpack(select(2, ...))
 
+-- Variables
+local buttons = {}
+
 -- Event
 local function OnTradeSkillShow(self, event, ...)
 	local datas = {}
@@ -36,12 +39,23 @@ local function OnTradeSkillShow(self, event, ...)
 		if k == 1 then
 			button:SetPoint("TOPLEFT", TradeSkillFrame, "TOPRIGHT", 8, 0)
 		else
-			button:SetPoint("TOPLEFT", TradeSkillFrame, "TOPRIGHT", 8, -(36 + 8) * (k - 1))
+			button:SetPoint("TOPLEFT", TradeSkillFrame, "TOPRIGHT", 8, -(35 + 8) * (k - 1))
 		end
+
+		table.insert(buttons, button)
 	end
+end
+
+local function OnTradeSkillClose(self, event, ...)
+	for k, v in pairs(buttons) do
+		S.KillFrame(v)
+	end
+
+	table.wipe(buttons)
 end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.TRADE_SKILL_SHOW = OnTradeSkillShow
+EventHandler.Event.TRADE_SKILL_CLOSE = OnTradeSkillClose
 EventHandler.Register()
