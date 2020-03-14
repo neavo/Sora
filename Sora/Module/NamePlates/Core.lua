@@ -309,16 +309,16 @@ local function UpdateQuestTargetIndicator(self, unit, ...)
 
     local flag = false
 
-    for i = 2, tooltip:NumLines() do
+    for i = 1, tooltip:NumLines() do
         local text = _G["SoraNamePlatesTooltipTextLeft" .. i]
         local title = text:GetText()
 
-        if not title or title == "" then
+        if title == nil or title == "" then
             break
         end
 
         local r, g, b = text:GetTextColor()
-        flag = flag or (r >= 0.99 and g >= 0.82 and g <= 0.83 and b <= 0.01) -- ugly, but useful
+        flag = flag or (r >= 0.99 and g >= 0.82 and b <= 0.01) -- ugly, but useful
     end
 
     if flag then
