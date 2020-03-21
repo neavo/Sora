@@ -44,40 +44,55 @@ local function CreateDB(self, ...)
     SoraDB.UnitFrame.Boss.Height = SoraDB.UnitFrame.Boss.Height or 36
     SoraDB.UnitFrame.Boss.Postion = SoraDB.UnitFrame.Boss.Postion or {"CENTER", "UIParent", "CENTER", 0, 350}
 
-    SoraDB.UnitFrame.Raid = SoraDB.UnitFrame.Raid or {
-        Width = 96,
-        Height = 30,
-        HealerPostion = {"BOTTOM", "UIParent", "BOTTOM", 0, 170},
-        DefaultPostion = {"BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -8, 8},
-        IndicatorFilters = {
-            MONK = {119611, 116849, 124682, 191840}, -- 复苏之雾、作茧缚命、氤氲之雾、精华之泉
-            MAGE = {},
-            DRUID = {
-                774, -- 回春术
-                33763, -- 生命绽放
-                207386, -- 春暖花开
-                155777, -- 回春术（萌芽）
-                8936, -- 愈合
-                48438, -- 野性成长
-                102351, -- 塞纳里奥结界
-                102352, -- 塞纳里奥结界（HOT）
-                200389, -- 栽培
-                102342, -- 铁木树皮
-                197721, -- 繁盛
-                157982 -- 宁静（HOT）
-            },
-            ROGUE = {57934}, -- 嫁祸诀窍
-            -- 愈合导言、忍辱负重、恢复、真言术盾、救赎、救赎（PvP）、虚弱灵魂、守护之魂、痛苦压制
-            PRIEST = {41635, 193065, 139, 17, 194384, 214206, 6788, 47788, 33206},
-            HUNTER = {34477, 90361}, -- 误导、灵魂治愈
-            SHAMAN = {61295, 974, 207400}, -- 激流、大地之盾、先祖活力
-            WARLOCK = {20707}, -- 灵魂石
-            PALADIN = {53563, 156910, 200025, 1022, 1044, 6940, 223306, 25771}, -- 圣光道标、信仰道标、美德道标、保护、自由、牺牲、赋予信仰、自律
-            WARRIOR = {114030}, -- 警戒
-            DEATHKNIGHT = {},
-            DEMONHUNTER = {}
+    SoraDB.UnitFrame.Raid =
+        SoraDB.UnitFrame.Raid or
+        {
+            Width = 96,
+            Height = 30,
+            HealerPostion = {"BOTTOM", "UIParent", "BOTTOM", 0, 170},
+            DefaultPostion = {"BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -8, 8},
+            IndicatorFilters = {
+                MONK = {119611, 116849, 124682, 191840}, -- 复苏之雾、作茧缚命、氤氲之雾、精华之泉
+                MAGE = {},
+                DRUID = {
+                    774, -- 回春术
+                    33763, -- 生命绽放
+                    207386, -- 春暖花开
+                    155777, -- 回春术（萌芽）
+                    8936, -- 愈合
+                    48438, -- 野性成长
+                    102351, -- 塞纳里奥结界
+                    102352, -- 塞纳里奥结界（HOT）
+                    200389, -- 栽培
+                    102342, -- 铁木树皮
+                    197721, -- 繁盛
+                    157982 -- 宁静（HOT）
+                },
+                ROGUE = {57934}, -- 嫁祸诀窍
+                -- 愈合导言、忍辱负重、恢复、真言术盾、救赎、救赎（PvP）、虚弱灵魂、守护之魂、痛苦压制
+                PRIEST = {41635, 193065, 139, 17, 194384, 214206, 6788, 47788, 33206},
+                HUNTER = {34477, 90361}, -- 误导、灵魂治愈
+                SHAMAN = {61295, 974, 207400}, -- 激流、大地之盾、先祖活力
+                WARLOCK = {20707}, -- 灵魂石
+                PALADIN = {
+                    210320, -- 虔诚光环
+                    287280, -- 圣光闪烁
+                    31821, -- 光环掌握
+                    1022, -- 保护
+                    1044, -- 自由
+                    6940, -- 牺牲
+                    25771, -- 自律
+                    0, -- 无
+                    0, -- 无
+                    53563, -- 圣光道标
+                    156910, -- 信仰道标
+                    200025 -- 美德道标
+                },
+                WARRIOR = {114030}, -- 警戒
+                DEATHKNIGHT = {},
+                DEMONHUNTER = {}
+            }
         }
-    }
 
     C.UnitFrame = S.Copy(SoraDB.UnitFrame)
 end
@@ -101,7 +116,8 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Player.Width = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "slider",
             key = "SoraDB.UnitFrame.Player.Height",
             text = "玩家框体高度",
@@ -113,7 +129,8 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Player.Height = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "slider",
             key = "SoraDB.UnitFrame.Target.Width",
             text = "目标框体宽度",
@@ -125,7 +142,8 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Target.Width = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "slider",
             key = "SoraDB.UnitFrame.Target.Height",
             text = "目标框体高度",
@@ -137,7 +155,8 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Target.Height = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "slider",
             key = "SoraDB.UnitFrame.Focus.Width",
             text = "焦点框体宽度",
@@ -149,7 +168,8 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Focus.Width = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "slider",
             key = "SoraDB.UnitFrame.Focus.Height",
             text = "焦点框体高度",
@@ -161,7 +181,8 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Focus.Height = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "slider",
             key = "SoraDB.UnitFrame.Raid.Width",
             text = "团队单位框体宽度",
@@ -173,7 +194,8 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Raid.Width = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "slider",
             key = "SoraDB.UnitFrame.Raid.Height",
             text = "团队单位框体高度",
@@ -185,19 +207,19 @@ local function CreateConfig(self, ...)
                     SoraDB.UnitFrame.Raid.Height = data.value
                 end
             end
-        }, {
+        },
+        {
             type = "button",
             text = "团队边角监视管理",
             OnClick = function(self, btn, ...)
                 local instance = CreateAuraManager(SoraDB.UnitFrame.Raid.IndicatorFilters[S.GetClass()])
-                instance:Set(
-                    "text",
-                    "当前职业为 " .. S.GetClassName() .. "\n" .. "每个职业最多可设置12种需要监视的状态"
-                )
+                instance:Set("text", "当前职业为 " .. S.GetClassName() .. "\n" .. "每个职业最多可设置12种需要监视的状态")
                 instance:Show()
                 SoraConfig:Hide()
             end
-        }, {type = "space"}, {
+        },
+        {type = "space"},
+        {
             type = "button",
             text = "切换锚点显示状态",
             OnClick = function(self, btn, ...)
@@ -211,14 +233,17 @@ local function CreateConfig(self, ...)
                     end
                 end
             end
-        }, {type = "space"}, {
+        },
+        {type = "space"},
+        {
             type = "button",
             text = "重置本页设置至默认值",
             OnClick = function(self, btn, ...)
                 local data = {}
 
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "即将为您重置本页设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
@@ -232,7 +257,8 @@ local function CreateConfig(self, ...)
                     }
                 )
                 table.insert(
-                    data, {
+                    data,
+                    {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
                         OnYesClick = function(self)
