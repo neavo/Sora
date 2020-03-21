@@ -69,7 +69,7 @@ C.themes["Blizzard_Communities"] = function()
 
 			local optionsList = frame.OptionsList
 			if optionsList then
-				F.ReskinDropDown(optionsList.ClubFocusDropdown)
+				F.ReskinDropDown(optionsList.ClubFilterDropdown)
 				F.ReskinDropDown(optionsList.ClubSizeDropdown)
 				F.ReskinDropDown(optionsList.SortByDropdown)
 				F.ReskinRole(optionsList.TankRoleFrame, "TANK")
@@ -287,6 +287,7 @@ C.themes["Blizzard_Communities"] = function()
 		F.ReskinInput(dialog.MinIlvlOnly.EditBox)
 		F.ReskinDropDown(ClubFinderFocusDropdown)
 		F.ReskinDropDown(ClubFinderLookingForDropdown)
+		F.ReskinDropDown(ClubFinderLanguageDropdown)
 	end
 
 	do
@@ -485,6 +486,7 @@ C.themes["Blizzard_Communities"] = function()
 		F.ReskinCheck(dialog.MinIlvlOnly.Button)
 		F.ReskinDropDown(dialog.ClubFocusDropdown)
 		F.ReskinDropDown(dialog.LookingForDropdown)
+		F.ReskinDropDown(dialog.LanguageDropdown)
 		F.StripTextures(dialog.RecruitmentMessageFrame)
 		F.StripTextures(dialog.RecruitmentMessageFrame.RecruitmentMessageInput)
 		F.ReskinScroll(dialog.RecruitmentMessageFrame.RecruitmentMessageInput.ScrollBar)
@@ -493,4 +495,68 @@ C.themes["Blizzard_Communities"] = function()
 		F.Reskin(dialog.Accept)
 		F.Reskin(dialog.Cancel)
 	end
+
+	-- ApplicantList
+	local applicantList = CommunitiesFrame.ApplicantList
+	F.StripTextures(applicantList)
+	F.StripTextures(applicantList.ColumnDisplay)
+	F.ReskinScroll(applicantList.ListScrollFrame.scrollBar)
+	local listBG = F.CreateBDFrame(applicantList, .25)
+	listBG:SetPoint("TOPLEFT", 0, 0)
+	listBG:SetPoint("BOTTOMRIGHT", -15, 0)
+
+	local function updateMemberName(self, info)
+		if not info then return end
+
+		local class = self.Class
+		if not class.bg then
+			class.bg = F.CreateBDFrame(class)
+		end
+
+		local classTag = select(2, GetClassInfo(info.classID))
+		if classTag then
+			local tcoords = CLASS_ICON_TCOORDS[classTag]
+			class:SetTexCoord(tcoords[1] + .022, tcoords[2] - .025, tcoords[3] + .022, tcoords[4] - .025)
+		end
+	end
+
+	hooksecurefunc(applicantList, "BuildList", function(self)
+		local columnDisplay = self.ColumnDisplay
+		for i = 1, columnDisplay:GetNumChildren() do
+			local child = select(i, columnDisplay:GetChildren())
+			if not child.styled then
+				F.StripTextures(child)
+
+				local bg = F.CreateBDFrame(child, .25)
+				bg:SetPoint("TOPLEFT", 4, -2)
+				bg:SetPoint("BOTTOMRIGHT", 0, 2)
+
+				child:SetHighlightTexture(C.media.backdrop)
+				local hl = child:GetHighlightTexture()
+				hl:SetVertexColor(r, g, b, .25)
+				hl:SetInside(bg)
+
+				child.styled = true
+			end
+		end
+
+		local buttons = self.ListScrollFrame.buttons
+		for i = 1, #buttons do
+			local button = buttons[i]
+			if not button.styled then
+				button:SetPoint("LEFT", listBG, C.mult, 0)
+				button:SetPoint("RIGHT", listBG, -C.mult, 0)
+				button:SetHighlightTexture(C.media.backdrop)
+				button:GetHighlightTexture():SetVertexColor(r, g, b, .25)
+				button.InviteButton:SetSize(66, 18)
+				button.CancelInvitationButton:SetSize(20, 18)
+
+				F.ReskinButton(button.InviteButton)
+				F.ReskinButton(button.CancelInvitationButton)
+				hooksecurefunc(button, "UpdateMemberInfo", updateMemberName)
+
+				button.styled = true
+			end
+		end
+	end)
 end
