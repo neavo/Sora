@@ -2,7 +2,7 @@
 local addon = TinyTooltip
 
 addon.db = {
-    version = 2.6,
+    version = 2.7,
     general = {
         scale             = 1,                      --縮放
         mask              = true,                   --頂部遮罩層
@@ -78,6 +78,7 @@ addon.db = {
             showTarget = true,
             showTargetBy = true,
             grayForDead = false,
+            showModel = true,
             anchor = { position = "inherit", hiddenInCombat = false, returnInCombat = false, returnOnUnitFrame = false, cp = "BOTTOM", p = "BOTTOMRIGHT", },
             elements = {
                 factionBig   = { enable = false, filter = "none" },

@@ -1,6 +1,6 @@
-## Interface: 80000
+## Interface: 90001
 ## Author: p3lim
-## Version: @project-version@
+## Version: 90000.19-Release
 ## Title: oUF Reputation
 ## Notes: Reputation Bar support for oUF layouts.
 ## RequiredDeps: oUF

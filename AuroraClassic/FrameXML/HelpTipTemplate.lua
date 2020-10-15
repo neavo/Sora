@@ -1,6 +1,8 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+
 	local function reskinAlertFrame(frame)
 		if not frame.styled then
 			if frame.OkayButton then F.Reskin(frame.OkayButton) end
@@ -8,21 +10,6 @@ tinsert(C.themes["AuroraClassic"], function()
 
 			frame.styled = true
 		end
-	end
-
-	local microButtons = {
-		CharacterMicroButtonAlert,
-		TalentMicroButtonAlert,
-		CollectionsMicroButtonAlert,
-		LFDMicroButtonAlert,
-		EJMicroButtonAlert,
-		StoreMicroButtonAlert,
-		GuildMicroButtonAlert,
-		ZoneAbilityButtonAlert,
-	}
-
-	for _, frame in pairs(microButtons) do
-		reskinAlertFrame(frame)
 	end
 
 	hooksecurefunc(HelpTip, "Show", function(self)

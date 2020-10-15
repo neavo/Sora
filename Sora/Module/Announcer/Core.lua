@@ -28,20 +28,23 @@ local function SendMessage(msg, sound)
 end
 
 -- Quest Accept
-local function OnQuestAccepted(self, event, questIndex, questId)
-    local link = GetQuestLink(questId)
-    local frequency = select(7, GetQuestLogTitle(questIndex))
+local function OnQuestAccepted(self, event, questid)
+    local link = GetQuestLink(questid)
+    local questIndex = C_QuestLog.GetLogIndexForQuestID(questid)
 
-    if link then
-        local tagID, _, worldQuestType = GetQuestTagInfo(questId)
+    if link and questIndex then
+        local info = C_QuestLog.GetInfo(questIndex)
+        local tagInfo = C_QuestLog.GetQuestTagInfo(questid)
 
-        if tagID == 109 or worldQuestType == LE_QUEST_TAG_TYPE_PROFESSION then
+        -- TODO
+        -- 并不知道 tagid = 109 是什么意思
+        if tagInfo.tagID == 109 then
             return
         end
 
-        if frequency == LE_QUEST_FREQUENCY_DAILY then
+        if info.frequency == Enum.QuestFrequency.Daily then
             SendMessage("接受日常任务：" .. link, true)
-        elseif frequency == LE_QUEST_FREQUENCY_WEEKLY then
+        elseif info.frequency == Enum.QuestFrequency.Weekly then
             SendMessage("接受周常任务：" .. link, true)
         else
             SendMessage("接受任务：" .. link, true)
@@ -84,11 +87,14 @@ local function OnQuestTurnedIn(self, event, questID, xpReward, moneyReward)
 end
 
 local function OnQuestLogUpdate(self, event, ...)
-    for i = 1, GetNumQuestLogEntries() do
-        local _, _, _, _, _, isComplete, _, questID = GetQuestLogTitle(i)
-        local link = GetQuestLink(questID)
+    for i = 1, C_QuestLog.GetNumQuestLogEntries() do
+        local info = C_QuestLog.GetInfo(i)
+        local questID = info.questID
 
-        if isComplete and link then
+        local link = GetQuestLink(questID)
+        local isComplete = C_QuestLog.IsComplete(questID)
+
+        if link and isComplete then
             completedQuests[questID] = link
         end
     end

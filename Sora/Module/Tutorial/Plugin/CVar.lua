@@ -53,20 +53,11 @@ local function OnPlayerLogin(self, event, ...)
     -- 启用 - 自动自我施法
     SetCVar("autoSelfCast", 1)
 
-    -- 关闭 - 垃圾信息过滤
-    SetCVar("SPAM_FILTER", 0)
-
     -- 关闭 - 游戏向导
     SetCVar("showTutorials", 0)
 
     -- 关闭 - 显示个人资源
     SetCVar("nameplateShowSelf", 0)
-
-    -- 关闭 - 和谐
-    SetCVar("overrideArchive", 0)
-
-    -- 关闭 - 语言过滤器
-    SetCVar("profanityFilter", 0)
 end
 
 -- Handler

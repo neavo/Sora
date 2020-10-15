@@ -1,6 +1,6 @@
 # tullaCC
 
-## [8.3.1](https://github.com/tullamods/tullaCC/tree/8.3.1) (2020-03-13)
-[Full Changelog](https://github.com/tullamods/tullaCC/compare/8.3.0...8.3.1)
+## [9.0.0](https://github.com/tullamods/tullaCC/tree/9.0.0) (2020-10-13)
+[Full Changelog](https://github.com/tullamods/tullaCC/commits/9.0.0) [Previous Releases](https://github.com/tullamods/tullaCC/releases)
 
-- 1.13.4  
+- minor code cleanup  

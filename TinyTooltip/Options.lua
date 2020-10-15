@@ -359,7 +359,7 @@ CreateAnchorButton(saframe, "BOTTOM")
 saframe:SetScript("OnShow", function() grid:Show() end)
 saframe:SetScript("OnHide", function() grid:Hide() end)
 
-local caframe = CreateFrame("Frame", nil, UIParent, "ThinBorderTemplate")
+local caframe = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "ThinBorderTemplate,BackdropTemplate" or "ThinBorderTemplate")
 caframe:Hide()
 caframe:SetFrameStrata("DIALOG")
 caframe:SetBackdrop(GameTooltip:GetBackdrop())
@@ -429,7 +429,7 @@ function widgets:anchorbutton(parent, config)
 end
 
 function widgets:element(parent, config)
-    local frame = CreateFrame("Frame", nil, parent)
+    local frame = CreateFrame("Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate" or nil)
     frame:SetSize(560, 30)
     frame:SetBackdrop({
         bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -562,6 +562,7 @@ local options = {
     npc = {
         { keystring = "unit.npc.showTarget",            type = "checkbox" },
         { keystring = "unit.npc.showTargetBy",          type = "checkbox" },
+        { keystring = "unit.npc.showModel",             type = "checkbox" },
         { keystring = "unit.npc.grayForDead",           type = "checkbox" },
         { keystring = "unit.npc.coloredBorder",         type = "dropdown", dropdata = widgets.colorDropdata },
         { keystring = "unit.npc.background",            type = "dropdownslider", dropdata = widgets.colorDropdata, min = 0, max = 1, step = 0.01 },
@@ -636,7 +637,7 @@ framePC.diy:GetNormalTexture():SetVertexColor(1, 1, 1, 0.8)
 framePC.diy:SetScript("OnClick", function() LibEvent:trigger("tinytooltip:diy:player", "player", true) end)
 framePC.diy.text = framePC.diy:CreateFontString(nil, "OVERLAY", "GameFont_Gigantic")
 framePC.diy.text:SetPoint("CENTER", 0, 2)
-framePC.diy.text:SetText(L.DIY)
+framePC.diy.text:SetText(L.DIY.." "..(SETTINGS or ""))
 
 framePC:SetSize(500, #options.pc*29+60)
 local framePCScrollFrame = CreateFrame("ScrollFrame", nil, UIParent, "UIPanelScrollFrameTemplate")
@@ -865,7 +866,7 @@ local function CreateLine(parent, lineNumber)
         local line = CreateFrame("Frame", nil, parent)
         line:SetSize(300, 24)
         line.line = lineNumber
-        line.border = CreateFrame("Frame", nil, line)
+        line.border = CreateFrame("Frame", nil, line, BackdropTemplateMixin and "BackdropTemplate" or nil)
         line.border:SetAllPoints()
         line.border:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1})
         line.border:SetBackdropBorderColor(1, 0.9, 0.1)

@@ -102,9 +102,12 @@ local function SetBlzFrame()
     MiniMapMailFrame:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -2, 4)
 
     -- Garrison
-    GarrisonLandingPageMinimapButton:SetScale(0.55)
-    GarrisonLandingPageMinimapButton:ClearAllPoints()
-    GarrisonLandingPageMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 2, -4)
+    local function OnGarrisonLandingPageMinimapButtonUpdateIcon(self)
+        self:ClearAllPoints()
+        self:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 2, -4)
+        self:SetScale(0.55)
+    end
+    hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", OnGarrisonLandingPageMinimapButtonUpdateIcon)
 end
 
 local function HideBlzFrame()

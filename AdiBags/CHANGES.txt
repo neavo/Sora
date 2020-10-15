@@ -1,12 +1,15 @@
-tag e6bc76afdc3ae4d74c418918b35dec6e2d71a26c v1.9.18
+tag 85c8e0f50bd784fc795f1acfeae59adabdc3b88c v1.9.20
 Author:	Talyrius <contact@talyrius.net>
-Date:	Mon Nov 25 16:06:20 2019 -0800
+Date:	Sun Jun 28 13:08:25 2020 -0700
 
-Tagging as v1.9.18.
+commit 594fcc1c82f0953711c60a787027c4c308518e6a
+Author: Janne Virtala <wibestn@gmail.com>
+Date:   Sun Jun 28 20:02:59 2020 +0300
 
-commit 1a01b34f9c5fd4a21b3291e85c1e2b8308a5bc43
-Author: Talyrius <contact@talyrius.net>
-Date:   Mon Nov 25 15:43:39 2019 -0800
-
-    Updated for Patch 8.2.5.
+    Junk: Fixed support for Scrap.
+    
+    Fixes #416.
+    
+    Co-authored-by: veyh <veyh@users.noreply.github.com>
+    Co-authored-by: Talyrius <contact@talyrius.net>
 

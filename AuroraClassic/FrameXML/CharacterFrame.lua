@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	local r, g, b = C.r, C.g, C.b
 
 	F.ReskinPortraitFrame(CharacterFrame)
@@ -47,14 +48,8 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	local function UpdateAzeriteEmpoweredItem(self)
 		self.AzeriteTexture:SetAtlas("AzeriteIconFrame")
-		self.AzeriteTexture:SetPoint("TOPLEFT", C.mult, -C.mult)
-		self.AzeriteTexture:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+		self.AzeriteTexture:SetInside()
 		self.AzeriteTexture:SetDrawLayer("BORDER", 1)
-	end
-
-	local function UpdateCorruption(self)
-		local itemLink = GetInventoryItemLink("player", self:GetID())
-		self.IconOverlay:SetShown(itemLink and IsCorruptedItem(itemLink))
 	end
 
 	local function UpdateHighlight(self)
@@ -72,37 +67,28 @@ tinsert(C.themes["AuroraClassic"], function()
 	for i = 1, #slots do
 		local slot = _G["Character"..slots[i].."Slot"]
 		local cooldown = _G["Character"..slots[i].."SlotCooldown"]
-		local border = slot.IconBorder
 
 		F.StripTextures(slot)
-		slot.icon:SetTexCoord(.08, .92, .08, .92)
-		slot.icon:SetPoint("TOPLEFT", C.mult, -C.mult)
-		slot.icon:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
-		F.CreateBD(slot, .25)
-		cooldown:SetPoint("TOPLEFT", C.mult, -C.mult)
-		cooldown:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+		slot.icon:SetTexCoord(unpack(C.TexCoord))
+		slot.icon:SetInside()
+		slot.bg = F.CreateBDFrame(slot.icon, .25)
+		cooldown:SetInside()
 
 		slot.ignoreTexture:SetTexture("Interface\\PaperDollInfoFrame\\UI-GearManager-LeaveItem-Transparent")
-		slot.CorruptedHighlightTexture:SetAtlas("Nzoth-charactersheet-item-glow")
-		slot.IconOverlay:SetAtlas("Nzoth-inventory-icon")
 		slot.IconOverlay:SetInside()
-
-		border:SetAlpha(0)
-		hooksecurefunc(border, "SetVertexColor", function(_, r, g, b) slot:SetBackdropBorderColor(r, g, b) end)
-		hooksecurefunc(border, "Hide", function() slot:SetBackdropBorderColor(0, 0, 0) end)
+		F.ReskinIconBorder(slot.IconBorder)
 
 		local popout = slot.popoutButton
 		popout:SetNormalTexture("")
 		popout:SetHighlightTexture("")
 
 		local arrow = popout:CreateTexture(nil, "OVERLAY")
+		arrow:SetSize(14, 14)
 		if slot.verticalFlyout then
-			arrow:SetSize(13, 8)
-			arrow:SetTexture(C.media.arrowDown)
+			F.SetupArrow(arrow, "down")
 			arrow:SetPoint("TOP", slot, "BOTTOM", 0, 1)
 		else
-			arrow:SetSize(8, 14)
-			arrow:SetTexture(C.media.arrowRight)
+			F.SetupArrow(arrow, "right")
 			arrow:SetPoint("LEFT", slot, "RIGHT", -1, 0)
 		end
 		popout.arrow = arrow
@@ -120,7 +106,6 @@ tinsert(C.themes["AuroraClassic"], function()
 			button.icon:SetShown(GetInventoryItemTexture("player", button:GetID()) ~= nil)
 			colourPopout(button.popoutButton)
 		end
-		UpdateCorruption(button)
 		UpdateHighlight(button)
 	end)
 
@@ -148,8 +133,8 @@ tinsert(C.themes["AuroraClassic"], function()
 		if i == 1 then
 			for i = 1, 4 do
 				local region = select(i, tab:GetRegions())
-				region:SetTexCoord(0.16, 0.86, 0.16, 0.86)
-				region.SetTexCoord = F.dummy
+				region:SetTexCoord(.16, .86, .16, .86)
+				region.SetTexCoord = F.Dummy
 			end
 		end
 
@@ -169,8 +154,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	F.StripTextures(GearManagerDialogPopup.BorderBox)
 	GearManagerDialogPopup.BG:Hide()
-	F.CreateBD(GearManagerDialogPopup)
-	F.CreateSD(GearManagerDialogPopup)
+	F.SetBD(GearManagerDialogPopup)
 	GearManagerDialogPopup:SetHeight(525)
 	F.StripTextures(GearManagerDialogPopupScrollFrame)
 	F.ReskinScroll(GearManagerDialogPopupScrollFrameScrollBar)
@@ -187,16 +171,14 @@ tinsert(C.themes["AuroraClassic"], function()
 		local bu = _G["GearManagerDialogPopupButton"..i]
 		local ic = _G["GearManagerDialogPopupButton"..i.."Icon"]
 
-		bu:SetCheckedTexture(C.media.checked)
+		bu:SetCheckedTexture(C.pushed)
 		select(2, bu:GetRegions()):Hide()
 		local hl = bu:GetHighlightTexture()
 		hl:SetColorTexture(1, 1, 1, .25)
-		hl:SetAllPoints(ic)
+		hl:SetInside()
 
-		ic:SetPoint("TOPLEFT", C.mult, -C.mult)
-		ic:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
-		ic:SetTexCoord(.08, .92, .08, .92)
-		F.CreateBD(bu, .25)
+		ic:SetInside()
+		F.ReskinIcon(ic)
 	end
 
 	for _, bu in pairs(PaperDollEquipmentManagerPane.buttons) do
@@ -222,25 +204,118 @@ tinsert(C.themes["AuroraClassic"], function()
 		end
 	end)
 
-	hooksecurefunc("PaperDollFrame_SetLevel", function()
-		local primaryTalentTree = GetSpecialization()
-		local classDisplayName, class = UnitClass("player")
-		local classColor = C.ClassColors[class]
-		local classColorString = classColor.colorStr
-		local specName, _
-
-		if primaryTalentTree then
-			_, specName = GetSpecializationInfo(primaryTalentTree, nil, nil, nil, UnitSex("player"))
-		end
-
-		if specName and specName ~= "" then
-			CharacterLevelText:SetFormattedText(PLAYER_LEVEL, UnitLevel("player"), classColorString, specName, classDisplayName)
-		else
-			CharacterLevelText:SetFormattedText(PLAYER_LEVEL_NO_SPEC, UnitLevel("player"), classColorString, classDisplayName)
-		end
-	end)
-
 	PaperDollEquipmentManagerPaneEquipSet:SetWidth(PaperDollEquipmentManagerPaneEquipSet:GetWidth()-1)
 	PaperDollEquipmentManagerPaneSaveSet:SetPoint("LEFT", PaperDollEquipmentManagerPaneEquipSet, "RIGHT", 1, 0)
-	GearManagerDialogPopup:SetPoint("LEFT", PaperDollFrame, "RIGHT", 1, 0)
+	GearManagerDialogPopup:HookScript("OnShow", function(self)
+		self:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT", 3, 0)
+	end)
+
+	-- Reputation Frame
+	ReputationDetailCorner:Hide()
+	ReputationDetailDivider:Hide()
+	ReputationDetailFrame:SetPoint("TOPLEFT", ReputationFrame, "TOPRIGHT", 3, -28)
+
+	local function UpdateFactionSkins()
+		for i = 1, GetNumFactions() do
+			local statusbar = _G["ReputationBar"..i.."ReputationBar"]
+			if statusbar then
+				statusbar:SetStatusBarTexture(C.bdTex)
+
+				if not statusbar.reskinned then
+					F.CreateBDFrame(statusbar, .25)
+					statusbar.reskinned = true
+				end
+
+				_G["ReputationBar"..i.."Background"]:SetTexture(nil)
+				_G["ReputationBar"..i.."ReputationBarHighlight1"]:SetTexture(nil)
+				_G["ReputationBar"..i.."ReputationBarHighlight2"]:SetTexture(nil)
+				_G["ReputationBar"..i.."ReputationBarAtWarHighlight1"]:SetTexture(nil)
+				_G["ReputationBar"..i.."ReputationBarAtWarHighlight2"]:SetTexture(nil)
+				_G["ReputationBar"..i.."ReputationBarLeftTexture"]:SetTexture(nil)
+				_G["ReputationBar"..i.."ReputationBarRightTexture"]:SetTexture(nil)
+			end
+		end
+	end
+	ReputationFrame:HookScript("OnShow", UpdateFactionSkins)
+	ReputationFrame:HookScript("OnEvent", UpdateFactionSkins)
+
+	for i = 1, NUM_FACTIONS_DISPLAYED do
+		local bu = _G["ReputationBar"..i.."ExpandOrCollapseButton"]
+		F.ReskinCollapse(bu)
+	end
+
+	F.StripTextures(ReputationDetailFrame)
+	F.SetBD(ReputationDetailFrame)
+	F.ReskinClose(ReputationDetailCloseButton)
+	F.ReskinCheck(ReputationDetailAtWarCheckBox)
+	F.ReskinCheck(ReputationDetailInactiveCheckBox)
+	F.ReskinCheck(ReputationDetailMainScreenCheckBox)
+	F.ReskinScroll(ReputationListScrollFrameScrollBar)
+
+	-- Token frame
+	TokenFramePopupCorner:Hide()
+	TokenFramePopup:SetPoint("TOPLEFT", TokenFrame, "TOPRIGHT", 3, -28)
+	F.StripTextures(TokenFramePopup)
+	F.SetBD(TokenFramePopup)
+	F.ReskinClose(TokenFramePopupCloseButton)
+	F.ReskinCheck(TokenFramePopupInactiveCheckBox)
+	F.ReskinCheck(TokenFramePopupBackpackCheckBox)
+	F.ReskinScroll(TokenFrameContainerScrollBar)
+
+	local function updateButtons()
+		local buttons = TokenFrameContainer.buttons
+		if not buttons then return end
+
+		for i = 1, #buttons do
+			local bu = buttons[i]
+
+			if not bu.styled then
+				bu.highlight:SetPoint("TOPLEFT", 1, 0)
+				bu.highlight:SetPoint("BOTTOMRIGHT", -1, 0)
+				bu.highlight.SetPoint = F.Dummy
+				bu.highlight:SetColorTexture(r, g, b, .2)
+				bu.highlight.SetTexture = F.Dummy
+
+				bu.categoryMiddle:SetAlpha(0)
+				bu.categoryLeft:SetAlpha(0)
+				bu.categoryRight:SetAlpha(0)
+
+				bu.bg = F.ReskinIcon(bu.icon)
+
+				if bu.expandIcon then
+					bu.expBg = F.CreateBDFrame(bu.expandIcon, 0, true)
+					bu.expBg:SetPoint("TOPLEFT", bu.expandIcon, -3, 3)
+					bu.expBg:SetPoint("BOTTOMRIGHT", bu.expandIcon, 3, -3)
+				end
+
+				bu.styled = true
+			end
+
+			if bu.isHeader then
+				bu.bg:Hide()
+				bu.expBg:Show()
+			else
+				bu.bg:Show()
+				bu.expBg:Hide()
+			end
+		end
+	end
+
+	TokenFrame:HookScript("OnShow", updateButtons)
+	hooksecurefunc("TokenFrame_Update", updateButtons)
+	hooksecurefunc(TokenFrameContainer, "update", updateButtons)
+
+	-- Quick Join
+	F.ReskinScroll(QuickJoinScrollFrame.scrollBar)
+	F.Reskin(QuickJoinFrame.JoinQueueButton)
+
+	F.SetBD(QuickJoinRoleSelectionFrame)
+	F.Reskin(QuickJoinRoleSelectionFrame.AcceptButton)
+	F.Reskin(QuickJoinRoleSelectionFrame.CancelButton)
+	F.ReskinClose(QuickJoinRoleSelectionFrame.CloseButton)
+	F.StripTextures(QuickJoinRoleSelectionFrame)
+
+	F.ReskinRole(QuickJoinRoleSelectionFrame.RoleButtonTank, "TANK")
+	F.ReskinRole(QuickJoinRoleSelectionFrame.RoleButtonHealer, "HEALER")
+	F.ReskinRole(QuickJoinRoleSelectionFrame.RoleButtonDPS, "DPS")
 end)

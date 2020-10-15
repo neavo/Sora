@@ -74,6 +74,7 @@ addon.L = {
     ["unit.npc.coloredBorder"]              = "Цветная граница",
     ["unit.npc.showTarget"]                 = "Показать цель",
     ["unit.npc.showTargetBy"]               = "Показать На цели",
+    ["unit.npc.showModel"]                  = "Показать модельку персонажа",
     ["unit.npc.grayForDead"]                = "Серый цвет для мертвых",
     ["unit.npc.elements.raidIcon"]          = "Значок рейда",
     ["unit.npc.elements.classIcon"]         = "Значок класса",

@@ -89,7 +89,7 @@ LibEvent:attachTrigger("tooltip:cleared, tooltip:hide", function(self, tip)
     LibEvent:trigger("tooltip.style.border.color", tip, unpack(addon.db.general.borderColor))
     LibEvent:trigger("tooltip.style.background", tip, unpack(addon.db.general.background))
     if (tip.BigFactionIcon) then tip.BigFactionIcon:Hide() end
-    tip:SetBackdrop(nil)
+    if (tip.SetBackdrop) then tip:SetBackdrop(nil) end
 end)
 
 LibEvent:attachTrigger("tooltip:show", function(self, tip)

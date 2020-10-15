@@ -67,8 +67,8 @@ function Addon:GetDatabaseDefaults()
 			b = 0,
 			a = 1,
 			-- offsets
-			x = 1,
-			y = -1
+			x = 0,
+			y = 0
 		},
 		-- text positioning
 		anchor = "CENTER",
@@ -78,9 +78,9 @@ function Addon:GetDatabaseDefaults()
 		scaleText = true,
 		-- the minimum scale we want to show cooldown counts at, anything below this will be hidden
 		-- this value is a percentage of the size of an ActionButton
-		minScale = 0.4,
+		minScale = 0.6,
 		-- the minimum number of seconds a cooldown's duration must be to display text
-		minDuration = 1.5,
+		minDuration = 3,
 		-- the minimum number of miliseconds a cooldown must be to display in the expiring format
 		expiringDuration = 5000,
 		-- when to show tenths of seconds remaining, in miliseconds

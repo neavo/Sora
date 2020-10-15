@@ -5,12 +5,13 @@
 	<Script file = "ReloadUI.lua" />
 	<Script file = "NeckSlot.lua" />
 	<Script file = "TradeTabs.lua" />
+	<Script file = "RightMenu.lua" />
 	<Script file = "CombatAlert.lua" />
 	<Script file = "ncHoverBind.lua" />
 	<Script file = "BorderShadow.lua" />
+	<Script file = "FilterKiller.lua" />
 	<Script file = "AlreadyKnown.lua" />
 	<Script file = "UIParentFade.lua" />
 	<Script file = "AlignmentGrid.lua" />
-	<Script file = "OutRangeColor.lua" />
 
 </Ui>

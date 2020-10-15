@@ -111,73 +111,80 @@ local tags = {
 	RAID = "r"
 }
 
-local function GetQuestTag(groupSize, frequency, tagId, tagName)
+local function GetQuestTag(groupSize, frequency, tagInfo)
 	local tag = ""
-	if frequency == LE_QUEST_FREQUENCY_DAILY or frequency == LE_QUEST_FREQUENCY_WEEKLY then
+	if frequency == Enum.QuestFrequency.Daily or frequency == Enum.QuestFrequency.Weekly then
 		tag = tags.DAILY
 	end
-	if tagId == Enum.QuestTag.Group then
-		tag = tag .. tags.GROUP
-	elseif tagId == Enum.QuestTag.Scenario then
-		tag = tag .. tags.SCENARIO
-	elseif tagId == Enum.QuestTag.Dungeon then
-		tag = tag .. tags.DUNGEON
-	elseif tagId == Enum.QuestTag.Heroic then
-		tag = tag .. tags.HEROIC_DUNGEON
-	elseif QUEST_TAG_DUNGEON_TYPES[tagId] then
-		tag = tag .. tags.RAID
+	if tagInfo then
+		if tagInfo.tagID == Enum.QuestTag.Group then
+			tag = tag .. tags.GROUP
+		elseif tagInfo.tagID == Enum.QuestTag.Scenario then
+			tag = tag .. tags.SCENARIO
+		elseif tagInfo.tagID == Enum.QuestTag.Dungeon then
+			tag = tag .. tags.DUNGEON
+		elseif tagInfo.tagID == Enum.QuestTag.Heroic then
+			tag = tag .. tags.HEROIC_DUNGEON
+		elseif QUEST_TAG_DUNGEON_TYPES[tagInfo.tagID] then
+			tag = tag .. tags.RAID
+		end
 	end
 	return tag
 end
 
 local function GetTaggedTitle(i, color, tag)
 	if not i or i == 0 then return nil end
-	local title, level, groupSize, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling = GetQuestLogTitle(i)
-	if not isHeader and title then
-		local tagString = tag and GetQuestTag(groupSize, frequency, GetQuestTagInfo(questID)) or ""
+	local info = C_QuestLog.GetInfo(i)
+	if not info then return end
+
+	local title = info.title
+	if not info.isHeader and title and info.questID then
+		local tagString = tag and GetQuestTag(info.suggestedGroup, info.frequency, C_QuestLog.GetQuestTagInfo(info.questID)) or ""
 		if color then
 			if db.questLevels then
-				title = format("|cff%s[%s%s] %s|r", rgb2hex(GetQuestDifficultyColor(level, isScaling)), level, tagString, title)
+				title = format("|cff%s[%s%s] %s|r", rgb2hex(GetQuestDifficultyColor(info.level, info.isScaling)), info.level, tagString, title)
 			else
-				title = format("|cff%s%s|r", rgb2hex(GetQuestDifficultyColor(level, isScaling)), title)
+				title = format("|cff%s%s|r", rgb2hex(GetQuestDifficultyColor(info.level, info.isScaling)), title)
 			end
 		elseif db.questLevels then
-			title = format("[%s%s] %s", level, tagString, title)
+			title = format("[%s%s] %s", info.level, tagString, title)
 		end
 	end
-	return title, level, groupSize, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling
+	return title
 end
 
 local function GetChatTaggedTitle(i)
 	if not i or i == 0 then return nil end
-	local title, level, groupSize, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling = GetQuestLogTitle(i)
-	if isHeader or not title then return end
-	return format("(%s%s) %s", level, GetQuestTag(groupSize, frequency), title)
+	local info = C_QuestLog.GetInfo(i)
+	if not info or info.isHeader or not info.title then return end
+	return format("(%s%s) %s", info.level, GetQuestTag(info.suggestedGroup, info.frequency), info.title)
 end
 
 local function GetQuestTagTexCoords(i)
 	if not i or i == 0 then return nil end
-	local title, level, groupSize, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling = GetQuestLogTitle(i)
+	local info = C_QuestLog.GetInfo(i)
+	if not info or not info.questID then return end
 
 	local tagID
-	local questTagID, tagName = GetQuestTagInfo(questID)
-	if questTagID and questTagID == Enum.QuestTag.Account then
-		local factionGroup = GetQuestFactionGroup(questID)
+	local tagInfo = C_QuestLog.GetQuestTagInfo(info.questID)
+	local isComplete = C_QuestLog.IsComplete(info.questID)
+	if tagInfo and tagInfo.tagID == Enum.QuestTag.Account then
+		local factionGroup = GetQuestFactionGroup(info.questID)
 		if factionGroup then
 			tagID = "ALLIANCE"
 			if factionGroup == LE_QUEST_FACTION_HORDE then
 				tagID = "HORDE"
 			end
 		else
-			tagID = questTagID
+			tagID = tagInfo.tagID
 		end
-	elseif frequency == LE_QUEST_FREQUENCY_DAILY and (not isComplete or isComplete == 0) then
+	elseif info.frequency == Enum.QuestFrequency.Daily and not isComplete then
 		tagID = "DAILY"
-	elseif frequency == LE_QUEST_FREQUENCY_WEEKLY and (not isComplete or isComplete == 0)then
+	elseif info.frequency == Enum.QuestFrequency.Weekly and not isComplete then
 		tagID = "WEEKLY"
-	elseif questTagID then
-		tagID = questTagID
-	elseif C_CampaignInfo.IsCampaignQuest(questID) then
+	elseif tagInfo and tagInfo.tagID then
+		tagID = tagInfo.tagID
+	elseif C_CampaignInfo.IsCampaignQuest(info.questID) then
 		local faction = UnitFactionGroup("player")
 		tagID = faction == "Horde" and "HORDE" or "ALLIANCE"
 	end
@@ -440,20 +447,26 @@ end
 
 function Quester:OnEnable()
 	self:RegisterEvent("QUEST_LOG_UPDATE")
-	self:RegisterEvent("GOSSIP_SHOW")
-	self:RegisterEvent("QUEST_GREETING")
-	self:RegisterEvent("QUEST_COMPLETE")
 	self:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
 	self:RegisterEvent("QUEST_WATCH_LIST_CHANGED")
 
 	self:RegisterEvent("PLAYER_LEAVING_WORLD")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
+	self:RegisterEvent("GOSSIP_SHOW")
+	self:RegisterEvent("QUEST_GREETING")
+	self:RegisterEvent("QUEST_COMPLETE")
+
+	self:RawHookScript(UIErrorsFrame, "OnEvent", "UIErrorsFrame_OnEvent", true)
+
 	self:HookScript(GameTooltip, "OnTooltipSetItem")
 	self:HookScript(GameTooltip, "OnTooltipSetUnit")
 	self:SecureHook(QUEST_TRACKER_MODULE, "GetBlock", "QuestTrackerGetBlock")
 	self:SecureHook(QUEST_TRACKER_MODULE, "OnFreeBlock", "QuestTrackerOnFreeBlock")
 	self:SecureHook(QUEST_TRACKER_MODULE, "AddObjective", "ObjectiveTracker_AddObjective")
+	self:SecureHook(CAMPAIGN_QUEST_TRACKER_MODULE, "GetBlock", "QuestTrackerGetBlock")
+	self:SecureHook(CAMPAIGN_QUEST_TRACKER_MODULE, "OnFreeBlock", "QuestTrackerOnFreeBlock")
+	self:SecureHook(CAMPAIGN_QUEST_TRACKER_MODULE, "AddObjective", "ObjectiveTracker_AddObjective")
 	self:SecureHook(BONUS_OBJECTIVE_TRACKER_MODULE, "AddObjective", "ObjectiveTracker_AddObjective")
 	self:SecureHook(WORLD_QUEST_TRACKER_MODULE, "AddObjective", "ObjectiveTracker_AddObjective")
 	self:SecureHook(QUEST_TRACKER_MODULE, "AddProgressBar", "ObjectiveTracker_AddProgressBar")
@@ -461,14 +474,12 @@ function Quester:OnEnable()
 	self:SecureHook(WORLD_QUEST_TRACKER_MODULE, "AddProgressBar", "ObjectiveTracker_AddProgressBar")
 	self:SecureHook("QuestLogQuests_Update")
 
-	self:RawHookScript(UIErrorsFrame, "OnEvent", "UIErrorsFrame_OnEvent", true)
-
-	self:EnvironmentProxy()
 	self:SetupChatFilter()
 
 	if QuestFrameRewardPanel:IsVisible() then
 		self:QUEST_COMPLETE()
 	end
+
 
 	if db.trackerMovable then
 		self:ToggleTrackerMovable()
@@ -519,11 +530,13 @@ function Quester:ToggleTrackerMovable()
 		ObjectiveTrackerFrame:SetClampedToScreen(true)
 		ObjectiveTrackerFrame:SetClampRectInsets(-26, 0, 0, ObjectiveTrackerFrame:GetHeight() - 26)
 		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.QuestHeader, true)
+		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.CampaignQuestHeader, true)
 		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.AchievementHeader, true)
 		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, true)
 	else
 		ObjectiveTrackerFrame:SetMovable(false)
 		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.QuestHeader, false)
+		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.CampaignQuestHeader, false)
 		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.AchievementHeader, false)
 		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, false)
 	end
@@ -619,24 +632,24 @@ function Quester:PLAYER_ENTERING_WORLD()
 	self:QUEST_LOG_UPDATE()
 end
 
-local function processObjective(questID, questTitle, isTask, objIndex, objDesc, objType, objComplete)
+local function processObjective(questID, questTitle, isTask, objIndex, info)
 	local itemDesc, numItems, numNeeded, objKey
-	if objDesc then
-		if objType == "item" or objType == "object" then
-			itemDesc, numItems, numNeeded = MatchObject(objDesc)
+	if info and info.text then
+		if info.type == "item" or info.type == "object" then
+			itemDesc, numItems, numNeeded = MatchObject(info.text)
 			if itemDesc then
 				if tonumber(numNeeded) and tonumber(numItems) and tonumber(numItems) > tonumber(numNeeded) then
-					objKey = objDesc:gsub(numItems, numNeeded)
+					objKey = info.text:gsub(numItems, numNeeded)
 				end
-				items[itemDesc] = objDesc -- used for tooltips
+				items[itemDesc] = info.text -- used for tooltips
 			else
-				numItems, numNeeded = (objComplete and 1 or 0), 1
+				numItems, numNeeded = (info.finished and 1 or 0), 1
 			end
-		elseif objType == "monster" then
-			itemDesc, numItems, numNeeded = MatchMonster(objDesc)
+		elseif info.type == "monster" then
+			itemDesc, numItems, numNeeded = MatchMonster(info.text)
 			if itemDesc == nil or numItems == nil or numNeeded == nil then
 				--Sometimes we get objectives like "Find Mankrik's Wife: 0/1", which are listed as "monster".
-				itemDesc, numItems, numNeeded = MatchObject(objDesc)
+				itemDesc, numItems, numNeeded = MatchObject(info.text)
 			end
 			if itemDesc then
 				if mobs[itemDesc] then
@@ -645,46 +658,51 @@ local function processObjective(questID, questTitle, isTask, objIndex, objDesc, 
 						mobs[itemDesc] = getTable()
 						tinsert(mobs[itemDesc], s)
 					end
-					tinsert(mobs[itemDesc], objDesc)
+					tinsert(mobs[itemDesc], info.text)
 				else
-					mobs[itemDesc] = objDesc
+					mobs[itemDesc] = info.text
 				end
 			end
-		elseif objType == "player" then
-			numItems, numNeeded, itemDesc = MatchPlayer(objDesc)
+		elseif info.type == "player" then
+			numItems, numNeeded, itemDesc = MatchPlayer(info.text)
 
 			-- it is unknown if some quests marked as "player" use the Monster syntax,
 			-- but attempt to parse if it failed above
 			if itemDesc == nil or numItems == nil or numNeeded == nil then
-				itemDesc, numItems, numNeeded = MatchMonster(objDesc)
+				itemDesc, numItems, numNeeded = MatchMonster(info.text)
 			end
-		elseif objType == "reputation" then
-			itemDesc, numItems, numNeeded = MatchFaction(objDesc)
+		elseif info.type == "reputation" then
+			itemDesc, numItems, numNeeded = MatchFaction(info.text)
 			numItems, numNeeded = factionLabels[numItems], factionLabels[numNeeded]
-		elseif objType == "event" or objType == "log" or objType == "spell" or objType == "progressbar" then
-			itemDesc, numNeeded, numItems = objDesc, 1, (objComplete and 1 or 0)
+		elseif info.type == "event" or info.type == "log" or info.type == "spell" or info.type == "progressbar" then
+			itemDesc, numNeeded, numItems = info.text, 1, (info.finished and 1 or 0)
 		else
 			--[===[@debug@
-			print("Unknown quest objective type: " .. objType .. ", on quest: " .. questTitle .. ", objective: " .. objDesc)
+			print("Unknown quest objective type: " .. info.type .. ", on quest: " .. questTitle .. ", objective: " .. info.text)
 			--@end-debug@]===]
 		end
 		numNeeded, numItems = tonumber(numNeeded), tonumber(numItems)
+		--[===[@debug@
+		if numItems ~= info.numFulfilled or numNeeded ~= info.numRequired then
+			print("Quester: mismatching parsed and provided data on quest: " .. questTitle .. " (ID: " .. questID .. "), Objective: " .. info.text .. ", Type: " .. info.type .. ", Parsed: " .. numItems .. "/" .. numNeeded .. ", provided: " .. info.numFulfilled .. "/" .. info.numRequired)
+		end
+		--@end-debug@]===]
 		if numNeeded and numNeeded > 0 and numItems then
-			if not progress[objDesc] then
-				progress[objDesc] = getTable()
+			if not progress[info.text] then
+				progress[info.text] = getTable()
 			end
-			progress[objDesc].q = questTitle
-			progress[objDesc].qid = questID
-			progress[objDesc].lid = objIndex
-			progress[objDesc].i = numItems
-			progress[objDesc].n = numNeeded
-			progress[objDesc].perc = numItems / numNeeded
-			progress[objDesc].done = objComplete
-			local c = objKey or (questTitle .. objDesc)
-			if objComplete then
+			progress[info.text].q = questTitle
+			progress[info.text].qid = questID
+			progress[info.text].lid = objIndex
+			progress[info.text].i = numItems
+			progress[info.text].n = numNeeded
+			progress[info.text].perc = numItems / numNeeded
+			progress[info.text].done = info.finished
+			local c = objKey or (questTitle .. info.text)
+			if info.finished then
 				complete[c] = true
 			end
-			if not first and not complete[questTitle] and objComplete and not oldcomplete[c] and (not isTask or oldquests[questTitle]) then
+			if not first and not complete[questTitle] and info.finished and not oldcomplete[c] and (not isTask or oldquests[questTitle]) then
 				if db.morework then
 					PlayQuestSound(QUESTER_SOUND_MORE_WORK)
 				end
@@ -704,35 +722,39 @@ function Quester:QUEST_LOG_UPDATE()
 	emptyAll()
 
 	-- store previous selection, so we can restore it
-	local startingQuestLogSelection = GetQuestLogSelection()
+	local startingQuestLogSelection = C_QuestLog.GetSelectedQuest()
 
 	-- enumerate all quests
-	local numEntries, numQuests = GetNumQuestLogEntries()
+	local numEntries, numQuests = C_QuestLog.GetNumQuestLogEntries()
 	for index = 1, numEntries do
 		-- the quest log is stateful, and some functions require an active entry
-		SelectQuestLogEntry(index)
-		local title, level, groupSize, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory = GetQuestLogTitle(index)
-		if not isHeader and not isBounty and questID and questID ~= 0 then
+		local info = C_QuestLog.GetInfo(index)
+		if info and not info.isHeader and not info.isBounty and info.questID and info.questID ~= 0 then
+			C_QuestLog.SetSelectedQuest(info.questID)
+
+			local title = info.title
 			-- Some other quest addons hook GetQuestLogTitle to add levels to the names.  This is annoying, so strip out the common format for it.
 			if title:match("^%[") then title = title:match("^%[[^%]]+%]%s?(.*)") end
 
 			-- store the quest in our lookup table
-			quests[title] = questID
+			quests[title] = info.questID
+
+			local isComplete, isFailed = C_QuestLog.IsComplete(info.questID), C_QuestLog.IsFailed(info.questID)
 
 			-- process objectives
-			local numObjectives = GetNumQuestLeaderBoards(index)
-			if isComplete or numObjectives == 0 then
+			local numObjectives = C_QuestLog.GetNumQuestObjectives(info.questID)
+			if isFailed or isComplete or numObjectives == 0 then
 				if not first and not oldcomplete[title] and numObjectives > 0 then
 					-- completed the quest
-					if isComplete == -1 then
+					if isFailed then
 						self:Pour(ERR_QUEST_FAILED_S:format(title), 1, 0, 0)
 					else
 						self:Pour(ERR_QUEST_COMPLETE_S:format(title), 0, 1, 0)
 						if db.jobsdone then
 							PlayQuestSound(QUESTER_SOUND_JOBS_DONE)
 						end
-						if db.removeComplete and IsQuestWatched(index) then
-							RemoveQuestWatch(index)
+						if db.removeComplete then
+							C_QuestLog.RemoveQuestWatch(info.questID)
 						end
 					end
 				end
@@ -740,31 +762,35 @@ function Quester:QUEST_LOG_UPDATE()
 			end
 
 			-- enumerate all objectives and store them
+			local objectives = C_QuestLog.GetQuestObjectives(info.questID)
 			for o = 1, numObjectives do
-				processObjective(questID, title, isTask, o, GetQuestLogLeaderBoard(o, index))
+				processObjective(info.questID, title, info.isTask, o, objectives[o])
 			end
 		end
 	end
 	if numEntries > 0 then first = nil end
 
 	-- restore previous questlog selection
-	SelectQuestLogEntry(startingQuestLogSelection)
+	C_QuestLog.SetSelectedQuest(startingQuestLogSelection)
 
 	-- process watched world quests
-	for i = 1, GetNumWorldQuestWatches() do
-		local watchedWorldQuestID = GetWorldQuestWatchInfo(i)
-		local isInArea, isOnMap, numObjectives, taskName, displayAsObjective = GetTaskInfo(watchedWorldQuestID)
+	for i = 1, C_QuestLog.GetNumWorldQuestWatches() do
+		local watchedWorldQuestID = C_QuestLog.GetQuestIDForWorldQuestWatchIndex(i)
+		local taskName = C_TaskQuest.GetQuestInfoByQuestID(watchedWorldQuestID)
 
 		if taskName then
 			quests[taskName] = watchedWorldQuestID
+			local numObjectives = C_QuestLog.GetNumQuestObjectives(watchedWorldQuestID)
+			local objectives = C_QuestLog.GetQuestObjectives(watchedWorldQuestID)
 			for o = 1, numObjectives do
-				processObjective(watchedWorldQuestID, taskName, true, o, GetQuestObjectiveInfo(watchedWorldQuestID, o, false))
+				processObjective(watchedWorldQuestID, taskName, true, o, objectives[o])
 			end
 		end
 	end
 
 	-- update the objective tracker
 	self:UpdateObjectiveTracker(QUEST_TRACKER_MODULE)
+	self:UpdateObjectiveTracker(CAMPAIGN_QUEST_TRACKER_MODULE)
 	self:UpdateObjectiveTracker(BONUS_OBJECTIVE_TRACKER_MODULE)
 	self:UpdateObjectiveTracker(WORLD_QUEST_TRACKER_MODULE)
 
@@ -775,10 +801,11 @@ function Quester:QUEST_LOG_UPDATE()
 	blockQuestUpdate = nil
 end
 
-local function ProcessGossip(index, skip, ...)
-	local numQuests = select("#", ...)
-	for i = 2, numQuests, skip do
-		local button = _G["GossipTitleButton"..index]
+local function ProcessGossip(index, num, data)
+	assert(num == #data)
+	for _i = 1, num do
+		local button = GossipFrame_GetTitleButton(index)
+		if not button then return end
 		local text = button:GetText()
 		if text:match("^|c(.*)%[") then
 			local col, t = text:match("^|c(.*)%[[^%]]+%]|r%s?(.*)")
@@ -794,7 +821,7 @@ local function ProcessGossip(index, skip, ...)
 				text = t
 			end
 		end
-		local level = select(i, ...) or 0
+		local level = data and data[num] and data[num].questLevel or -1
 		if level == -1 then
 			-- keep the text untouched
 		elseif db.gossipColor then
@@ -802,7 +829,7 @@ local function ProcessGossip(index, skip, ...)
 		else
 			button:SetText(format("[%d] %s", level, text))
 		end
-		GossipResize(button)
+		button:Resize()
 		index = index + 1
 	end
 	return index + 1
@@ -811,11 +838,12 @@ end
 function Quester:GOSSIP_SHOW()
 	if not GossipFrame:IsVisible() or not db.questLevels then return end
 	local buttonindex = 1
-	if GetGossipAvailableQuests() then
-		buttonindex = ProcessGossip(buttonindex, 8, GetGossipAvailableQuests())
+	local available, active = C_GossipInfo.GetNumAvailableQuests(), C_GossipInfo.GetNumActiveQuests()
+	if available and available > 0 then
+		buttonindex = ProcessGossip(buttonindex, available, C_GossipInfo.GetAvailableQuests())
 	end
-	if GetGossipActiveQuests() then
-		buttonindex = ProcessGossip(buttonindex, 7, GetGossipActiveQuests())
+	if active and active > 0 then
+		buttonindex = ProcessGossip(buttonindex, active, C_GossipInfo.GetActiveQuests())
 	end
 end
 
@@ -841,24 +869,16 @@ function Quester:QUEST_GREETING()
 	end
 end
 
-local lines = {}
-do
-	local i = 1
-	repeat
-		lines[i] = _G["GameTooltipTextLeft"..i]
-		i = i + 1
-	until not _G["GameTooltipTextLeft"..i]
-end
-
 function Quester:OnTooltipSetUnit(tooltip, ...)
 	local numLines = tooltip:NumLines()
 	for i = 1, numLines do
-		if lines[i] then
-			local text = lines[i]:GetText()
+		local line = _G["GameTooltipTextLeft" .. i]
+		if line then
+			local text = line:GetText()
 			if quests[text] then
-				local index = GetQuestLogIndexByID(quests[text])
+				local index = C_QuestLog.GetLogIndexForQuestID(quests[text])
 				if index and index > 0 then
-					lines[i]:SetText(GetTaggedTitle(index, db.tooltipColor, true))
+					line:SetText(GetTaggedTitle(index, db.tooltipColor, true))
 					tooltip:Show()
 				end
 			end
@@ -871,7 +891,7 @@ function Quester:OnTooltipSetItem(tooltip, ...)
 	if items[name] then
 		local it = items[name]
 		if progress[it] then
-			local index = GetQuestLogIndexByID(progress[it].qid)
+			local index = C_QuestLog.GetLogIndexForQuestID(progress[it].qid)
 			if index and index > 0 then
 				tooltip:AddLine(GetTaggedTitle(index, db.tooltipColor, true))
 				local text = GetQuestLogLeaderBoard(progress[it].lid, index)
@@ -891,7 +911,7 @@ function Quester:QuestLogQuests_Update()
 
 			local partyMembersOnQuest = 0
 			for j=1, GetNumSubgroupMembers() do
-				if IsUnitOnQuestByQuestID(button.questID, "party"..j) then
+				if C_QuestLog.IsUnitOnQuest("party"..j, button.questID) then
 					partyMembersOnQuest = partyMembersOnQuest + 1
 				end
 			end
@@ -936,7 +956,7 @@ function Quester:QuestTrackerHeaderSetText(HeaderText, text)
 		HeaderText.__QuesterTagIcon:Hide()
 	end
 	if block.__QuesterQuestTracker and block.id then
-		local questLogIndex = GetQuestLogIndexByID(block.id)
+		local questLogIndex = C_QuestLog.GetLogIndexForQuestID(block.id)
 		if questLogIndex then
 			text = GetTaggedTitle(questLogIndex, db.questTrackerColor, true)
 			HeaderText:__QuesterSetText(text)
@@ -1024,21 +1044,9 @@ function Quester:ObjectiveTracker_AddProgressBar(obj, block, line, questID)
 	end
 end
 
-function Quester:EnvironmentProxy()
-	local env = setmetatable({
-		GetQuestLogTitle = function(index)
-			return GetTaggedTitle(index, false, true)
-		end,
-	}, {__index = _G})
-
-	-- quest log/map
-	pcall(setfenv, WorldMapQuestPOI_SetTooltip, env)
-	pcall(setfenv, WorldMapQuestPOI_AppendTooltip, env)
-end
-
 function Quester:SetupChatFilter()
 	local function process(full, level, partial)
-		return full:gsub(partial, quests[partial] and GetChatTaggedTitle(GetQuestLogIndexByID(quests[partial])) or "("..level..") "..partial)
+		return full:gsub(partial, quests[partial] and GetChatTaggedTitle(C_QuestLog.GetLogIndexForQuestID(quests[partial])) or "("..level..") "..partial)
 	end
 	local function filter(frame, event, msg, ...)
 		if msg then

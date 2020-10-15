@@ -1,6 +1,6 @@
 # BlizzMove
 
-## [v2.1.5](https://github.com/the-rebel-Mermaid/BlizzMove/tree/v2.1.5) (2020-03-14)
-[Full Changelog](https://github.com/the-rebel-Mermaid/BlizzMove/commits/v2.1.5)
+## [v3.0.0b](https://github.com/the-rebel-Mermaid/BlizzMove/tree/v3.0.0b) (2020-10-15)
+[Full Changelog](https://github.com/the-rebel-Mermaid/BlizzMove/commits/v3.0.0b) [Previous Releases](https://github.com/the-rebel-Mermaid/BlizzMove/releases)
 
-- disable objective tracker frame for now  
+- Update .toc - classic  

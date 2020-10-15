@@ -1,8 +1,6 @@
 
 local addon = TinyTooltip
 
-local isClassicWow = GetMaxPlayerLevel() < 70
-
 local function ParseHyperLink(link)
     local name, value = string.match(link or "", "|?H?(%a+):(%d+):")
     if (name and value) then
@@ -66,7 +64,7 @@ GameTooltip:HookScript("OnTooltipSetSpell", function(self) ShowId(self, "Spell",
 hooksecurefunc(GameTooltip, "SetUnitAura", function(self, ...) ShowId(self, "Spell", (select(10,UnitAura(...)))) end)
 hooksecurefunc(GameTooltip, "SetUnitBuff", function(self, ...) ShowId(self, "Spell", (select(10,UnitBuff(...)))) end)
 hooksecurefunc(GameTooltip, "SetUnitDebuff", function(self, ...) ShowId(self, "Spell", (select(10,UnitDebuff(...)))) end)
-if (not isClassicWow) then
+if (GameTooltip.SetArtifactPowerByID) then
     hooksecurefunc(GameTooltip, "SetArtifactPowerByID", function(self, powerID)
         ShowId(self, "Power", powerID)
         ShowId(self, "Spell", C_ArtifactUI.GetPowerInfo(powerID).spellID, 1)

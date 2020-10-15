@@ -1,3 +1,69 @@
+--[[ Home:header
+# Element: Reputation
+
+Adds support for an element that updates and displays the player's reputation and standing with a
+tracked faction as a StatusBar widget.
+
+## Widgets
+
+- `Repuration`
+	A statusbar which displays the player's current reputation with the tracked faction.
+- `Reputation.Reward`
+	An optional widget that is visible if the tracked faction has a pending reward.
+
+## Options
+
+- `inAlpha` - Alpha used when the mouse is over the element (default: `1`)
+- `outAlpha` - Alpha used when the mouse is outside of the element (default: `1`)
+- `tooltipAnchor` - Anchor for the tooltip (default: `"ANCHOR_BOTTOMRIGHT"`)
+
+## Extras
+
+- [Callbacks](Callbacks)
+- [Overrides](Overrides)
+- [Tags](Tags)
+
+## Colors
+
+This plug-in adds another color to `oUF.colors.reaction` for paragon support, after exalted.
+
+## Notes
+
+- A default texture will be applied if the element is a StatusBar and doesn't have a texture set.
+- A default texture will be applied to the `Reward` sub-widget if it's a Texture and doesn't have a texture set.
+- Tooltip and mouse interaction options are only enabled if the element is mouse-enabled.
+- Remember to set the plug-in as an optional dependency for the layout if not embedding.
+
+## Example implementation
+
+```lua
+-- Position and size
+local Reputation = CreateFrame('StatusBar', nil, self)
+Reputation:SetPoint('BOTTOM', 0, -50)
+Reputation:SetSize(200, 20)
+Reputation:EnableMouse(true) -- for tooltip/fading support
+
+-- Position and size the Reward sub-widget
+local Reward = Reputation:CreateTexture(nil, 'OVERLAY')
+Reward:SetPoint('LEFT')
+Reward:SetSize(20, 20)
+
+-- Text display
+local Value = Reputation:CreateFontString(nil, 'OVERLAY')
+Value:SetAllPoints(Reputation)
+Value:SetFontObject(GameFontHighlight)
+self:Tag(Value, '[reputation:cur] / [reputation:max]')
+
+-- Add a background
+local Background = Reputation:CreateTexture(nil, 'BACKGROUND')
+Background:SetAllPoints(Reputation)
+Background:SetTexture('Interface\\ChatFrame\\ChatFrameBackground')
+
+-- Register with oUF
+self.Reputation = Reputation
+self.Reputation.Reward = Reward
+```
+--]]
 local _, ns = ...
 local oUF = ns.oUF or oUF
 assert(oUF, 'oUF Reputation was unable to locate oUF install')
@@ -35,6 +101,16 @@ local function GetReputation()
 	return cur, max, name, factionID, standingID, standingText, pendingReward
 end
 
+--[[ Tags:header
+A few basic tags are included:
+- `[reputation:cur]`      - the player's current reputation with the faction
+- `[reputation:max]`      - the player's maximum reputation with the faction
+- `[reputation:per]`      - the player's percentage of reputation with the faction
+- `[reputation:standing]` - the player's current standing with the faction
+- `[reputation:faction]`  - the name of the player's currently tracked faction
+
+See the [Examples](./#example-implementation) section on how to use the tags.
+--]]
 for tag, func in next, {
 	['reputation:cur'] = function()
 		return (GetReputation())
@@ -82,7 +158,21 @@ end
 local function OnEnter(element)
 	element:SetAlpha(element.inAlpha)
 	GameTooltip:SetOwner(element, element.tooltipAnchor)
-	element:UpdateTooltip()
+
+	--[[ Overrides:header
+	### element:OverrideUpdateTooltip()
+
+	Used to completely override the internal function for updating the tooltip.
+
+	- `self` - the Reputation element
+	--]]
+	if(element.OverrideUpdateTooltip) then
+		element:OverrideUpdateTooltip()
+	elseif(element.UpdateTooltip) then -- DEPRECATED
+		element:UpdateTooltip()
+	else
+		UpdateTooltip(element)
+	end
 end
 
 local function OnLeave(element)
@@ -96,7 +186,17 @@ end
 
 local function Update(self, event, unit)
 	local element = self.Reputation
-	if(element.PreUpdate) then element:PreUpdate(unit) end
+	if(element.PreUpdate) then
+		--[[ Callbacks:header
+		### element:PreUpdate(_unit_)
+
+		Called before the element has been updated.
+
+		- `self` - the Reputation element
+		- `unit` - the unit for which the update has been triggered _(string)_
+		--]]
+		element:PreUpdate(unit)
+	end
 
 	local cur, max, name, factionID, standingID, standingText, pendingReward = GetReputation()
 	if(name) then
@@ -116,11 +216,36 @@ local function Update(self, event, unit)
 	end
 
 	if(element.PostUpdate) then
+		--[[ Callbacks:header
+		### element:PostUpdate(_unit, cur, max, factionName, factionID, standingID, standingText, pendingReward_)
+
+		Called after the element has been updated.
+
+		- `self`          - the Reputation element
+		- `unit`          - the unit for which the update has been triggered _(string)_
+		- `cur`           - the current reputation with the tracked faction _(number)_
+		- `max`           - the maximum reputation with the tracked faction _(number)_
+		- `factionName`   - the name of the tracked faction _(string)_
+		- `factionID`     - the identifier for the tracked faction _(number)_
+		- `standingID`    - the identifier for the standing for the tracked faction _(number)_
+		- `standingText`  - the name of the standing for the tracked faction _(string)_
+		- `pendingReward` - indicates if there's a pending paragon reward with the faction _(boolean)_
+		--]]
 		return element:PostUpdate(unit, cur, max, name, factionID, standingID, standingText, pendingReward)
 	end
 end
 
 local function Path(self, ...)
+	--[[ Overrides:header
+	### element.Override(_self, event, unit_)
+
+	Used to completely override the internal update function.  
+	Overriding this function also disables the [Callbacks](Callbacks).
+
+	- `self`  - the parent object
+	- `event` - the event triggering the update _(string)_
+	- `unit`  - the unit accompanying the event _(variable(s))_
+	--]]
 	return (self.Reputation.Override or Update) (self, ...)
 end
 
@@ -160,6 +285,16 @@ local function Visibility(self, event, unit, selectedFactionIndex)
 end
 
 local function VisibilityPath(self, ...)
+	--[[ Overrides:header
+	### element.OverrideVisibility(_self, event, unit_)
+
+	Used to completely override the element's visibility update process.  
+	The internal function is also responsible for (un)registering events related to the updates.
+
+	- `self`  - the parent object
+	- `event` - the event triggering the update _(string)_
+	- `unit`  - the unit accompanying the event _(variable(s))_
+	--]]
 	return (self.Reputation.OverrideVisibility or Visibility)(self, ...)
 end
 
@@ -188,7 +323,6 @@ local function Enable(self, unit)
 		end
 
 		if(element:IsMouseEnabled()) then
-			element.UpdateTooltip = element.UpdateTooltip or UpdateTooltip
 			element.tooltipAnchor = element.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
 			element.inAlpha = element.inAlpha or 1
 			element.outAlpha = element.outAlpha or 1

@@ -34,8 +34,7 @@ function S.Minimap.CreateCurrency(parent)
         local s = math.floor((money % 10000) / 100)
         local g = math.floor(money / 10000)
 
-        return format(GOLD_AMOUNT_TEXTURE, g, 0, 0) ..
-            " " .. format(SILVER_AMOUNT_TEXTURE, s, 0, 0) .. " " .. format(COPPER_AMOUNT_TEXTURE, c, 0, 0)
+        return format(GOLD_AMOUNT_TEXTURE, g, 0, 0) .. " " .. format(SILVER_AMOUNT_TEXTURE, s, 0, 0) .. " " .. format(COPPER_AMOUNT_TEXTURE, c, 0, 0)
     end
 
     local function OnTicker()
@@ -57,17 +56,17 @@ function S.Minimap.CreateCurrency(parent)
         GameTooltip:AddDoubleLine("金币：", FormatMoney(GetMoney()), 0.90, 0.90, 0.90, 0.90, 0.90, 0.90)
 
         local start = false
-        for i = 1, GetCurrencyListSize() do
-            local name, isHeader, isExpanded, isUnused, isWatched, count, icon = GetCurrencyListInfo(i)
+        for i = 1, C_CurrencyInfo.GetCurrencyListSize() do
+            local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 
-            if start and isHeader then
+            if start and info.isHeader then
                 break
             end
 
-            if not isHeader and not isUnused then
+            if not info.isHeader and not info.isTypeUnused then
                 start = true
-                local iconStr = "|T" .. icon .. ":13:15:0:0:50:50:4:46:4:46|t"
-                GameTooltip:AddDoubleLine(name .. "：", count .. " " .. iconStr, 0.90, 0.90, 0.90, 0.90, 0.90, 0.90)
+                local iconStr = "|T" .. info.iconFileID .. ":13:15:0:0:50:50:4:46:4:46|t"
+                GameTooltip:AddDoubleLine(info.name .. "：", info.quantity .. " " .. iconStr, 0.90, 0.90, 0.90, 0.90, 0.90, 0.90)
             end
         end
 

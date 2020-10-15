@@ -236,7 +236,7 @@ local function CreateExtraBar(self, event, ...)
                 SoraBar2,
                 "TOP",
                 0,
-                C.ActionBar.Size + C.ActionBar.Space * 2 + 16
+                16 + C.ActionBar.Size + C.ActionBar.Space * 2 + 8
             },
             framePadding = 0,
             buttonWidth = ExtraActionButton1:GetWidth(),
@@ -298,8 +298,9 @@ local function OnMultiActionBarUpdateGridVisibility()
             break
         end
 
-        ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+        -- ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
         button:SetAttribute("showgrid", showgrid)
+        button:ShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_CVAR)
     end
 end
 

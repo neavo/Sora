@@ -6,7 +6,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("Mapster", "ruRU")
 if not L then return end
 
 L["Accuracy"] = "Точность"
-L["Adjust the size of the Player Arrow on the Map for better visibility."] = "Регулировка размера стрелки игрока на карте для улучшения её видимости."
+L["Adjust the size of the Player Arrow on the Map for better visibility."] = "Регулировка размера стрелки игрока на карте для улучшения её видимости"
 L["Alpha"] = "Прозрачность"
 L["Change the scale of the world map if you do not want the whole screen filled while the map is open."] = "Изменените масштаб карты, если не хотите видеть её развёрнутой на весь экран."
 L["Coordinates"] = "Координаты"

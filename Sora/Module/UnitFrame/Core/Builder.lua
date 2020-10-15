@@ -401,6 +401,10 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
     castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
     castbar.Icon.Shadow = S.MakeTextureShadow(castbar, castbar.Icon, 2)
 
+    castbar.Spark = castbar:CreateTexture(nil, "ARTWORK")
+    castbar.Spark:SetPoint("CENTER", castbar:GetStatusBarTexture(), "RIGHT", 0, 0)
+    castbar.Spark:SetBlendMode("ADD")
+
     castbar.SafeZone = castbar:CreateTexture(nil, "BORDER")
     castbar.SafeZone:SetAlpha(0.25)
     castbar.SafeZone:SetAllPoints()
@@ -468,7 +472,17 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
         end
     end
 
-    local function OnCastStart(self, unit, name, castid, spellid)
+    local function OnCastStart(self, unit, spellid)
+        UIFrameFadeRemoveFrame(self)
+
+        self:SetAlpha(1.00)
+        self:SetStatusBarColor(1.00, 0.05, 0.00)
+
+        self.holdTime = 0.30
+        UIFrameFadeOut(self, 0.30, 1.00, 0.00)
+    end
+
+    local function OnCastStart(self, unit)
         UIFrameFadeRemoveFrame(self)
 
         if self.notInterruptible then
@@ -480,22 +494,12 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
         self:SetAlpha(1.00)
     end
 
-    local function OnCastStopped(self, unit, spellname, castid, spellid)
-        UIFrameFadeRemoveFrame(self)
-
-        self:SetAlpha(1.00)
-        self:SetStatusBarColor(1.00, 0.05, 0.00)
-
-        self.holdTime = 0.30
-        UIFrameFadeOut(self, 0.30, 1.00, 0.00)
-    end
-
     castbar.CustomTimeText = OnTimeUpdate
     castbar.CustomDelayText = OnTimeUpdate
+    castbar.PostCastFail = OnCastFail
     castbar.PostCastStart = OnCastStart
-    castbar.PostCastFailed = OnCastStopped
-    castbar.PostChannelStart = OnCastStart
-    castbar.PostCastInterrupted = OnCastStopped
+    -- castbar.PostChannelStart = OnCastStart
+    -- castbar.PostCastInterrupted = OnCastStopped
 
     self.Castbar = castbar
 end

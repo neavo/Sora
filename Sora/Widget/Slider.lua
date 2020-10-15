@@ -12,7 +12,7 @@ local SD = {}
 function SD.CreateInstance(parent, fontSize)
     local frame = CreateFrame("Frame", nil, parent)
 
-    frame.line = CreateFrame("Slider", nil, frame)
+    frame.line = CreateFrame("Slider", nil, frame, "BackdropTemplate")
     frame.line:SetPoint("CENTER", frame, "CENTER", 0, 0)
     frame.line:SetOrientation("HORIZONTAL")
 

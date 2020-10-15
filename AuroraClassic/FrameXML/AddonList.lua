@@ -1,6 +1,9 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+	local cr, cg, cb = C.r, C.g, C.b
+
 	F.ReskinPortraitFrame(AddonList)
 	F.Reskin(AddonListEnableAllButton)
 	F.Reskin(AddonListDisableAllButton)
@@ -18,4 +21,22 @@ tinsert(C.themes["AuroraClassic"], function()
 		F.ReskinCheck(checkbox, true)
 		F.Reskin(_G["AddonListEntry"..i.."Load"])
 	end
+
+	hooksecurefunc("AddonList_Update", function()
+		for i = 1, MAX_ADDONS_DISPLAYED do
+			local entry = _G["AddonListEntry"..i]
+			if entry and entry:IsShown() then
+				local checkbox = _G["AddonListEntry"..i.."Enabled"]
+				if checkbox.forceSaturation then
+					local tex = checkbox:GetCheckedTexture()
+					if checkbox.state == 2 then
+						tex:SetDesaturated(true)
+						tex:SetVertexColor(cr, cg, cb)
+					elseif checkbox.state == 1 then
+						tex:SetVertexColor(1, .8, 0, .8)
+					end
+				end
+			end
+		end
+	end)
 end)

@@ -77,6 +77,7 @@ addon.L = {
     ["unit.npc.coloredBorder"]              = "边框染色",
     ["unit.npc.showTarget"]                 = "显示目标",
     ["unit.npc.showTargetBy"]               = "显示被关注数",
+    ["unit.npc.showModel"]                  = "显示模型",
     ["unit.npc.grayForDead"]                = "死亡目标灰度染色",
     ["unit.npc.elements.factionBig"]        = "右上阵营大图",
     ["unit.npc.elements.raidIcon"]          = "标记图标",

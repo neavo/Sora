@@ -21,7 +21,7 @@ end
 function S.MakeBorder(parent, size)
     local p = C.Core.Pixel or 1.00
 
-    local Border = CreateFrame("Frame", nil, parent)
+    local Border = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     Border:SetPoint("TOPLEFT", parent, -size * p, size * p)
     Border:SetPoint("BOTTOMRIGHT", parent, size * p, -size * p)
     Border:SetBackdrop({edgeFile = DB.Border, edgeSize = size * p})
@@ -33,7 +33,7 @@ end
 function S.MakeShadow(parent, size)
     local p = C.Core.Pixel or 1.00
 
-    local Shadow = CreateFrame("Frame", nil, parent)
+    local Shadow = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     Shadow:SetPoint("TOPLEFT", parent, -size * p, size * p)
     Shadow:SetPoint("BOTTOMRIGHT", parent, size * p, -size * p)
     Shadow:SetBackdrop({edgeFile = DB.GlowTex, edgeSize = size * p})
@@ -45,7 +45,7 @@ end
 function S.MakeTextureShadow(parent, anchor, size)
     local p = C.Core.Pixel or 1.00
 
-    local Shadow = CreateFrame("Frame", nil, parent)
+    local Shadow = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     Shadow:SetPoint("TOPLEFT", anchor, -size * p, size * p)
     Shadow:SetPoint("BOTTOMRIGHT", anchor, size * p, -size * p)
     Shadow:SetBackdrop({edgeFile = DB.GlowTex, edgeSize = size * p})
@@ -57,7 +57,7 @@ end
 function S.CreateEditBox(parent, size)
     local p = C.Core.Pixel or 1.00
 
-    local editbox = CreateFrame("EditBox", nil, parent)
+    local editbox = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
     editbox:SetTextColor(0.90, 0.90, 0.90)
     editbox:SetShadowOffset(1.00 * p, -1.00 * p)
     editbox:SetShadowColor(0.00, 0.00, 0.00, 0.50)
