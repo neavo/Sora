@@ -36,9 +36,7 @@ local function OnQuestAccepted(self, event, questid)
         local info = C_QuestLog.GetInfo(questIndex)
         local tagInfo = C_QuestLog.GetQuestTagInfo(questid)
 
-        -- TODO
-        -- 并不知道 tagid = 109 是什么意思
-        if tagInfo.tagID == 109 then
+        if tagInfo and (tagInfo.tagID == Enum.QuestTag.Account or tagInfo.worldQuestType == Enum.QuestTagType.Profession) then
             return
         end
 
