@@ -115,36 +115,6 @@ function mod:OnBagFrameCreated(bag)
 	frame:AddBottomWidget(widget, "LEFT", 50)
 end
 
-local IterateCurrencies
-do
-	local function iterator(collapse, index)
-		if not index then return end
-		repeat
-			index = index + 1
-			local name, isHeader, isExpanded, isUnused, isWatched, count, icon = GetCurrencyListInfo(index)
-			if name then
-				if isHeader then
-					if not isExpanded then
-						tinsert(collapse, 1, index)
-						ExpandCurrencyList(index, 1)
-					end
-				else
-					return index, name, isHeader, isExpanded, isUnused, isWatched, count, icon
-				end
-			end
-		until index > GetCurrencyListSize()
-		for i, index in ipairs(collapse) do
-			ExpandCurrencyList(index, 0)
-		end
-	end
-
-	local collapse = {}
-	function IterateCurrencies()
-		wipe(collapse)
-		return iterator, collapse, 0
-	end
-end
-
 local ICON_STRING = " \124T%s:0:0:0:0:64:64:5:59:5:59\124t  "
 
 local values = {}
@@ -154,10 +124,16 @@ function mod:Update()
 	updating = true
 
 	local shown, hideZeroes = self.db.profile.shown, self.db.profile.hideZeroes
-	for i, name, _, _, _, _, count, icon in IterateCurrencies() do
-		if shown[name] and (count > 0 or not hideZeroes) then
-			tinsert(values, BreakUpLargeNumbers(count))
-			tinsert(values, format(ICON_STRING, icon))
+
+	for currency_index=1,C_CurrencyInfo.GetCurrencyListSize() do
+		local currency = C_CurrencyInfo.GetCurrencyListInfo(currency_index)
+		if currency.name and not currency.isHeader then
+			if shown[currency.name] and currency.quantity then
+				if (currency.quantity > 0 or not hideZeroes) then
+					tinsert(values, BreakUpLargeNumbers(currency.quantity))
+					tinsert(values, format(ICON_STRING, currency.iconFileID))
+				end
+			end
 		end
 	end
 
@@ -186,8 +162,11 @@ function mod:GetOptions()
 			order = 10,
 			values = function()
 				wipe(values)
-				for i, name, _, _, _, _, _, icon in IterateCurrencies() do
-					values[name] = format(ICON_STRING, icon)..name
+				for currency_index=1,C_CurrencyInfo.GetCurrencyListSize() do
+					local currency = C_CurrencyInfo.GetCurrencyListInfo(currency_index)
+					if currency.name and not currency.isHeader then
+						values[currency.name] = format(ICON_STRING, currency.iconFileID)..currency.name
+					end
 				end
 				return values
 			end,

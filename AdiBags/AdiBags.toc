@@ -17,21 +17,18 @@
 # You should have received a copy of the GNU General Public License
 # along with AdiBags.  If not, see <http://www.gnu.org/licenses/>.
 
-## Interface: 80300
+## Interface: 90001
 
 ## Title: AdiBags
 ## Notes: Adirelle's bag addon.
 ## Author: Adirelle
-## Version: v1.9.20
+## Version: AdiBags-v1.9.20-1-g4be3fd2-1-gcf77aa0
 ## SavedVariables: AdiBagsDB
-## X-Date: 2020-06-28T17:02:59Z
+## X-Date: 2020-10-15T04:45:33Z
 ## X-License: GPL v3
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibSharedMedia-3.0, Scrap, BrainDead, !BugGrabber, SyLevel
-#@alpha@
-# ## OptionalDeps: AdiDebug, BugSack, Swatter
-#@end-alpha@
+## OptionalDeps: AdiDebug, BugSack, Swatter
 
-#@no-lib-strip@
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 libs\BugGrabber\load.xml
@@ -40,7 +37,6 @@ libs\AceDB-3.0\AceDB-3.0.xml
 libs\AceHook-3.0\AceHook-3.0.xml
 libs\AceConsole-3.0\AceConsole-3.0.xml
 libs\LibSharedMedia-3.0\lib.xml
-#@end-no-lib-strip@
 
 libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 
@@ -77,6 +73,3 @@ modules\ChangeHighlight.lua
 
 core\DefaultFilters.lua
 
-#@debug@
-# ## Version: DEV
-#@end-debug@

@@ -336,15 +336,16 @@ do
 	colorSchemes.level = function(level, quality, reqLevel, equipabble)
 		if not equipabble then return 1,1,1 end
 		local playerLevel = UnitLevel('player')
-		if playerLevel == _G.MAX_PLAYER_LEVEL then
-			-- Use the item level range for that level
-			local minLevel, maxLevel = unpack(maxLevelRanges[playerLevel])
-			if level < minLevel then
-				return GetItemQualityColor(0)
-			else
-				return colorGradient(level - minLevel, maxLevel - minLevel, unpack(maxLevelColors))
-			end
-		elseif reqLevel and reqLevel > 1 then
+		-- if playerLevel == _G.MAX_PLAYER_LEVEL then
+		-- 	-- Use the item level range for that level
+		-- 	local minLevel, maxLevel = unpack(maxLevelRanges[playerLevel])
+		-- 	if level < minLevel then
+		-- 		return GetItemQualityColor(0)
+		-- 	else
+		-- 		return colorGradient(level - minLevel, maxLevel - minLevel, unpack(maxLevelColors))
+		-- 	end
+		-- elseif reqLevel and reqLevel > 1 then
+		if reqLevel and reqLevel > 1 then
 			-- Use the
 			local delta, color = playerLevel - reqLevel
 			if delta < 0 then
