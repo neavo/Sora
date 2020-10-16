@@ -32,7 +32,7 @@ local function OnPlayerLogin(self, event, ...)
 			["mask"] = true,
 			["bgfile"] = "dark",
 			["headerFont"] = "default",
-			["borderSize"] = "1",
+			["borderSize"] = 1,
 			["borderColor"] = {
 				0.6, -- [1]
 				0.6, -- [2]
@@ -53,24 +53,25 @@ local function OnPlayerLogin(self, event, ...)
 				0, -- [3]
 				0.7 -- [4]
 			},
+			["statusbarFont"] = "default",
 			["statusbarPosition"] = "bottom",
 			["statusbarOffsetX"] = 0,
-			["statusbarHeight"] = 0,
+			["statusbarHeight"] = 4,
 			["bodyFontSize"] = "default",
-			["bodyFontFlag"] = "default",
-			["bodyFont"] = "default",
+			["alwaysShowIdInfo"] = true,
+			["statusbarFontFlag"] = "default",
 			["statusbarOffsetY"] = 0,
-			["statusbarTexture"] = "Interface\\AddOns\\TinyTooltip\\texture\\StatusBar",
-			["headerFontSize"] = "default",
-			["statusbarText"] = false,
-			["skinMoreFrames"] = false,
-			["headerFontFlag"] = "default",
-			["borderCorner"] = "angular",
 			["statusbarColor"] = "auto",
-			["statusbarFontFlag"] = "THINOUTLINE",
-			["alwaysShowIdInfo"] = true
+			["borderCorner"] = "angular",
+			["statusbarText"] = false,
+			["skinMoreFrames"] = true,
+			["headerFontFlag"] = "default",
+			["headerFontSize"] = "default",
+			["statusbarTexture"] = "Interface\\AddOns\\TinyTooltip\\texture\\StatusBar",
+			["bodyFont"] = "default",
+			["bodyFontFlag"] = "default"
 		},
-		["version"] = 2.6,
+		["version"] = 2.7,
 		["variables"] = {},
 		["item"] = {
 			["coloredItemBorder"] = true,
@@ -259,7 +260,7 @@ local function OnPlayerLogin(self, event, ...)
 				["showTarget"] = true,
 				["background"] = {
 					["colorfunc"] = "class",
-					["alpha"] = 0.9
+					["alpha"] = "0.90"
 				},
 				["anchor"] = {
 					["returnOnUnitFrame"] = false,
@@ -272,7 +273,6 @@ local function OnPlayerLogin(self, event, ...)
 				["grayForDead"] = false
 			},
 			["npc"] = {
-				["coloredBorder"] = "reaction",
 				["elements"] = {
 					{
 						"raidIcon", -- [1]
@@ -360,7 +360,9 @@ local function OnPlayerLogin(self, event, ...)
 						["filter"] = "none"
 					}
 				},
-				["showTarget"] = true,
+				["showModel"] = false,
+				["showTargetBy"] = true,
+				["coloredBorder"] = "reaction",
 				["anchor"] = {
 					["returnOnUnitFrame"] = false,
 					["position"] = "inherit",
@@ -373,7 +375,7 @@ local function OnPlayerLogin(self, event, ...)
 					["colorfunc"] = "default",
 					["alpha"] = 0.9
 				},
-				["showTargetBy"] = true,
+				["showTarget"] = true,
 				["grayForDead"] = false
 			}
 		}

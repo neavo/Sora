@@ -12,25 +12,26 @@ local function OnPlayerLogin(self, event, ...)
 			["FogClear"] = {
 				["profiles"] = {
 					["Default"] = {
-						["colorB"] = 0.12,
-						["colorA"] = 0.50,
-						["colorG"] = 0.12,
-						["colorR"] = 0.12
+						["colorG"] = 0.00,
+						["colorR"] = 0.00,
+						["colorB"] = 0.00,
+						["colorA"] = 0.50
 					}
 				}
 			},
 			["Coords"] = {
 				["profiles"] = {
 					["Default"] = {
-						["accuracy"] = 2
+						["fontSize"] = 12
 					}
 				}
 			}
 		},
 		["profiles"] = {
 			["Default"] = {
+				["arrowScale"] = 1.00,
 				["ejScale"] = 1.00,
-				["scale"] = 1.20,
+				["scale"] = 1.25,
 				["poiScale"] = 1.00
 			}
 		}
