@@ -14,7 +14,7 @@ local function OnPlayerLogin(self, event, ...)
 				["morework"] = false,
 				["showTagIcons"] = true,
 				["jobsdone"] = false,
-				["trackerMovable"] = true,
+				["trackerMovable"] = false,
 				["sinkOptions"] = {
 					["sink20OutputSink"] = "None"
 				}
