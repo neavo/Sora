@@ -7,7 +7,6 @@
 	<Script file = "TradeTabs.lua" />
 	<Script file = "RightMenu.lua" />
 	<Script file = "CombatAlert.lua" />
-	<Script file = "ncHoverBind.lua" />
 	<Script file = "BorderShadow.lua" />
 	<Script file = "FilterKiller.lua" />
 	<Script file = "AlreadyKnown.lua" />
