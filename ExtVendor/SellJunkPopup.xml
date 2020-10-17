@@ -1,0 +1,371 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="SellJunkPopup.lua"/>
+
+    <Button name="ExtVendor_JunkItemListButtonTemplate" virtual="true">
+        <Size>
+            <AbsDimension x="540" y="20"/>
+        </Size>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentSelection" file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD" hidden="true">
+                    <Color r="1" g="0.8" b="0" a="0.7"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture name="$parentIcon" file="Interface/Icons/INV_Misc_QuestionMark">
+                    <Size>
+                        <AbsDimension x="18" y="18"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="LEFT"/>
+                    </Anchors>
+                </Texture>
+                <FontString name="$parentName" inherits="GameFontNormalSmallLeft">
+                    <Size>
+                        <AbsDimension x="200" y="20"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="LEFT" relativeTo="$parentIcon" relativePoint="RIGHT" x="5" y="0"/>
+                        <Anchor point="RIGHT" x="-275" y="0"/>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentReason" inherits="GameFontHighlightSmall">
+                    <Size>
+                        <AbsDimension x="150" y="20"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-125" y="0"/>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentPrice" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size>
+                        <AbsDimension x="120" y="20"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-5" y="0"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self:GetHighlightTexture():SetVertexColor(.196, .388, .8);
+            </OnLoad>
+            <OnEnter>
+                ExtVendor_SellJunkPopup_ShowItemTooltip(self);
+            </OnEnter>
+            <OnLeave>
+                GameTooltip:Hide();
+            </OnLeave>
+            <OnClick>
+            </OnClick>
+        </Scripts>
+		<HighlightTexture file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD">
+			<Anchors>
+				<Anchor point="TOPLEFT">	
+					<Offset>
+						<AbsDimension x="0" y="1"/>
+					</Offset>
+				</Anchor>
+				<Anchor point="BOTTOMRIGHT">	
+					<Offset>
+						<AbsDimension x="0" y="1"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</HighlightTexture>
+    </Button>
+
+    <Frame name="ExtVendor_JunkItemListTemplate" virtual="true">
+        <Size x="570" y="260"/>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+            <EdgeSize>
+                <AbsValue val="16"/>
+            </EdgeSize>
+            <TileSize>
+                <AbsValue val="16"/>
+            </TileSize>
+            <BackgroundInsets>
+                <AbsInset left="5" right="5" top="5" bottom="5"/>
+            </BackgroundInsets>
+        </Backdrop>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentText" inherits="GameFontNormalLeft">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="15"/>
+                        <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <ScrollFrame name="$parentItemList" inherits="HybridScrollFrameTemplate">
+                <Size x="553" y="240"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="10" y="-10"/>
+                </Anchors>
+                <Frames>
+                    <Slider name="$parentScrollBar" inherits="MinimalHybridScrollBarTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-16"/>
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="12"/>
+                        </Anchors>
+                    </Slider>
+                </Frames>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+    
+    <Frame name="ExtVendor_SellJunkPopup" parent="UIParent" topLevel="true" enableMouse="true" enableKeyboard="true" frameStrata="DIALOG" hidden="true">
+        <Size>
+            <AbsDimension x="640" y="72"/>
+        </Size>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets>
+                <AbsInset left="11" right="11" top="12" bottom="11"/>
+            </BackgroundInsets>
+            <TileSize>
+                <AbsValue val="32"/>
+            </TileSize>
+            <EdgeSize>
+                <AbsValue val="32"/>
+            </EdgeSize>
+            <Color r="0" g="0" b="0" a="1"/>
+        </Backdrop>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBG2">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="11" y="-12"/>
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT">
+                            <Offset>
+                                <AbsDimension x="-11" y="11"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Color r="0" g="0" b="0" a="0.8"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString name="$parentMessage"  parentKey="text" inherits="GameFontHighlight">
+                    <Size>
+                        <AbsDimension x="290" y="0"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOP">
+                            <Offset>
+                                <AbsDimension x="0" y="-25"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parent_JunkList" inherits="ExtVendor_JunkItemListTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativeTo="$parent" relativePoint="TOP" y="-25"/>
+                </Anchors>
+            </Frame>
+            <Button name="$parentYesButton" inherits="GameMenuButtonTemplate" text="YES">
+                <Size>
+                    <AbsDimension x="128" y="21"/>
+                </Size>
+                <Scripts>
+                    <OnClick>
+                        ExtVendor_ConfirmQuickVendor();
+                        ExtVendor_SellJunkPopup:Hide();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentNoButton" inherits="GameMenuButtonTemplate" text="NO">
+                <Size>
+                    <AbsDimension x="128" y="21"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parentYesButton">
+                        <Offset>
+                            <AbsDimension x="10" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        ExtVendor_SellJunkPopup:Hide();
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentDebugButton" inherits="GameMenuButtonTemplate" text="[Debug] Detail">
+                <Size>
+                    <AbsDimension x="130" y="21"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="10" y="-10"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        ExtVendor_QuickVendorDebug();
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                ExtVendor_SellJunkPopup_OnLoad(self);
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+    <Frame name="ExtVendor_SellJunkProgressPopup" parent="MerchantFrame" enableMouse="true" topLevel="true" hidden="true">
+        <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="MerchantFrame"/>
+            <Anchor point="BOTTOMRIGHT" relativeTo="MerchantFrame" x="0" y="-35"/>
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentBackground">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                    <Color r="0.1" g="0.1" b="0.1" a="0.6"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parent_Main">
+                <Size>
+                    <AbsDimension x="300" y="150"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="CENTER" relativeTo="MerchantFrame"/>
+                </Anchors>
+                <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+                    <BackgroundInsets>
+                        <AbsInset left="11" right="11" top="12" bottom="11"/>
+                    </BackgroundInsets>
+                    <TileSize>
+                        <AbsValue val="32"/>
+                    </TileSize>
+                    <EdgeSize>
+                        <AbsValue val="32"/>
+                    </EdgeSize>
+                    <Color r="0" g="0" b="0" a="1"/>
+                </Backdrop>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture name="$parentBG2">
+                            <Anchors>
+                                <Anchor point="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="11" y="-12"/>
+                                    </Offset>
+                                </Anchor>
+                                <Anchor point="BOTTOMRIGHT">
+                                    <Offset>
+                                        <AbsDimension x="-11" y="11"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="0" g="0" b="0" a="0.8"/>
+                        </Texture>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <FontString name="$parentHeader" parentKey="text" inherits="GameFontHighlight">
+                            <Size>
+                                <AbsDimension x="290" y="0"/>
+                            </Size>
+                            <Anchors>
+                                <Anchor point="TOP">
+                                    <Offset>
+                                        <AbsDimension x="0" y="-35"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <StatusBar name="$parentProgressBar" drawLayer="ARTWORK" minValue="0" maxValue="1" defaultValue="0">
+                        <Size>
+                            <AbsDimension x="210" y="16"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOP">
+                                <Offset>
+                                    <AbsDimension x="0" y="-65"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <BarTexture name="$parentNormal" file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar"/>
+                        <BarColor r="0" g="0.75" b="0" a="1"/>
+                        <!--
+                        <NormalTexture name="$parentNormal" file="Interface\PaperDollInfoFrame\UI-Character-Skills-BarBorder"/>
+                        <HighlightTexture name="$parentHighlight" file="Interface\PaperDollInfoFrame\UI-Character-Skills-BarBorderHighlight"/>
+                        -->
+                        <Frames>
+                            <Button name="$parentBorder">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT">
+                                        <Offset>
+                                            <AbsDimension x="-6" y="8"/>
+                                        </Offset>
+                                    </Anchor>
+                                    <Anchor point="BOTTOMRIGHT">
+                                        <Offset>
+                                            <AbsDimension x="4" y="-8"/>
+                                        </Offset>
+                                    </Anchor>
+                                </Anchors>
+                                <HitRectInsets>
+                                    <AbsInset left="0" right="0" top="7" bottom="7"/>
+                                </HitRectInsets>
+                                <NormalTexture name="$parentNormal" file="Interface\PaperDollInfoFrame\UI-Character-Skills-BarBorder"/>
+                                <!-- <HighlightTexture name="$parentHighlight" file="Interface\PaperDollInfoFrame\UI-Character-Skills-BarBorderHighlight"/> -->
+                            </Button>
+                        </Frames>
+                    </StatusBar>
+                    <Button name="$parentCancelButton" inherits="GameMenuButtonTemplate" text="CANCEL">
+                        <Size>
+                            <AbsDimension x="120" y="24"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="BOTTOM">
+                                <Offset>
+                                    <AbsDimension x="0" y="30"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                ExtVendor_StopProcessQuickVendor();
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                </Frames>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                ExtVendor_SellJunkProgressPopup_OnLoad(self);
+            </OnLoad>
+            <OnUpdate>
+                ExtVendor_SellJunkProgressPopup_OnUpdate(self, elapsed);
+            </OnUpdate>
+            <OnHide>
+                ExtVendor_SellJunkProgressPopup_OnHide(self);
+            </OnHide>
+        </Scripts>
+    </Frame>
+
+</Ui>
