@@ -3,7 +3,6 @@ local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
 local lastMsgTime = nil
-local completedQuests = {}
 
 -- Common
 local function SendMessage(msg, sound)
@@ -29,26 +28,27 @@ end
 
 -- Quest Accept
 local function OnQuestAccepted(self, event, questid)
-    local link = GetQuestLink(questid)
+    local tagInfo = C_QuestLog.GetQuestTagInfo(questid)
+
+    if tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.Profession then
+        return
+    end
+
     local questIndex = C_QuestLog.GetLogIndexForQuestID(questid)
 
-    if link and questIndex then
+    if questIndex then
         local info = C_QuestLog.GetInfo(questIndex)
-        local tagInfo = C_QuestLog.GetQuestTagInfo(questid)
-
-        if tagInfo and (tagInfo.tagID == Enum.QuestTag.Account or tagInfo.worldQuestType == Enum.QuestTagType.Profession) then
-            return
-        end
 
         if info.frequency == Enum.QuestFrequency.Daily then
-            SendMessage("接受日常任务：" .. link, true)
+            SendMessage("接受日常任务：" .. info.title, true)
         elseif info.frequency == Enum.QuestFrequency.Weekly then
-            SendMessage("接受周常任务：" .. link, true)
+            SendMessage("接受周常任务：" .. info.title, true)
         else
-            SendMessage("接受任务：" .. link, true)
+            SendMessage("接受任务：" .. info.title, true)
         end
     end
 end
+
 -- Quest Progress
 local function FitPattern(p)
     p = string.gsub(p, "%%s", "(.+)")
@@ -77,25 +77,7 @@ end
 
 -- Quest Complete
 local function OnQuestTurnedIn(self, event, questID, xpReward, moneyReward)
-    local link = GetQuestLink(questID) or completedQuests[questID]
-
-    if link then
-        SendMessage("完成任务：" .. link, true)
-    end
-end
-
-local function OnQuestLogUpdate(self, event, ...)
-    for i = 1, C_QuestLog.GetNumQuestLogEntries() do
-        local info = C_QuestLog.GetInfo(i)
-        local questID = info.questID
-
-        local link = GetQuestLink(questID)
-        local isComplete = C_QuestLog.IsComplete(questID)
-
-        if link and isComplete then
-            completedQuests[questID] = link
-        end
-    end
+    SendMessage("完成任务：" .. C_QuestLog.GetTitleForQuestID(questID), true)
 end
 
 -- Dispel、Stolen、Interrupt
@@ -135,6 +117,5 @@ local EventHandler = S.CreateEventHandler()
 EventHandler.Event.QUEST_ACCEPTED = OnQuestAccepted
 EventHandler.Event.UI_INFO_MESSAGE = OnUIInfoMessage
 EventHandler.Event.QUEST_TURNED_IN = OnQuestTurnedIn
-EventHandler.Event.QUEST_LOG_UPDATE = OnQuestLogUpdate
 EventHandler.Event.COMBAT_LOG_EVENT_UNFILTERED = OnCombarLogEventUnfiltered
 EventHandler.Register()
