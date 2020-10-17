@@ -270,6 +270,7 @@ end
 
 L = LibStub("AceLocale-3.0"):NewLocale("Quester", "zhTW")
 if L then
+L["Allows easy identification of daily/weekly quests, as well as raid and dungeon quests."] = "可以輕鬆識別每日/每週任務，以及團隊和地下城任務。"
 L["Always show objective percentage values on progress bars"] = "始終顯示目標進度條的百分比"
 L["Behavior Configuration"] = "行為設定"
 L["Configure the sounds you want to hear with the toggles below."] = "在下面切換你想聽到的聲音。"
@@ -285,10 +286,12 @@ L["Job's Done!"] = "工作完成！"
 L["Lock the Objective Tracker in place"] = "鎖定任務追蹤器位置"
 L["More Work?!"] = "更多工作？"
 L["Note: Changing this option may require your UI to be reloaded to take full effect."] = "注意：更改此選項可能需要重新加載您的插件才能完全發揮效用。"
+L["Only show number of objective items remaining"] = "僅顯示剩餘的目標物品數"
 L["Peasant"] = "農夫"
 L["Peon"] = "苦工"
 L["Progress Output"] = "進度輸出"
 L["Quest Tracker"] = "任務追蹤器"
+L["Remove numbers from single task objectives"] = "從單個任務目標中刪除數字"
 L["Reset Position"] = "重置位置"
 L["Reset the position of the Objective Tracker to the default."] = "重置任務追蹤器為預設位置。"
 L["Select the set of sounds to use."] = "選擇要使用的音效設置。"

@@ -132,6 +132,10 @@ local function GetQuestTag(groupSize, frequency, tagInfo)
 	return tag
 end
 
+local function GetQuestColorString(level, scaling, questID)
+	return rgb2hex(GetQuestDifficultyColor(level, scaling, questID))
+end
+
 local function GetTaggedTitle(i, color, tag)
 	if not i or i == 0 then return nil end
 	local info = C_QuestLog.GetInfo(i)
@@ -142,9 +146,9 @@ local function GetTaggedTitle(i, color, tag)
 		local tagString = tag and GetQuestTag(info.suggestedGroup, info.frequency, C_QuestLog.GetQuestTagInfo(info.questID)) or ""
 		if color then
 			if db.questLevels then
-				title = format("|cff%s[%s%s] %s|r", rgb2hex(GetQuestDifficultyColor(info.level, info.isScaling)), info.level, tagString, title)
+				title = format("|cff%s[%s%s] %s|r", GetQuestColorString(info.level, info.isScaling, info.questID), info.level, tagString, title)
 			else
-				title = format("|cff%s%s|r", rgb2hex(GetQuestDifficultyColor(info.level, info.isScaling)), title)
+				title = format("|cff%s%s|r", GetQuestColorString(info.level, info.isScaling, info.questID), title)
 			end
 		elseif db.questLevels then
 			title = format("[%s%s] %s", info.level, tagString, title)
@@ -683,7 +687,7 @@ local function processObjective(questID, questTitle, isTask, objIndex, info)
 		end
 		numNeeded, numItems = tonumber(numNeeded), tonumber(numItems)
 		--[===[@debug@
-		if numItems ~= info.numFulfilled or numNeeded ~= info.numRequired then
+		if (numItems ~= info.numFulfilled or numNeeded ~= info.numRequired) and not (info.type == "object" and info.numFulfilled == 1 and info.numRequired == 1 and not info.finished) then
 			print("Quester: mismatching parsed and provided data on quest: " .. questTitle .. " (ID: " .. questID .. "), Objective: " .. info.text .. ", Type: " .. info.type .. ", Parsed: " .. numItems .. "/" .. numNeeded .. ", provided: " .. info.numFulfilled .. "/" .. info.numRequired)
 		end
 		--@end-debug@]===]
@@ -825,7 +829,7 @@ local function ProcessGossip(index, num, data)
 		if level == -1 then
 			-- keep the text untouched
 		elseif db.gossipColor then
-			button:SetText(format("|cff%s[%d]|r %s", rgb2hex(GetQuestDifficultyColor(level)), level, text))
+			button:SetText(format("|cff%s[%d]|r %s", GetQuestColorString(level), level, text))
 		else
 			button:SetText(format("[%d] %s", level, text))
 		end
@@ -861,7 +865,7 @@ function Quester:QUEST_GREETING()
 		if level == -1 then
 			-- keep the text untouched
 		elseif db.gossipColor then
-			button:SetText(format("|cff%s[%d]|r %s", rgb2hex(GetQuestDifficultyColor(level)), level, title))
+			button:SetText(format("|cff%s[%d]|r %s", GetQuestColorString(level), level, title))
 		else
 			button:SetText(format("[%d] %s", level, title))
 		end
@@ -980,8 +984,10 @@ function Quester:QuestTrackerHeaderSetText(HeaderText, text)
 	end
 end
 
-function Quester:QuestTrackerGetBlock(mod, questID)
-	local block = mod.usedBlocks[questID]
+function Quester:QuestTrackerGetBlock(mod, questID, overrideType, overrideTemplate)
+	local blockTemplate = overrideTemplate or mod.blockTemplate
+	if not mod.usedBlocks[blockTemplate] then return end
+	local block = mod.usedBlocks[blockTemplate][questID]
 	if block then
 		if not block.__QuesterHooked then
 			block.HeaderText.__QuesterSetText = block.HeaderText.SetText

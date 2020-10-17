@@ -3,7 +3,7 @@
 ## Title: Quester
 ## Notes: Improved Questing Experience
 ## Author: Nevcairiel
-## Version: 9.0.1.0
+## Version: 9.0.1.1
 ## X-Credits: SmoothQuest by Ammo
 ## X-Website: http://www.wowace.com/addons/quester/
 ## X-Curse-Project-ID: 84833
