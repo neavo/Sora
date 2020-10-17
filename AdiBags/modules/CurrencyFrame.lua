@@ -27,10 +27,10 @@ local _G = _G
 local BreakUpLargeNumbers = _G.BreakUpLargeNumbers
 local CreateFont = _G.CreateFont
 local CreateFrame = _G.CreateFrame
-local ExpandCurrencyList = _G.ExpandCurrencyList
+local ExpandCurrencyList = _G.C_CurrencyInfo.ExpandCurrencyList
 local format = _G.format
-local GetCurrencyListInfo = _G.GetCurrencyListInfo
-local GetCurrencyListSize = _G.GetCurrencyListSize
+local GetCurrencyListInfo = _G.C_CurrencyInfo.GetCurrencyListInfo
+local GetCurrencyListSize = _G.C_CurrencyInfo.GetCurrencyListSize
 local hooksecurefunc = _G.hooksecurefunc
 local ipairs = _G.ipairs
 local IsAddOnLoaded = _G.IsAddOnLoaded
@@ -115,6 +115,38 @@ function mod:OnBagFrameCreated(bag)
 	frame:AddBottomWidget(widget, "LEFT", 50)
 end
 
+local IterateCurrencies
+do
+	local function iterator(collapse, index)
+		if not index then return end
+		repeat
+			index = index + 1
+			local currencyListInfo = GetCurrencyListInfo(index)
+			if currencyListInfo then
+				if currencyListInfo.name then
+					if currencyListInfo.isHeader then
+						if not currencyListInfo.isHeaderExpanded then
+							tinsert(collapse, 1, index)
+							ExpandCurrencyList(index, true)
+						end
+					else
+						return index, currencyListInfo
+					end
+				end
+			end
+		until index > GetCurrencyListSize()
+		for i, index in ipairs(collapse) do
+			ExpandCurrencyList(index, false)
+		end
+	end
+
+	local collapse = {}
+	function IterateCurrencies()
+		wipe(collapse)
+		return iterator, collapse, 0
+	end
+end
+
 local ICON_STRING = " \124T%s:0:0:0:0:64:64:5:59:5:59\124t  "
 
 local values = {}
@@ -124,16 +156,10 @@ function mod:Update()
 	updating = true
 
 	local shown, hideZeroes = self.db.profile.shown, self.db.profile.hideZeroes
-
-	for currency_index=1,C_CurrencyInfo.GetCurrencyListSize() do
-		local currency = C_CurrencyInfo.GetCurrencyListInfo(currency_index)
-		if currency.name and not currency.isHeader then
-			if shown[currency.name] and currency.quantity then
-				if (currency.quantity > 0 or not hideZeroes) then
-					tinsert(values, BreakUpLargeNumbers(currency.quantity))
-					tinsert(values, format(ICON_STRING, currency.iconFileID))
-				end
-			end
+	for i, currencyListInfo in IterateCurrencies() do
+		if shown[currencyListInfo.name] and (currencyListInfo.quantity > 0 or not hideZeroes) then
+			tinsert(values, BreakUpLargeNumbers(currencyListInfo.quantity))
+			tinsert(values, format(ICON_STRING, currencyListInfo.iconFileID))
 		end
 	end
 
@@ -162,11 +188,8 @@ function mod:GetOptions()
 			order = 10,
 			values = function()
 				wipe(values)
-				for currency_index=1,C_CurrencyInfo.GetCurrencyListSize() do
-					local currency = C_CurrencyInfo.GetCurrencyListInfo(currency_index)
-					if currency.name and not currency.isHeader then
-						values[currency.name] = format(ICON_STRING, currency.iconFileID)..currency.name
-					end
+				for i, currencyListInfo in IterateCurrencies() do
+					values[currencyListInfo.name] = format(ICON_STRING, currencyListInfo.iconFileID)..currencyListInfo.name
 				end
 				return values
 			end,
@@ -181,4 +204,3 @@ function mod:GetOptions()
 		text = addon:CreateFontOptions(self.font, nil, 30)
 	}, addon:GetOptionHandler(self, false, function() return self:Update() end)
 end
-

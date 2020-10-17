@@ -22,13 +22,16 @@
 ## Title: AdiBags
 ## Notes: Adirelle's bag addon.
 ## Author: Adirelle
-## Version: AdiBags-v1.9.20-1-g4be3fd2-1-gcf77aa0
+## Version: v1.9.21
 ## SavedVariables: AdiBagsDB
-## X-Date: 2020-10-15T04:45:33Z
+## X-Date: 2020-10-16T16:27:51Z
 ## X-License: GPL v3
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibSharedMedia-3.0, Scrap, BrainDead, !BugGrabber, SyLevel
-## OptionalDeps: AdiDebug, BugSack, Swatter
+#@alpha@
+# ## OptionalDeps: AdiDebug, BugSack, Swatter
+#@end-alpha@
 
+#@no-lib-strip@
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 libs\BugGrabber\load.xml
@@ -37,6 +40,7 @@ libs\AceDB-3.0\AceDB-3.0.xml
 libs\AceHook-3.0\AceHook-3.0.xml
 libs\AceConsole-3.0\AceConsole-3.0.xml
 libs\LibSharedMedia-3.0\lib.xml
+#@end-no-lib-strip@
 
 libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 
@@ -73,3 +77,6 @@ modules\ChangeHighlight.lua
 
 core\DefaultFilters.lua
 
+#@debug@
+# ## Version: DEV
+#@end-debug@

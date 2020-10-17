@@ -1,0 +1,30 @@
+tag b48f89a9be6baf7f78c8e46f86cca5a2b8654c2b v1.9.21
+Author:	Talyrius <contact@talyrius.net>
+Date:	Fri Oct 16 09:42:22 2020 -0700
+
+commit b5a6eef9679e2436f2128af7bf053fc55f269a38
+Author: Talyrius <contact@talyrius.net>
+Date:   Fri Oct 16 09:27:51 2020 -0700
+
+    Updated koKR localization.
+    
+    The script that imports localization updates from WowAce has been broken for several years.
+
+commit 9d761d69075fba4d0c575ae95e91a0d61616769b
+Author: Sammy Israwi <SammyIsra@users.noreply.github.com>
+Date:   Fri Oct 16 09:17:42 2020 -0700
+
+    Updated links in README.
+
+commit 1e437c099e5a6b4a9463ce8613349abc00779b12
+Author: Talyrius <contact@talyrius.net>
+Date:   Fri Oct 16 09:01:10 2020 -0700
+
+    Updated for Patch 9.0.1, the Shadowlands pre-expansion patch.
+    
+    Closes: #471, #475, #477, #486, #487, #488.
+    Co-Authored-By: Handante <8237662+BourgeoisM@users.noreply.github.com>
+    Co-Authored-By: RipeTomatoe <4926850+RipeTomatoe@users.noreply.github.com>
+    Co-Authored-By: Tim Martin <tim@timmart.in>
+    Co-Authored-By: legowxelab2z8 <26781468+legowxelab2z8@users.noreply.github.com>
+

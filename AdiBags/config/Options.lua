@@ -274,7 +274,7 @@ local function GetOptions()
 		name = addonName..' DEV',
 		--@end-debug@]===]
 		--@non-debug@
-		name = addonName..' AdiBags-v1.9.20-1-g4be3fd2-1-gcf77aa0',
+		name = addonName..' v1.9.21',
 		--@end-non-debug@
 		type = 'group',
 		handler = addon:GetOptionHandler(addon),

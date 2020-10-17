@@ -53,15 +53,15 @@ _G[addonName] = addon
 -- Debug stuff
 --------------------------------------------------------------------------------
 
---@alpha@
+--[===[@alpha@
 if AdiDebug then
 	AdiDebug:Embed(addon, addonName)
 else
---@end-alpha@
+--@end-alpha@]===]
 	function addon.Debug() end
---@alpha@
+--[===[@alpha@
 end
---@end-alpha@
+--@end-alpha@]===]
 
 --[===[@debug@
 local function DebugTable(t, prevKey)
