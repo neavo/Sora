@@ -988,7 +988,7 @@ function Quester:QuestTrackerGetBlock(mod, questID, overrideType, overrideTempla
 	local blockTemplate = overrideTemplate or mod.blockTemplate
 	if not mod.usedBlocks[blockTemplate] then return end
 	local block = mod.usedBlocks[blockTemplate][questID]
-	if block then
+	if block and block.HeaderText then
 		if not block.__QuesterHooked then
 			block.HeaderText.__QuesterSetText = block.HeaderText.SetText
 			self:SecureHook(block.HeaderText, "SetText", "QuestTrackerHeaderSetText")
