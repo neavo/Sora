@@ -1,3 +1,4 @@
+local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 
 local addon = TinyTooltip
 
@@ -15,9 +16,9 @@ local function ShowId(tooltip, name, value, noBlankLine)
         if (not line) then
             if (not noBlankLine) then tooltip:AddLine(" ") end
             tooltip:AddLine(format("%s: |cffffffff%s|r", name, value), 0, 1, 0.8)
-            --tooltip:AddDoubleLine(name .. " ID", format("|cffffffff%s|r", value))
             tooltip:Show()
         end
+        LibEvent:trigger("tooltip.linkid", tooltip, name, value, noBlankLine)
     end
 end
 
