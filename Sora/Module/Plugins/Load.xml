@@ -9,7 +9,6 @@
 	<Script file = "CombatAlert.lua" />
 	<Script file = "BorderShadow.lua" />
 	<Script file = "FilterKiller.lua" />
-	<Script file = "AlreadyKnown.lua" />
 	<Script file = "UIParentFade.lua" />
 	<Script file = "DeleteConfirm.lua" />
 	<Script file = "AlignmentGrid.lua" />
