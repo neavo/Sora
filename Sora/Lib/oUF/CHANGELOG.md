@@ -1,3 +1,15 @@
+**Changes in 10.0.3:**
+
+- _Rainrider (1):_
+    1. alternativepower: remove the realUnit check from the visibility condition
+- _Val Voronov (5):_
+    1. phaseindicator: Check phase only for player units
+    2. powerprediction: Avoid resetting while casting
+    3. powerprediction: Make it player-only
+    4. powerprediction: Add support for mutating spells
+    5. phaseindicator: Pass phaseReason to PostUpdate
+- 3 files changed, 46 insertions(+), 34 deletions(-)
+
 **Changes in 10.0.2:**
 
 - _Adrian L Lange (2):_
