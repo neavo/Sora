@@ -20,7 +20,7 @@ function DD.CreateInstance(parent, fontSize)
     instance.shadow = S.MakeShadow(instance, 1)
     instance.shadow:SetFrameLevel(instance:GetFrameLevel())
 
-    instance.right = S.MakeText(instance, fontSize + 4)
+    instance.right = S.MakeText(instance, fontSize)
     instance.right:SetText("▽")
     instance.right:SetPoint("RIGHT", instance, "RIGHT", 0, 0)
 
