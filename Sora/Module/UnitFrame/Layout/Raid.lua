@@ -220,11 +220,11 @@ local function CreateAuraIndicator(self, ...)
         if i == 1 then
             indicator:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMLEFT", 1, 1)
         elseif i == 4 then
-            indicator:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMRIGHT", -(size * 2 + 2 * 2 + 1), 1)
+            indicator:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMRIGHT", -(size * 2 + 2 * 2 - 1), 1)
         elseif i == 7 then
             indicator:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 1, -1)
         elseif i == 10 then
-            indicator:SetPoint("TOPRIGHT", self.Health, "TOPRIGHT", -(size * 2 + 2 * 2 + 1), -1)
+            indicator:SetPoint("TOPRIGHT", self.Health, "TOPRIGHT", -(size * 2 + 2 * 2 - 1), -1)
         else
             indicator:SetPoint("LEFT", indicators[i - 1], "RIGHT", 1, 0)
         end
