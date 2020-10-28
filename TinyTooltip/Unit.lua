@@ -24,6 +24,8 @@ local function ColorBorder(tip, config, raw)
         if (r and g and b) then
             LibEvent:trigger("tooltip.style.border.color", tip, r, g, b)
         end
+    else
+        LibEvent:trigger("tooltip.style.border.color", tip, unpack(addon.db.general.borderColor))
     end
 end
 
@@ -31,11 +33,14 @@ local function ColorBackground(tip, config, raw)
     local bg = config.background
     if not bg then return end
     if (bg.colorfunc == "default" or bg.colorfunc == "" or bg.colorfunc == "inherit") then
+        local r, g, b, a = unpack(addon.db.general.background)
+        a = bg.alpha or a
+        LibEvent:trigger("tooltip.style.background", tip, r, g, b, a)
         return
     end
     if (addon.colorfunc[bg.colorfunc]) then
         local r, g, b = addon.colorfunc[bg.colorfunc](raw)
-        local a = bg.alpha or 0.5
+        local a = bg.alpha or 0.8
         LibEvent:trigger("tooltip.style.background", tip, r, g, b, a)
     end
 end
@@ -118,3 +123,6 @@ LibEvent:attachTrigger("tooltip:unit", function(self, tip, unit)
         NonPlayerCharacter(tip, unit, addon.db.unit.npc, raw)
     end
 end)
+
+addon.ColorUnitBorder = ColorBorder
+addon.ColorUnitBackground = ColorBackground

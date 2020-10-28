@@ -49,6 +49,7 @@ addon.L = {
     ["unit.player.elements.pvpIcon"]        = "PVP狀態",
     ["unit.player.elements.factionIcon"]    = "陣營圖標",
     ["unit.player.elements.classIcon"]      = "職業圖標",
+    ["unit.player.elements.friendIcon"]     = "好友圖標",
     ["unit.player.elements.title"]          = "頭銜",
     ["unit.player.elements.name"]           = "名稱",
     ["unit.player.elements.realm"]          = "伺服器",

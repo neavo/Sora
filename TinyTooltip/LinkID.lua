@@ -88,15 +88,17 @@ local function ShowAchievementId(self)
     end
 end
 
-hooksecurefunc("HybridScrollFrame_CreateButtons", function(self, buttonTemplate)
-    if (buttonTemplate == "StatTemplate") then
-        for _, button in pairs(self.buttons) do
-            button:HookScript("OnEnter", ShowAchievementId)
+if (HybridScrollFrame_CreateButtons) then
+    hooksecurefunc("HybridScrollFrame_CreateButtons", function(self, buttonTemplate)
+        if (buttonTemplate == "StatTemplate") then
+            for _, button in pairs(self.buttons) do
+                button:HookScript("OnEnter", ShowAchievementId)
+            end
+        elseif (buttonTemplate == "AchievementTemplate") then
+            for _, button in pairs(self.buttons) do
+                button:HookScript("OnEnter", ShowAchievementId)
+                button:HookScript("OnLeave", GameTooltip_Hide)
+            end
         end
-    elseif (buttonTemplate == "AchievementTemplate") then
-        for _, button in pairs(self.buttons) do
-            button:HookScript("OnEnter", ShowAchievementId)
-            button:HookScript("OnLeave", GameTooltip_Hide)
-        end
-    end
-end)
+    end)
+end

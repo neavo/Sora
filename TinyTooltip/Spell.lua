@@ -21,7 +21,7 @@ local function SpellIcon(tip)
         local texture = GetSpellTexture(id or 0)
         local text = addon:GetLine(tip,1):GetText()
         if (texture and not strfind(text, "^|T")) then
-            addon:GetLine(tip,1):SetFormattedText("|T%s:16|t %s", texture, text)
+            addon:GetLine(tip,1):SetFormattedText("|T%s:16:16:0:0:32:32:2:30:2:30|t %s", texture, text)
         end
     end
 end

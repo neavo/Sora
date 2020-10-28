@@ -2,7 +2,7 @@
 local addon = TinyTooltip
 
 addon.db = {
-    version = 2.7,
+    version = 2.8,
     general = {
         scale             = 1,                      --縮放
         mask              = true,                   --頂部遮罩層
@@ -47,6 +47,7 @@ addon.db = {
                 factionIcon = { enable = true, filter = "none" },
                 factionBig  = { enable = true, filter = "none" },
                 classIcon   = { enable = true, filter = "none" },
+                friendIcon  = { enable = true, filter = "none" },
                 title       = { enable = true, color = "ccffff", wildcard = "%s",   filter = "none" },
                 name        = { enable = true, color = "class",  wildcard = "%s",   filter = "none" },
                 realm       = { enable = true, color = "00eeee", wildcard = "%s",   filter = "none" },
@@ -66,7 +67,7 @@ addon.db = {
                 role        = { enable = false, color = "ffffff",  wildcard = "(%s)", filter = "none" },
                 moveSpeed   = { enable = false, color = "e8e7a8",  wildcard = "%d%%", filter = "none" },
                 zone        = { enable = true,  color = "ffffff",  wildcard = "%s", filter = "none" },
-                { "raidIcon", "roleIcon", "pvpIcon", "factionIcon", "classIcon", "title", "name", "realm", "statusAFK", "statusDND", "statusDC", },
+                { "friendIcon", "raidIcon", "roleIcon", "pvpIcon", "factionIcon", "classIcon", "title", "name", "realm", "statusAFK", "statusDND", "statusDC", },
                 { "guildName", "guildIndex", "guildRank", "guildRealm", },
                 { "levelValue", "factionName", "gender", "raceName", "className", "isPlayer", "role", "moveSpeed", },
                 { "zone" },

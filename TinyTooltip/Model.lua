@@ -26,7 +26,7 @@ LibEvent:attachTrigger("tooltip:unit", function(self, tip, unit)
         tip.model:SetUnit(unit)
         tip.model:SetFacing(-0.25)
         tip.model:Show()
-    elseif (addon.db.unit.npc.showModel) then
+    elseif (addon.db.unit.npc.showModel and not UnitIsPlayer(unit)) then
         tip.model:SetUnit(unit)
         tip.model:SetFacing(-0.25)
         tip.model:Show()
