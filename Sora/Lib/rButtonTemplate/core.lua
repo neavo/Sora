@@ -180,6 +180,8 @@ function rButtonTemplate:StyleActionButton(button, cfg)
   local count = _G[buttonName.."Count"]
   local name = _G[buttonName.."Name"]
   local border = _G[buttonName.."Border"]
+  local shine = _G[buttonName.."Shine"]
+  local autocastable = _G[buttonName.."AutoCastable"]
   local NewActionTexture = button.NewActionTexture
   local cooldown = _G[buttonName.."Cooldown"]
   local normalTexture = button:GetNormalTexture()
@@ -202,6 +204,8 @@ function rButtonTemplate:StyleActionButton(button, cfg)
   SetupTexture(flyoutBorder,cfg.flyoutBorder,"SetTexture",flyoutBorder)
   SetupTexture(flyoutBorderShadow,cfg.flyoutBorderShadow,"SetTexture",flyoutBorderShadow)
   SetupTexture(border,cfg.border,"SetTexture",border)
+  SetupTexture(shine,cfg.shine,"SetTexture",shine)
+  SetupTexture(autocastable,cfg.autocastable,"SetTexture",autocastable)
   SetupTexture(normalTexture,cfg.normalTexture,"SetNormalTexture",button)
   SetupTexture(pushedTexture,cfg.pushedTexture,"SetPushedTexture",button)
   SetupTexture(highlightTexture,cfg.highlightTexture,"SetHighlightTexture",button)
