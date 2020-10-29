@@ -1,4 +1,5 @@
 
+local LibJSON = LibStub:GetLibrary("LibJSON.9000")
 local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 local LibDropdown = LibStub:GetLibrary("LibDropdown.7000")
 
@@ -631,7 +632,7 @@ framePC.name = " - Player"
 framePC.diy = CreateFrame("Button", nil, framePC)
 framePC.diy:SetSize(400, 67)
 framePC.diy:SetScale(0.68)
-framePC.diy:SetPoint("TOPLEFT", 360, -100)
+framePC.diy:SetPoint("TOPLEFT", 332, -100)
 framePC.diy:SetNormalTexture("Interface\\LevelUp\\MinorTalents")
 framePC.diy:GetNormalTexture():SetTexCoord(0, 400/512, 341/512, 407/512)
 framePC.diy:GetNormalTexture():SetVertexColor(1, 1, 1, 0.8)
@@ -719,7 +720,30 @@ frameVariables.parent = addonName
 frameVariables.name = " - Variables"
 
 local function InitVariablesFrame()
-    
+    frameVariables.panel = CreateFrame("Frame", nil, frameVariables, "TinyTooltipVariablesTemplate")
+    frameVariables.panel:SetPoint("CENTER", 0, -20)
+    frameVariables.panel.export:SetScript("OnClick", function()
+        local json = LibJSON:encode_wow(addon.db)
+        frameVariables.panel.textarea.text:SetText(json)
+        frameVariables.panel.textarea.text:SetFocus(true)
+        frameVariables.panel.textarea.text:HighlightText()
+    end)
+    LibJSON.assert = function() end
+    frameVariables.panel.import:SetScript("OnClick", function()
+        local text = frameVariables.panel.textarea.text:GetText()
+        local data, errormsg = LibJSON:decode_wow(text)
+        if (data and type(data) == "table") then
+            addon:FixNumericKey(data)
+            local db = addon:MergeVariable(BigTipDB, data)
+            BigTipDB = db
+            addon.db = db
+            frameVariables.panel.textarea.text:SetText("")
+            LibEvent:trigger("TINYTOOLTIP_GENERAL_INIT")
+            print("|cffFFE4E1[TinyTooltip]|r|cff00FFFF variables has been imported successfully. |r")
+        else
+            print("|cffFFE4E1[TinyTooltip]|r|cffFF3333 unvalidated variables. |r")
+        end
+    end)
 end
 
 local function InitOptions(list, parent, height)
@@ -794,7 +818,7 @@ frame:SetClampedToScreen(true)
 frame:EnableMouse(true)
 --frame:SetMovable(true)
 frame:SetSize(300, 100)
-frame:SetPoint("BOTTOMRIGHT", framePCScrollFrame, "TOPRIGHT", 0, 0)
+frame:SetPoint("BOTTOM", framePCScrollFrame, "TOP", 64, 0)
 frame:RegisterForDrag("LeftButton")
 frame:SetScript("OnDragStart", function(self) self:StartMoving() end)
 frame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
@@ -813,7 +837,7 @@ frame.tips:SetText(L["<Drag element to customize the style>"])
 frame.arrow = frame:CreateTexture(nil, "OVERLAY")
 frame.arrow:SetSize(32, 48)
 frame.arrow:SetTexture("Interface\\Buttons\\JumpUpArrow")
-frame.arrow:SetPoint("BOTTOM", framePC.diy, "TOP", 0, 10)
+frame.arrow:SetPoint("BOTTOM", framePCScrollFrame, "TOP", 35, -60)
 frame:HookScript("OnShow", function() LibEvent:trigger("tinytooltip:diy:player", "player", true) end)
 
 local DraggingButton, OverButton, OverLine

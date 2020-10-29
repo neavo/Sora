@@ -21,5 +21,6 @@ LinkID.lua
 Mount.lua
 SkinFrames.lua
 
+libs\Template.xml
 locales\locales.xml
 Options.lua

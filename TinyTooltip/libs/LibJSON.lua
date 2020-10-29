@@ -8,7 +8,7 @@
 -- http://creativecommons.org/licenses/by/3.0/deed.en_US
 --
 
-local MAJOR, MINOR = "LibJSON", 1
+local MAJOR, MINOR = "LibJSON.9000", 1
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -255,7 +255,6 @@ local function grok_number(self, text, start, options)
 
    return as_number, i
 end
-
 
 local function grok_string(self, text, start, options)
 
@@ -556,14 +555,44 @@ local chars_to_be_escaped_in_JSON_string
    .. ']'
 
 
+local syntax_colors = {
+    ["key"]     = "|cffFF3366",
+    ["null"]    = "|cffFF0000",
+    ["number"]  = "|cffFF66FF",
+    ["string"]  = "|cff66FF66",
+    ["boolean"] = "|cffFF00FF",
+}
+
+setmetatable(syntax_colors, { __index = function(self, k)
+    return "|cffffffff"
+end})
+
+local function get_syntax_color(key, options)
+    if (options.syntax_colors) then
+        return options.syntax_colors[key] or syntax_colors[key]
+    end
+    return syntax_colors[key]
+end
+
+local function syntax_highlight(value, var_type, options, for_key)
+    if (options.colored_wow_json) then
+        if (for_key) then
+            value = get_syntax_color('key',options) .. value .. "|r"
+        else
+            value = get_syntax_color(var_type,options) .. value .. "|r"
+        end
+    end
+    return value
+end
+
 local LINE_SEPARATOR_as_utf8      = unicode_codepoint_as_utf8(0x2028)
 local PARAGRAPH_SEPARATOR_as_utf8 = unicode_codepoint_as_utf8(0x2029)
-local function json_string_literal(value, options)
+local function json_string_literal(value, options, for_key)
    local newval = value:gsub(chars_to_be_escaped_in_JSON_string, backslash_replacement_function)
    if options.stringsAreUtf8 then
       newval = newval:gsub(LINE_SEPARATOR_as_utf8, '\\u2028'):gsub(PARAGRAPH_SEPARATOR_as_utf8,'\\u2029')
    end
-   return '"' .. newval .. '"'
+   return syntax_highlight('"' .. newval .. '"', 'string', options, for_key)
 end
 
 local function object_or_array(self, T, etc)
@@ -630,24 +659,24 @@ end
 
 local function encode_value(self, value, parents, etc, options, indent, for_key)
    if value == nil or (not for_key and options and options.null and value == options.null) then
-      return 'null'
+      return syntax_highlight('null', 'null', options, for_key)
 
    elseif type(value) == 'string' then
-      return json_string_literal(value, options)
+      return json_string_literal(value, options, for_key)
 
    elseif type(value) == 'number' then
       if value ~= value then
-         return "null"
+         return syntax_highlight('null', 'number', options, for_key)
       elseif value >= math.huge then
-         return "1e+9999"
+         return syntax_highlight("1e+9999", 'number', options, for_key)
       elseif value <= -math.huge then
-         return "-1e+9999"
+         return syntax_highlight("-1e+9999", 'number', options, for_key)
       else
-         return tostring(value)
+         return syntax_highlight(tostring(value), 'number', options, for_key)
       end
 
    elseif type(value) == 'boolean' then
-      return tostring(value)
+      return syntax_highlight(tostring(value), 'boolean', options, for_key)
 
    elseif type(value) ~= 'table' then
 
@@ -781,6 +810,23 @@ function lib:encode_pretty(value, etc, options)
    end
 
    return top_level_encode(self, value, etc, options)
+end
+
+--added new functions for colored_wow_json
+function lib:encode_wow(value, etc, options)
+    if type(self) ~= 'table' or self.__index ~= lib then
+      lib:onEncodeError("JSON:encode_wow must be called in method format", etc)
+   end
+    if type(options) ~= 'table' then
+      options = default_pretty_options
+      options.colored_wow_json = true
+   end
+
+   return top_level_encode(self, value, etc, options)
+end
+function lib:decode_wow(text, etc, options)
+    text = text:gsub("|c%x%x%x%x%x%x%x%x(.-)|r", "%1")
+    return lib:decode(text, etc, options)
 end
 
 function lib.__tostring()

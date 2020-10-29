@@ -97,6 +97,28 @@ local function AutoValidateElements(src, dst)
     return dst
 end
 
+--字符型数字键转为数字键
+function addon:FixNumericKey(t)
+    local key
+    local tbl = {}
+    for k, v in pairs(t) do
+        if (type(k) == "string" and string.match(k,"^[1-9]%d*$")) then
+            key = tonumber(k)
+            t[k] = nil
+            tbl[key] = v
+        end
+    end
+    for k, v in pairs(tbl) do
+        if (not t[k]) then t[k] = v end
+    end
+    for k, v in pairs(t) do
+        if (type(v) == "table") then
+            t[k] = self:FixNumericKey(v)
+        end
+    end
+    return t
+end
+
 -- 配置合併
 function addon:MergeVariable(src, dst)
     dst.version = src.version
@@ -681,11 +703,12 @@ end)
 
 local defaultHeaderFont, defaultHeaderSize, defaultHeaderFlag = GameTooltipHeaderText:GetFont()
 LibEvent:attachTrigger("tooltip.style.font.header", function(self, frame, fontObject, fontSize, fontFlag)
-    --没有配置的直接返回,防止SetFont后字体集无法自动匹配
-    if (fontObject == "default" and fontSize == "default" and fontFlag == "default") then
-        return
-    end
     local font, size, flag = GameTooltipHeaderText:GetFont()
+    if (fontObject == "default" and fontSize == "default" and fontFlag == "default") then
+        if (size == defaultHeaderSize and flag == defaultHeaderFlag) then
+            return
+        end
+    end
     font = addon:GetFont(fontObject, defaultHeaderFont)
     if (fontSize == "default") then
         size = defaultHeaderSize
@@ -702,7 +725,7 @@ end)
 
 local defaultBodyFont, defaultBodySize, defaultBodyFlag = GameTooltipText:GetFont()
 LibEvent:attachTrigger("tooltip.style.font.body", function(self, frame, fontObject, fontSize, fontFlag)
-    local font, size, flag = GameTooltipHeaderText:GetFont()
+    local font, size, flag = GameTooltipText:GetFont()
     font = addon:GetFont(fontObject, defaultBodyFont)
     if (fontSize == "default") then
         size = defaultBodySize
