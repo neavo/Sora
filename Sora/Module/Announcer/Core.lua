@@ -34,17 +34,18 @@ local function OnQuestAccepted(self, event, questid)
         return
     end
 
+    local questLink = GetQuestLink(questid)
     local questIndex = C_QuestLog.GetLogIndexForQuestID(questid)
 
-    if questIndex then
+    if questLink and questIndex then
         local info = C_QuestLog.GetInfo(questIndex)
 
         if info.frequency == Enum.QuestFrequency.Daily then
-            SendMessage("接受日常任务：" .. info.title, true)
+            SendMessage("接受日常任务：" .. questLink, true)
         elseif info.frequency == Enum.QuestFrequency.Weekly then
-            SendMessage("接受周常任务：" .. info.title, true)
+            SendMessage("接受周常任务：" .. questLink, true)
         else
-            SendMessage("接受任务：" .. info.title, true)
+            SendMessage("接受任务：" .. questLink, true)
         end
     end
 end
