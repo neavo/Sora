@@ -1,6 +1,12 @@
-commit 79f6a3314f26712462bdb49ae95e2ce714c92040
-Author: semlar <teslagraafs@gmail.com>
-Date:   Fri Jan 24 01:42:21 2020 -0500
+tag aa66b69c9e3e26240358347a14403c56a01aedfc 9.0.0.0
+Author:	semlar <teslagraafs@gmail.com>
+Date:	Thu Oct 29 09:01:38 2020 -0400
 
-    Bump toc for 8.3
+commit 00feb0e646e2b3e6544b2c319cf6b6f60b5152b2
+Author: semlar <teslagraafs@gmail.com>
+Date:   Thu Oct 29 09:01:25 2020 -0400
+
+    Bump toc for 9.0
+    
+    - Seems to work fine in Shadowlands beta
 
