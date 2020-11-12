@@ -86,7 +86,7 @@ local function SetChatFrame()
 
         local ScrollToBottomButton = ChatFrame.ScrollToBottomButton
         ScrollToBottomButton:ClearAllPoints()
-        ScrollToBottomButton:SetPoint("BOTTOMLEFT", ChatFrame, "BOTTOMRIGHT", 2, 0)
+        ScrollToBottomButton:SetPoint("BOTTOMLEFT", ChatFrame, "BOTTOMRIGHT", 3, 0)
 
         local EditBox = _G["ChatFrame" .. i .. "EditBox"]
         EditBox:SetFont(STANDARD_TEXT_FONT, fontSize, "OUTLINE")
