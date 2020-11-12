@@ -696,6 +696,7 @@ local function TaskPOI_IsFiltered(info, displayMapID)
 	local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID(info.questId)
 	local questTagInfo = C_QuestLog.GetQuestTagInfo(info.questId)
 	if not questTagInfo then return end -- fix for nil tag
+	local tradeskillLineID = questTagInfo.tradeskillLineID
 	local timeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes(info.questId)
 	C_TaskQuest.RequestPreloadRewardData(info.questId)
 
@@ -742,7 +743,7 @@ local function TaskPOI_IsFiltered(info, displayMapID)
 		end
 
 		if selectedFilters.PROFESSION then
-			if questTagInfo.tradeskillLineIndex then
+			if tradeskillLineID and WORLD_QUEST_ICONS_BY_PROFESSION[tradeskillLineID] then
 				isFiltered = false
 			end
 		end
@@ -795,6 +796,15 @@ local function TaskPOI_IsFiltered(info, displayMapID)
 			end
 		end
 
+	end
+
+	if Config.onlyCurrentZone and info.mapID ~= displayMapID then
+		-- Needed since C_TaskQuest.GetQuestsForPlayerByMapID returns quests not on the passed map.....
+		-- But, if we are on a continent (the quest continent map id matches the currently shown map)
+		-- we should not be changing anything, since quests should be shown here.
+		if (GetMapContinentMapID(info.mapID) ~= displayMapID) then
+			isFiltered = true
+		end
 	end
 
 	return isFiltered
