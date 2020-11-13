@@ -58,7 +58,7 @@ oUF.Tags.Methods["NamePlates:Name"] = function(unit)
     end
 
     if name then
-        name = S.SubString(name, 8, " ...")
+        name = S.SubString(name, 8, " …")
     end
 
     return string.format(str, r * 255, g * 255, b * 255) .. name .. "|r"
