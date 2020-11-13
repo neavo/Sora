@@ -84,7 +84,7 @@ oUF.Tags.Methods["UnitFrame:Name"] = function(unit)
     local name = UnitName(unit) or ""
 
     if name then
-        name = S.SubString(name, 7, "...")
+        name = S.SubString(name, 7, "…")
     end
 
     return DyeText(unit, name)
@@ -95,7 +95,7 @@ oUF.Tags.Methods["UnitFrame:ShortName"] = function(unit)
     local name = UnitName(unit) or ""
 
     if name then
-        name = S.SubString(name, 5, "...")
+        name = S.SubString(name, 5, "…")
     end
 
     return DyeText(unit, name)
