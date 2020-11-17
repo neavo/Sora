@@ -130,17 +130,17 @@ S.UnitFrame.CreateTag = function(self, unit, ...)
     if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
         local nameTag = S.MakeText(self.Health, 12)
         nameTag:SetAlpha(0.00)
-        nameTag:SetPoint("LEFT", 4, 0)
+        nameTag:SetPoint("LEFT", 4, -1)
         self:Tag(nameTag, "[UnitFrame:Level][UnitFrame:Rare][UnitFrame:Name]")
 
         local powerTag = S.MakeText(self.Power, 10)
         powerTag:SetAlpha(0.00)
-        powerTag:SetPoint("RIGHT", -4, 0)
+        powerTag:SetPoint("RIGHT", -4, -1)
         self:Tag(powerTag, "[UnitFrame:Power] | [UnitFrame:PerPower]")
 
         local healthTag = S.MakeText(self.Health, 11)
         healthTag:SetAlpha(0.00)
-        healthTag:SetPoint("RIGHT", -4, 0)
+        healthTag:SetPoint("RIGHT", -4, -1)
         self:Tag(healthTag, "[UnitFrame:Health] | [UnitFrame:PerHealth]")
 
         self.nameTag = nameTag
@@ -149,7 +149,7 @@ S.UnitFrame.CreateTag = function(self, unit, ...)
     elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
         local nameTag = S.MakeText(self.Health, 10)
         nameTag:SetAlpha(0.00)
-        nameTag:SetPoint("CENTER", 0, 0)
+        nameTag:SetPoint("CENTER", 0, -1)
         self:Tag(nameTag, "[UnitFrame:ShortName]")
 
         local healthTag = S.MakeText(self.Health, 8.5)
@@ -161,7 +161,7 @@ S.UnitFrame.CreateTag = function(self, unit, ...)
         self.healthTag = healthTag
     elseif unit == "raid" then
         local nameTag = S.MakeText(self.Health, 11)
-        nameTag:SetPoint("CENTER", 0, 0)
+        nameTag:SetPoint("CENTER", 0, -1)
         self:Tag(nameTag, "[UnitFrame:Name]")
 
         local statusTag = S.MakeText(self.Health, 8.0)
@@ -392,10 +392,10 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
     castbar.bg:SetVertexColor(0.12, 0.12, 0.12, 0.75)
 
     castbar.Text = S.MakeText(castbar, 10)
-    castbar.Text:SetPoint("LEFT", 2, 0)
+    castbar.Text:SetPoint("LEFT", 2, -1)
 
     castbar.Time = S.MakeText(castbar, 10)
-    castbar.Time:SetPoint("RIGHT", -2, 0)
+    castbar.Time:SetPoint("RIGHT", -2, -1)
 
     castbar.Icon = castbar:CreateTexture(nil, "ARTWORK")
     castbar.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
