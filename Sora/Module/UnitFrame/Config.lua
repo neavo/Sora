@@ -42,7 +42,7 @@ local function CreateDB(self, ...)
     SoraDB.UnitFrame.Boss = SoraDB.UnitFrame.Boss or {}
     SoraDB.UnitFrame.Boss.Width = SoraDB.UnitFrame.Boss.Width or 220
     SoraDB.UnitFrame.Boss.Height = SoraDB.UnitFrame.Boss.Height or 36
-    SoraDB.UnitFrame.Boss.Postion = SoraDB.UnitFrame.Boss.Postion or {"CENTER", "UIParent", "CENTER", 0, 340}
+    SoraDB.UnitFrame.Boss.Postion = SoraDB.UnitFrame.Boss.Postion or {"CENTER", "UIParent", "CENTER", 0, 330}
 
     SoraDB.UnitFrame.Raid =
         SoraDB.UnitFrame.Raid or
