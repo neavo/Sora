@@ -6,10 +6,6 @@ local bags = {
 	"AdiBagsContainer1",
 	"AdiBagsContainer2"
 }
-local datas = {
-	false,
-	false
-}
 
 local function DoSkin(i)
 	local prefix = ""
@@ -65,46 +61,40 @@ local function DoSkin(i)
 	end
 end
 
-local function OnBagUpdate(self, event, ...)
-	if not IsAddOnLoaded("AdiBags") then
-		return 0
-	end
+local function CheckAdiBagsContainer(k, v)
+	local function OnTicker(self, ...)
+		local bag = _G[v]
 
-	for k, v in pairs(bags) do
-		if datas[k] == true then
-			break
+		if not bag then
+			return 0
 		end
 
-		local function OnShowSkin()
+		local function OnShowDoSkin()
 			DoSkin(k)
 		end
 
 		local function OnShow(self, ...)
-			C_Timer.NewTicker(1 / 30, OnShowSkin, 1)
+			C_Timer.After(1 / 30, OnShowDoSkin)
 		end
 
-		local function OnTicker(self, ...)
-			local container = _G[v]
+		bag.shadow = S.MakeShadow(bag, 2)
+		bag.shadow:SetFrameLevel(bag:GetFrameLevel())
+		bag:HookScript("OnShow", OnShow)
 
-			if not container then
-				return 0
-			end
+		OnShow()
+		self:Cancel()
+	end
 
-			self:Cancel()
+	C_Timer.NewTicker(1 / 30, OnTicker, nil)
+end
 
-			container.shadow = S.MakeShadow(container, 2)
-			container.shadow:SetFrameLevel(container:GetFrameLevel())
-
-			OnShow()
-			container:HookScript("OnShow", OnShow)
-		end
-
-		datas[k] = true
-		C_Timer.NewTicker(1.00, OnTicker, nil)
+local function OnPlayerLogin(self, event, ...)
+	for k, v in pairs(bags) do
+		CheckAdiBagsContainer(k, v)
 	end
 end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
-EventHandler.Event.BAG_UPDATE = OnBagUpdate
+EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
 EventHandler.Register()
