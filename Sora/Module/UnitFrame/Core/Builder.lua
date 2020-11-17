@@ -460,29 +460,16 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
     EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
     EventHandler.Register()
 
-    local function OnTimeUpdate(self, duration)
-        self.Text:SetText(S.SubString(self.Text:GetText(), 7, "..."))
-
-        if duration < 60 and self.max < 60 then
-            self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
-        elseif self.max == nil or self.max <= 0 then
-            self.Time:SetText(S.FormatTime(duration, true) .. " / ∞")
-        else
-            self.Time:SetText(S.FormatTime(duration, true) .. " / " .. S.FormatTime(self.max, true))
-        end
-    end
-
-    local function OnCastStart(self, unit, spellid)
+    local function OnPostCastFail(self, unit, spellid)
         UIFrameFadeRemoveFrame(self)
 
         self:SetAlpha(1.00)
-        self:SetStatusBarColor(1.00, 0.05, 0.00)
+        self:SetStatusBarColor(1.00, 0.25, 0.25)
 
-        self.holdTime = 0.30
         UIFrameFadeOut(self, 0.30, 1.00, 0.00)
     end
 
-    local function OnCastStart(self, unit)
+    local function OnPostCastStart(self, unit)
         UIFrameFadeRemoveFrame(self)
 
         if self.notInterruptible then
@@ -492,14 +479,24 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
         end
 
         self:SetAlpha(1.00)
+        self.Text:SetText(S.SubString(self.Text:GetText(), 10, "…"))
     end
 
+    local function OnTimeUpdate(self, duration)
+        if duration < 60 and self.max < 60 then
+            self.Time:SetText(("%.1f/%.1f"):format(duration, self.max))
+        elseif self.max == nil or self.max <= 0 then
+            self.Time:SetText(S.FormatTime(duration, true) .. "/∞")
+        else
+            self.Time:SetText(S.FormatTime(duration, true) .. "/" .. S.FormatTime(self.max, true))
+        end
+    end
+
+    castbar.timeToHold = 0.30
+    castbar.PostCastFail = OnPostCastFail
+    castbar.PostCastStart = OnPostCastStart
     castbar.CustomTimeText = OnTimeUpdate
     castbar.CustomDelayText = OnTimeUpdate
-    castbar.PostCastFail = OnCastFail
-    castbar.PostCastStart = OnCastStart
-    -- castbar.PostChannelStart = OnCastStart
-    -- castbar.PostCastInterrupted = OnCastStopped
 
     self.Castbar = castbar
 end
