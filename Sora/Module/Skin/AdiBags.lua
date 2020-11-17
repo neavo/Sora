@@ -1,9 +1,15 @@
 ﻿-- Engine
 local S, C, L, DB = unpack(select(2, ...))
 
--- Common
-local function Dummy()
-end
+-- Variables
+local bags = {
+	"AdiBagsContainer1",
+	"AdiBagsContainer2"
+}
+local datas = {
+	false,
+	false
+}
 
 local function DoSkin(i)
 	local prefix = ""
@@ -28,6 +34,8 @@ local function DoSkin(i)
 			local normalTex = btn.NormalTexture
 			local iconQuestTex = btn.IconQuestTexture
 
+			icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
 			btn.__skined = true
 			btn.border = S.MakeBorder(btn, 1)
 			btn.border:SetFrameLevel(btn:GetFrameLevel() + 1)
@@ -38,9 +46,6 @@ local function DoSkin(i)
 			count:SetShadowOffset(1.00 * p, -1.00 * p)
 			count:SetShadowColor(0.00, 0.00, 0.00, 0.50)
 
-			icon.__SetTexCoord = icon.SetTexCoord
-			icon.SetTexCoord = Dummy
-
 			S.KillFrame(normalTex)
 			S.KillFrame(iconQuestTex)
 		end
@@ -49,53 +54,33 @@ local function DoSkin(i)
 		local link = GetContainerItemLink(btn.bag or 999, btn.slot or 999)
 
 		if not link then
-			icon:__SetTexCoord(0.25, 0.75, 0.25, 0.75)
+			icon:SetColorTexture(0.15, 0.15, 0.15, 0.85)
 			border:SetBackdropBorderColor(1.00, 1.00, 1.00, 1.00)
 		else
 			local _, _, color = string.find(link, "|?c?f?f?(%x*)|?H?")
 			local r, g, b = S.HexToRGB(color)
 
-			icon:__SetTexCoord(0.08, 0.92, 0.08, 0.92)
 			border:SetBackdropBorderColor(r, g, b, 1.00)
 		end
 	end
 end
 
-local function SkinBag()
-	DoSkin(1)
-end
-
-local function SkinBank()
-	DoSkin(2)
-end
-
--- Event
 local function OnBagUpdate(self, event, ...)
 	if not IsAddOnLoaded("AdiBags") then
 		return 0
 	end
 
-	C_Timer.NewTicker(0.25, SkinBag, 1)
-	C_Timer.NewTicker(0.25, SkinBank, 1)
-end
+	for k, v in pairs(bags) do
+		if datas[k] == true then
+			break
+		end
 
-local function OnPlayerLogin(self, event, ...)
-	if not IsAddOnLoaded("AdiBags") then
-		return 0
-	end
-
-	local datas = {
-		"AdiBagsContainer1",
-		"AdiBagsContainer2"
-	}
-
-	for k, v in pairs(datas) do
 		local function OnShowSkin()
 			DoSkin(k)
 		end
 
 		local function OnShow(self, ...)
-			C_Timer.NewTicker(0.25, OnShowSkin, 1)
+			C_Timer.NewTicker(1 / 30, OnShowSkin, 1)
 		end
 
 		local function OnTicker(self, ...)
@@ -110,16 +95,16 @@ local function OnPlayerLogin(self, event, ...)
 			container.shadow = S.MakeShadow(container, 2)
 			container.shadow:SetFrameLevel(container:GetFrameLevel())
 
-			DoSkin(k)
+			OnShow()
 			container:HookScript("OnShow", OnShow)
 		end
 
-		C_Timer.NewTicker(1.00, OnTicker)
+		datas[k] = true
+		C_Timer.NewTicker(1.00, OnTicker, nil)
 	end
 end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.BAG_UPDATE = OnBagUpdate
-EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
 EventHandler.Register()
