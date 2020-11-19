@@ -138,12 +138,12 @@ local function OnPlayerLogin(self, event, ...)
     anchor:SetPoint("BOTTOM", oUF_Sora_Player, "TOP", 0, 12)
     anchor:SetSize(oUF_Sora_Player:GetWidth(), iconSize * 8 + 4 * (8 - 1))
 
-    local function OnTicker()
+    local function OnAfter()
         UpdateAuras("player")
     end
 
     CreateAuras()
-    C_Timer.NewTicker(1.00, OnTicker, 1)
+    C_Timer.After(1.00, OnAfter)
 end
 
 -- EventHandler
