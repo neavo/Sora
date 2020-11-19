@@ -2,7 +2,7 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Begin
-local function OnTicker(ticker)
+local function OnAfter(ticker)
     if InCombatLockdown() then
         UIParent:SetAlpha(1.00)
     else
@@ -17,7 +17,7 @@ local function OnPlayerEnteringWorld(self, event, ...)
     end
 
     UIParent:SetAlpha(0.00)
-    C_Timer.NewTicker(1.00, OnTicker, 1)
+    C_Timer.After(6.25, OnAfter)
 end
 
 -- Handler
