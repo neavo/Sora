@@ -361,9 +361,13 @@ local function OnPlayerLogin(self, event, ...)
 
     SetCVar("namePlateMinScale", 1) -- 固定大小，提高性能
     SetCVar("namePlateMaxScale", 1) -- 固定大小，提高性能
-    SetCVar("nameplateMaxDistance", 40) -- 还原最远显示距离40码
-    SetCVar("nameplateLargerScale", 1) -- 重要目标（如首領）的姓名板縮放
-    SetCVar("nameplateSelectedScale", 1) -- 當前（選中）目標姓名板的縮放
+    SetCVar("nameplateGlobalScale", 1) -- 固定大小，提高性能
+    SetCVar("nameplateSelfScale", 1) -- 固定大小，提高性能，玩家姓名板的缩放
+    SetCVar("nameplateLargerScale", 1) -- 固定大小，提高性能，重要目标（如首領）姓名板的缩放
+    SetCVar("nameplateSelectedScale", 1) -- 固定大小，提高性能，目标（选中）姓名板的縮放
+    
+    SetCVar("nameplateMaxDistance", 40) -- 还原最远显示距离（40码）
+    SetCVar("showQuestTrackingTooltips", 1) -- 显示姓名板任务标记
 end
 
 -- Handler
