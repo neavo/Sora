@@ -30,10 +30,10 @@ local function OnPlayerLogin(self, event, ...)
     SetCVar("autoDismountFlying", 1)
 
     -- 启用 - 所有动作条
-    local function OnTicker(self, ...)
+    local function OnAfter(self, ...)
         SetActionBarToggles(1, 1, 1, 1)
     end
-    C_Timer.After(0.50, OnTicker)
+    C_Timer.After(0.50, OnAfter)
 
     -- 启用 - 总是显示所有动作条
     SetCVar("alwaysShowActionBars", 1)
