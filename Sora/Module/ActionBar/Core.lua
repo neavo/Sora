@@ -287,6 +287,24 @@ local function CreatePossessExitBar(self, event, ...)
     )
 end
 
+local function UpdateActionBarTexture(self, event, ...)
+    for i = 1, NUM_ACTIONBAR_BUTTONS do
+        local button = _G["ActionButton" .. i]
+
+        local icon = button.icon
+        local texture = GetActionTexture(button.action)
+
+        if texture then
+            icon:SetTexture(texture)
+            icon:Show()
+        else
+            icon:Hide()
+        end
+
+        button:UpdateUsable()
+    end
+end
+
 local function OnMultiActionBarUpdateGridVisibility()
     if InCombatLockdown() then
         return 0
@@ -307,6 +325,12 @@ local function OnMultiActionBarUpdateGridVisibility()
 end
 
 -- Event
+local function OnCVarUpdate(self, event, key, value)
+    if key == "ALWAYS_SHOW_MULTIBARS_TEXT" then
+        C_Timer.After(1 / 30, OnMultiActionBarUpdateGridVisibility)
+    end
+end
+
 local function OnPlayerLogin(self, event, ...)
     CreateAnchor(self, event, ...)
     CreateAnchorLeftSide(self, event, ...)
@@ -326,19 +350,28 @@ local function OnPlayerLogin(self, event, ...)
     hooksecurefunc("MultiActionBar_UpdateGridVisibility", OnMultiActionBarUpdateGridVisibility)
 end
 
+local function OnSpellUpdateIcon(self, event, ...)
+    UpdateActionBarTexture()
+end
+
 local function OnPlayerEnteringWorld(self, event, ...)
     MultiActionBar_UpdateGridVisibility()
 end
 
-local function OnCVarUpdate(self, event, key, value)
-    if key == "ALWAYS_SHOW_MULTIBARS_TEXT" then
-        C_Timer.After(1 / 30, OnMultiActionBarUpdateGridVisibility)
-    end
+local function OnUpdateVehicleActionBar(self, event, ...)
+    UpdateActionBarTexture()
+end
+
+local function OnUpdateOverrideActionBar(self, event, ...)
+    UpdateActionBarTexture()
 end
 
 -- EventHandler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.CVAR_UPDATE = OnCVarUpdate
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.Event.SPELL_UPDATE_ICON = OnSpellUpdateIcon
 EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
+EventHandler.Event.UPDATE_VEHICLE_ACTIONBAR = OnUpdateVehicleActionBar
+EventHandler.Event.UPDATE_OVERRIDE_ACTIONBAR = OnUpdateOverrideActionBar
 EventHandler.Register()
