@@ -4,6 +4,13 @@ local S, C, L, DB = unpack(select(2, ...))
 -- Initialize
 local _, class = UnitClass("player")
 local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+local actionBarPrefixs = {
+    "ActionButton",
+    "MultiBarLeftButton",
+    "MultiBarRightButton",
+    "MultiBarBottomLeftButton",
+    "MultiBarBottomRightButton"
+}
 
 -- Common
 local function CreateAnchor()
@@ -282,35 +289,24 @@ end
 
 local function OnMultiActionBarUpdateGridVisibility()
     if InCombatLockdown() then
-        return
+        return 0
     end
 
-    local showgrid = tonumber(GetCVar("alwaysShowActionBars"))
+    for k, v in pairs(actionBarPrefixs) do
+        for i = 1, NUM_ACTIONBAR_BUTTONS do
+            local button = _G[v .. i]
 
-    for i = 1, NUM_ACTIONBAR_BUTTONS do
-        -- local button = _G["ActionButton" .. i]
-        -- local button = _G["MultiBarLeftButton" .. i]
-        -- local button = _G["MultiBarRightButton" .. i]
-        -- local button = _G["MultiBarBottomLeftButton" .. i]
-        local button = _G["MultiBarBottomRightButton" .. i]
+            if not button then
+                break
+            end
 
-        if not button then
-            break
+            button:ShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_CVAR)
+            button:SetAttribute("showgrid", tonumber(GetCVar("alwaysShowActionBars")))
         end
-
-        -- ActionButton_ShowGrid(button, ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
-        button:SetAttribute("showgrid", showgrid)
-        button:ShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_CVAR)
     end
 end
 
 -- Event
-local function OnCVarUpdate(self, event, key, value)
-    if key == "ALWAYS_SHOW_MULTIBARS_TEXT" then
-        C_Timer.NewTicker(0.50, OnMultiActionBarUpdateGridVisibility, 1)
-    end
-end
-
 local function OnPlayerLogin(self, event, ...)
     CreateAnchor(self, event, ...)
     CreateAnchorLeftSide(self, event, ...)
@@ -332,6 +328,12 @@ end
 
 local function OnPlayerEnteringWorld(self, event, ...)
     MultiActionBar_UpdateGridVisibility()
+end
+
+local function OnCVarUpdate(self, event, key, value)
+    if key == "ALWAYS_SHOW_MULTIBARS_TEXT" then
+        C_Timer.After(1 / 30, OnMultiActionBarUpdateGridVisibility)
+    end
 end
 
 -- EventHandler
