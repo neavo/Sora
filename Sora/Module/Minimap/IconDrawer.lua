@@ -23,6 +23,13 @@ local function CreateIcons(instance)
         end
     end
 
+    if #datas == 0 then
+        return 0
+    end
+
+    instance.container:SetFrameLevel(datas[1]:GetFrameLevel() - 2)
+    instance.container.shadow:SetFrameLevel(instance.container:GetFrameLevel())
+
     local function OnEnter(self, ...)
         local text = instance.container:IsVisible() and "点击收起" or "点击展开"
 
@@ -59,7 +66,7 @@ local function CreateIcons(instance)
 
         local icon = S.CreateButton(parent, 20)
         icon:SetSize(size, size)
-        icon:SetFrameStrata("DIALOG")
+        icon:SetFrameStrata("MEDIUM")
         icon:SetFrameLevel(parent:GetFrameLevel() + 1)
 
         if v.text then
@@ -118,15 +125,13 @@ local function CreateInstance(parent)
     instance.container:Hide()
     instance.container:EnableMouse(true)
     instance.container:SetAllPoints()
-    instance.container:SetFrameStrata("DIALOG")
+    instance.container:SetFrameStrata("MEDIUM")
 
     instance.container.bg = instance.container:CreateTexture(nil, "BORDER")
     instance.container.bg:SetAllPoints()
     instance.container.bg:SetTexture(DB.Backdrop)
     instance.container.bg:SetVertexColor(0.20, 0.20, 0.20, 0.60)
-
     instance.container.shadow = S.MakeShadow(instance.container, 2)
-    instance.container.shadow:SetFrameLevel(instance.container:GetFrameLevel())
 
     return instance
 end

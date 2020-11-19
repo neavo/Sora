@@ -31,7 +31,7 @@ local function CreateClock()
     local clock = S.CreateButton(Minimap, 12)
     clock:SetSize(48, 16)
     clock:SetPoint("TOP", Minimap, 0, -4)
-    clock:SetFrameLevel(Minimap:GetFrameLevel() + 255)
+    clock:SetFrameLevel(Minimap:GetFrameLevel() + 1)
 
     local function OnTicker()
         clock:SetText(GameTime_GetLocalTime(true))
