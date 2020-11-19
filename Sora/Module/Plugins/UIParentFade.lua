@@ -17,7 +17,7 @@ local function OnPlayerEnteringWorld(self, event, ...)
     end
 
     UIParent:SetAlpha(0.00)
-    C_Timer.After(6.25, OnAfter)
+    C_Timer.After(1.25, OnAfter)
 end
 
 -- Handler
