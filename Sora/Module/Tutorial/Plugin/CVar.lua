@@ -33,7 +33,7 @@ local function OnPlayerLogin(self, event, ...)
     local function OnTicker(self, ...)
         SetActionBarToggles(1, 1, 1, 1)
     end
-    C_Timer.NewTicker(0.50, OnTicker, 1)
+    C_Timer.After(0.50, OnTicker)
 
     -- 启用 - 总是显示所有动作条
     SetCVar("alwaysShowActionBars", 1)
