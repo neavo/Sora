@@ -1,12 +1,28 @@
-tag aa66b69c9e3e26240358347a14403c56a01aedfc 9.0.0.0
+tag 25cca6ea465e7aab1cf4f95648ece7f4f11c3f25 9.0.0.1
 Author:	semlar <teslagraafs@gmail.com>
-Date:	Thu Oct 29 09:01:38 2020 -0400
+Date:	Wed Nov 18 20:57:31 2020 -0500
 
-commit 00feb0e646e2b3e6544b2c319cf6b6f60b5152b2
+commit 0122c6b99abc30b37784e213affd15b8ed255162
 Author: semlar <teslagraafs@gmail.com>
-Date:   Thu Oct 29 09:01:25 2020 -0400
+Date:   Wed Nov 18 20:57:20 2020 -0500
 
-    Bump toc for 9.0
-    
-    - Seems to work fine in Shadowlands beta
+    Bump addon version
+
+commit 855bb740cdd9108a6421d29f1ebaca213435f747
+Author: semlar <teslagraafs@gmail.com>
+Date:   Wed Nov 18 20:57:15 2020 -0500
+
+    Add comment explaining new mixin method
+
+commit 33577208c12c1cab971131554aa30700ddacca8d
+Author: Asteaguinity <patrick.colbaut@gmail.com>
+Date:   Wed Nov 18 21:49:08 2020 +0100
+
+    bump toc
+
+commit cda9ee4a07db35951913ca6b25d900b1ec4f7335
+Author: Asteaguinity <patrick.colbaut@gmail.com>
+Date:   Wed Nov 18 21:39:51 2020 +0100
+
+    add a stub definition of ResetTitleAndPortraitIcon to WorldMapFrame (fixes #1)
 
