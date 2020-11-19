@@ -62,6 +62,7 @@ local function OnPlayerLogin(self, event, ...)
 
     rButtonTemplate:StyleAllActionButtons(style)
     rButtonTemplate:StyleExtraActionButton(style)
+    rButtonTemplate:StyleActionButton(_G["SoraVehicleExitButton"], style)
 end
 
 -- EventHandler
