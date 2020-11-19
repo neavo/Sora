@@ -6,8 +6,9 @@
 	<Script file = "Core\Tester.lua" />
 	<Script file = "Core\Builder.lua" />
 
-	<Script file = "RaidAuras\Test.lua" />
-	<Script file = "RaidAuras\Class.lua" />
+	<Script file = "RaidAuras\All.lua" />
+	<Script file = "RaidAuras\SLRaid.lua" />
+	<Script file = "RaidAuras\SLDungeon.lua" />
 	<Script file = "RaidAuras\BFARaid.lua" />
 	<Script file = "RaidAuras\BFADungeon.lua" />
 	<Script file = "RaidAuras\LegionRaid.lua" />
