@@ -1,30 +1,24 @@
-tag b48f89a9be6baf7f78c8e46f86cca5a2b8654c2b v1.9.21
+tag 3a894ac0fe957ea8b4c3e78d790068b950099664 v1.9.22
 Author:	Talyrius <contact@talyrius.net>
-Date:	Fri Oct 16 09:42:22 2020 -0700
+Date:	Tue Nov 17 10:19:01 2020 -0800
 
-commit b5a6eef9679e2436f2128af7bf053fc55f269a38
+commit fdea4bcd0ff2459145482fd8d92ff553a4eea106
 Author: Talyrius <contact@talyrius.net>
-Date:   Fri Oct 16 09:27:51 2020 -0700
+Date:   Tue Nov 17 10:16:59 2020 -0800
 
-    Updated koKR localization.
+    Updated for Patch 9.0.2, the second Shadowlands pre-expansion patch.
+
+commit 2b62aabb1ca6671d0729cbbbec2e8fbaa5f09c20
+Author: legowxelab2z8 <legowxelab2z8@gmail.com>
+Date:   Sat Oct 17 03:46:56 2020 -0700
+
+    Fixed item icons from overlapping within the Options UI.
     
-    The script that imports localization updates from WowAce has been broken for several years.
-
-commit 9d761d69075fba4d0c575ae95e91a0d61616769b
-Author: Sammy Israwi <SammyIsra@users.noreply.github.com>
-Date:   Fri Oct 16 09:17:42 2020 -0700
-
-    Updated links in README.
-
-commit 1e437c099e5a6b4a9463ce8613349abc00779b12
-Author: Talyrius <contact@talyrius.net>
-Date:   Fri Oct 16 09:01:10 2020 -0700
-
-    Updated for Patch 9.0.1, the Shadowlands pre-expansion patch.
+    * Fix for overlapping icons in Manual Filter configuration
     
-    Closes: #471, #475, #477, #486, #487, #488.
-    Co-Authored-By: Handante <8237662+BourgeoisM@users.noreply.github.com>
-    Co-Authored-By: RipeTomatoe <4926850+RipeTomatoe@users.noreply.github.com>
-    Co-Authored-By: Tim Martin <tim@timmart.in>
-    Co-Authored-By: legowxelab2z8 <26781468+legowxelab2z8@users.noreply.github.com>
+    Setting the width to 'full' instead of leaving it unspecified avoids triggering a bug in AceConfig where the height of a widget is used before the widget width is resized causing the height to be recalculated.
+    
+    * Fix for overlapping icons in Junk Filter configuration
+    
+    Applied width = 'full' to the ItemLists in the junk.lua AceConfig options table. This works around a bug with widgets that use flow layout and resize as elements are added/removed or as the widget width is resized.
 
