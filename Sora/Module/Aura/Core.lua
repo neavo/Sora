@@ -2,12 +2,10 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
+local auras = {}
 local size, space, postion = nil, nil, nil
 
 -- Common
-local function Dummy()
-end
-
 local function DoSkin(aura)
     aura.count:SetShadowColor(0.00, 0.00, 0.00, 1.00)
     aura.count:SetShadowOffset(1.00, -1.00)
@@ -51,53 +49,75 @@ local function HookAuraButtonUpdateDuration(self, timeLeft, ...)
 end
 
 local function HookDebuffButtonUpdateAnchors(name, index, ...)
+    table.wipe(auras)
+
     for i = 1, DEBUFF_MAX_DISPLAY do
         local aura = _G["DebuffButton" .. i]
 
         if not aura then
-            return 0
+            break
         end
 
-        if not aura.__skined then
-            DoSkin(aura)
-            aura.__skined = true
+        table.insert(auras, aura)
+    end
+
+    for k, v in pairs(auras) do
+        if not v.__skined then
+            DoSkin(v)
+            v.__skined = true
         end
 
-        aura:ClearAllPoints()
-        aura:SetSize(size, size)
+        v:ClearAllPoints()
+        v:SetSize(size, size)
 
-        if i == 1 then
-            aura:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, -(size * 3 + space * 3))
-        elseif mod(i, 12) == 1 then
-            aura:SetPoint("TOP", _G["DebuffButton" .. (i - 12)], "BOTTOM", 0, -space)
+        if k == 1 then
+            v:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, -(size * 3 + space * 3))
+        elseif mod(k, 12) == 1 then
+            v:SetPoint("TOP", auras[k - 12], "BOTTOM", 0, -space)
         else
-            aura:SetPoint("RIGHT", _G["DebuffButton" .. (i - 1)], "LEFT", -space, 0)
+            v:SetPoint("RIGHT", auras[k - 1], "LEFT", -space, 0)
         end
     end
 end
 
 local function HookBuffFrameUpdateAllBuffAnchors(self, ...)
+    table.wipe(auras)
+
+    for i = 1, BuffFrame.numEnchants do
+        local aura = _G["TempEnchant" .. i]
+
+        if not aura then
+            break
+        end
+
+        table.insert(auras, aura)
+    end
+
     for i = 1, BUFF_MAX_DISPLAY do
         local aura = _G["BuffButton" .. i]
 
         if not aura then
-            return 0
+            break
         end
 
-        if not aura.__skined then
-            DoSkin(aura)
-            aura.__skined = true
+        table.insert(auras, aura)
+    end
+
+    for k, v in pairs(auras) do
+        if not v.__skined then
+            DoSkin(v)
+            v.__skined = true
         end
 
-        aura:ClearAllPoints()
-        aura:SetSize(size, size)
+        v:ClearAllPoints()
+        v:SetSize(size, size)
 
-        if i == 1 then
-            aura:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, 0)
-        elseif mod(i, 12) == 1 then
-            aura:SetPoint("TOP", _G["BuffButton" .. (i - 12)], "BOTTOM", 0, -space)
+        if k == 1 then
+            v:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, 0)
+        elseif mod(k, 12) == 1 then
+            v:SetPoint("TOP", auras[k - 12], "BOTTOM", 0, -space)
         else
-            aura:SetPoint("RIGHT", _G["BuffButton" .. (i - 1)], "LEFT", -space, 0)
+            v:SetPoint("RIGHT", auras[k - 1], "LEFT", -space, 0)
         end
     end
 end
