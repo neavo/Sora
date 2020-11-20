@@ -3,9 +3,9 @@
 -- http://www.wowace.com/projects/quester/localization/
 
 local debug = false
---[===[@debug@
+--[==[@debug@
 debug = true
---@end-debug@]===]
+--@end-debug@]==]
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Quester", "enUS", true, debug)
 L["Allows easy identification of daily/weekly quests, as well as raid and dungeon quests."] = true

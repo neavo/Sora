@@ -577,9 +577,9 @@ function Quester:UIErrorsFrame_OnEvent(frame, event, ...)
 				self:Pour(message, ColorGradient(perc, 1,0,0, 1,1,0, 0,1,0))
 				return
 			else
-				--[===[@debug@
+				--[==[@debug@
 				self:Print("Unable to parse objectives from message: " .. message)
-				--@end-debug@]===]
+				--@end-debug@]==]
 			end
 		end
 	end
@@ -681,16 +681,16 @@ local function processObjective(questID, questTitle, isTask, objIndex, info)
 		elseif info.type == "event" or info.type == "log" or info.type == "spell" or info.type == "progressbar" then
 			itemDesc, numNeeded, numItems = info.text, 1, (info.finished and 1 or 0)
 		else
-			--[===[@debug@
+			--[==[@debug@
 			print("Unknown quest objective type: " .. info.type .. ", on quest: " .. questTitle .. ", objective: " .. info.text)
-			--@end-debug@]===]
+			--@end-debug@]==]
 		end
 		numNeeded, numItems = tonumber(numNeeded), tonumber(numItems)
-		--[===[@debug@
+		--[==[@debug@
 		if (numItems ~= info.numFulfilled or numNeeded ~= info.numRequired) and not (info.type == "object" and info.numFulfilled == 1 and info.numRequired == 1 and not info.finished) then
 			print("Quester: mismatching parsed and provided data on quest: " .. questTitle .. " (ID: " .. questID .. "), Objective: " .. info.text .. ", Type: " .. info.type .. ", Parsed: " .. numItems .. "/" .. numNeeded .. ", provided: " .. info.numFulfilled .. "/" .. info.numRequired)
 		end
-		--@end-debug@]===]
+		--@end-debug@]==]
 		if numNeeded and numNeeded > 0 and numItems then
 			if not progress[info.text] then
 				progress[info.text] = getTable()
