@@ -4,10 +4,7 @@ local S, C, L, DB = unpack(select(2, ...))
 -- Event
 local function OnPlayerLogin(self, event, ...)
     -- 关闭 - 垃圾信息过滤
-    if GetCVar("portal") == "CN" then
-        SetCVar("SPAM_FILTER", 0)
-        ConsoleExec("SET portal TW")
-    end
+    SetCVar("spamFilter", 0)
 
     -- 关闭 - 和谐
     SetCVar("overrideArchive", 0)
