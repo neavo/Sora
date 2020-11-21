@@ -26,44 +26,86 @@ local function OnPlayerLogin(self, event, ...)
     -- 启用 - 自动装备对比
     SetCVar("alwaysCompareItems", 1)
 
-    -- 启用 - 自动解除飞行
-    SetCVar("autoDismountFlying", 1)
-
-    -- 启用 - 所有动作条
-    local function OnAfter(self, ...)
-        SetActionBarToggles(1, 1, 1, 1)
-    end
-    C_Timer.After(0.50, OnAfter)
-
-    -- 启用 - 总是显示所有动作条
-    SetCVar("alwaysShowActionBars", 1)
-
-    -- 启用 - 自动拾取
-    SetCVar("autoLootDefault", 1)
-
     -- 启用 - 自动任务监视
     SetCVar("autoQuestWatch", 1)
 
     -- 启用 - 自动置顶当前区域任务
     SetCVar("autoQuestProgress", 1)
 
-    -- 启用 - 生命值过低时不闪烁屏幕
-    SetCVar("doNotFlashLowHealthWarning", 1)
+    -- 系统 - 网络
+    -- 启用 - 高级战斗日志
+    SetCVar("advancedCombatLogging", 1)
 
+    -- 系统 - 音乐
+    -- 启用 - 音乐循环
+    SetCVar("Sound_ZoneMusicNoDelay", 1)
+
+    -- 系统 - 音乐
+    -- 启用 - 背景音乐
+    SetCVar("Sound_EnableSoundWhenGameIsInBG", 1)
+
+    -- 系统 - 音乐
+    -- 启用 - 混响
+    SetCVar("sound_EnableReverb", 1)
+
+    -- 系统 - 音乐
+    -- 启用 - 距离过滤
+    SetCVar("Sound_EnablePositionalLowPassFilter", 1)
+
+    -- 界面 - 控制
+    -- 启用 - 自动取消飞行
+    SetCVar("autoDismountFlying", 1)
+
+    -- 界面 - 控制
+    -- 启用 - 自动拾取
+    SetCVar("autoLootDefault", 1)
+
+    -- 界面 - 战斗
     -- 启用 - 自动自我施法
     SetCVar("autoSelfCast", 1)
 
-    -- 关闭 - 游戏向导
+    -- 界面 - 战斗
+    -- 启用 - 生命值过低时不闪烁屏幕
+    SetCVar("doNotFlashLowHealthWarning", 1)
+
+    -- 界面 - 显示
+    -- 关闭 - 教程
     SetCVar("showTutorials", 0)
 
+    -- 界面 - 动作条
+    -- 启用 - 所有动作条
+    C_Timer.After(
+        1 / 30,
+        function(args)
+            SetActionBarToggles(1, 1, 1, 1)
+        end
+    )
+
+    -- 界面 - 动作条
+    -- 启用 - 总是显示所有动作条
+    SetCVar("alwaysShowActionBars", 1)
+
+    -- 界面 - 动作条
+    -- 关闭 - 显示冷却时间
+    SetCVar("countdownForCooldowns", 0)
+
+    -- 界面 - 名字
+    -- NPC姓名 - 仅任务NPC
+    SetCVar("UnitNameHostleNPC", 0)
+    SetCVar("UnitNameInteractiveNPC", 0)
+    SetCVar("UnitNameFriendlySpecialNPCName", 1)
+
+    -- 界面 - 名字
     -- 关闭 - 显示个人资源
     SetCVar("nameplateShowSelf", 0)
+
+    -- 界面 - 镜头
+    -- 镜头跟随模式 - 移动时只调整水平角度
+    SetCVar("cameraSmoothStyle", 1)
 end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
--- EventHandler.Event.CVAR_UPDATE = function(self, event, ...)
---     print(...)
--- end
+-- EventHandler.Event.CVAR_UPDATE = function(self, event, ...) print(...) end
 EventHandler:Register()

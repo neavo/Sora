@@ -5,6 +5,22 @@ local S, C, L, DB = unpack(select(2, ...))
 C.Core = C.Core or {}
 
 -- Common
+local function ResetCVar(self, ...)
+    for k, v in pairs(C_Console.GetAllCommands()) do
+        if v.commandType == Enum.ConsoleCommandType.Cvar then
+            SetCVar(v.command, GetCVarDefault(v.command))
+        end
+    end
+
+    -- 保持加载过期插件，避免禁用自己
+    SetAddonVersionCheck(false)
+end
+
+local function ResetSora(self, ...)
+    table.wipe(SoraDB)
+    table.wipe(SoraDBPerCharacter)
+end
+
 local function CreateDB(self, ...)
     SoraDB = SoraDB or {}
     SoraDB.Core = SoraDB.Core or {}
@@ -23,7 +39,6 @@ local function CreateConfig(self, ...)
     C.Config.Core.Mover = C.Config.Core.Mover or {}
 
     C.Config.Core.Tab = {index = -1, text = "全局"}
-
     C.Config.Core.Menu = {
         {
             type = "slider",
@@ -63,26 +78,47 @@ local function CreateConfig(self, ...)
             type = "button",
             text = "重置全部设置至默认值",
             OnClick = function(self, btn, ...)
-                local data = {}
+                local datas = {}
 
                 table.insert(
-                    data,
+                    datas,
                     {
                         title = "确认",
                         detail = "即将为您重置全部 |cff70C0F5Sora's|r 设置选项至默认值，请点击下方按钮确认或取消！",
                         OnNoClick = function(self)
                         end,
                         OnYesClick = function(self)
-                            table.wipe(SoraDB)
-                            table.wipe(SoraDBPerCharacter)
-
-                            self:SetData(data[2])
+                            self:SetData(datas[2])
                             self:Show()
                         end
                     }
                 )
+
                 table.insert(
-                    data,
+                    datas,
+                    {
+                        title = "选择",
+                        noText = "重置所有设置",
+                        yesText = "仅重置 |cff70C0F5Sora's|r",
+                        detail = "选择您要重置的设置的范围，如您是第一次使用 |cff70C0F5Sora's|r 强烈建议对所有设置进行重置!",
+                        OnNoClick = function(self)
+                            ResetCVar()
+                            ResetSora()
+
+                            self:SetData(datas[3])
+                            self:Show()
+                        end,
+                        OnYesClick = function(self)
+                            ResetSora()
+
+                            self:SetData(datas[3])
+                            self:Show()
+                        end
+                    }
+                )
+
+                table.insert(
+                    datas,
                     {
                         title = "确认",
                         detail = "已完成重置，请点击下方按钮重新载入UI！",
@@ -94,7 +130,7 @@ local function CreateConfig(self, ...)
 
                 local confirm = S.CreateConfirm(UIParent, 12)
                 confirm:Show()
-                confirm:SetData(data[1])
+                confirm:SetData(datas[1])
                 confirm:SetConfirmWidth(512)
                 confirm:SetPoint("TOP", UIParent, "TOP", 0, -256)
 
@@ -118,3 +154,21 @@ end
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.ADDON_LOADED = OnAddonLoaded
 EventHandler.Register()
+
+-- CMD
+do
+    SLASH_SORARESET1 = "/sorareset"
+    SlashCmdList.SORARESET = function(...)
+        ResetCVar()
+        ResetSora()
+
+        StaticPopupDialogs["SORARESET"] = {
+            text = "|cff70C0F5[Sora's] |r" .. "已完成重置，请点击确认重载UI！",
+            button1 = "确认",
+            OnAccept = function()
+                ReloadUI()
+            end
+        }
+        StaticPopup_Show("SORARESET")
+    end
+end
