@@ -6,14 +6,8 @@ C.Core = C.Core or {}
 
 -- Common
 local function ResetCVar(self, ...)
-    for k, v in pairs(C_Console.GetAllCommands()) do
-        if v.commandType == Enum.ConsoleCommandType.Cvar then
-            SetCVar(v.command, GetCVarDefault(v.command))
-        end
-    end
-
-    -- 保持加载过期插件，避免禁用自己
-    SetAddonVersionCheck(false)
+    ConsoleExec("cvar_default")
+    SetAddonVersionCheck(false) -- 保持加载过期插件，避免禁用自己
 end
 
 local function ResetSora(self, ...)
