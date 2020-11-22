@@ -10,7 +10,10 @@ local function OnPlayerLogin(self, event, ...)
     SetCVar("overrideArchive", 0)
 
     -- 关闭 - 语言过滤器
-    SetCVar("profanityFilter", 0)
+    if GetCVar("portal") == "CN" then
+        ConsoleExec("portal TW")
+        SetCVar("profanityFilter", 0)
+    end
 end
 
 -- Handler
