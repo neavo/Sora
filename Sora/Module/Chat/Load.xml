@@ -3,8 +3,12 @@
 	<Script file = "Config.lua"/>
 
 	<Script file = "Core.lua"/>
-	<Script file = "ChatBar.lua"/>
 	<Script file = "Channel.lua"/>
-	<Script file = "EasyChannel.lua"/>
-	
+	<Script file = "ChatBar.lua"/>
+	<Script file = "ChatCopy.lua"/>
+	<Script file = "ChatEmote.lua"/>
+	<Script file = "ChatHistory.lua"/>
+	<Script file = "ChatAtFriends.lua"/>
+	<Script file = "ChatTabSwitch.lua"/>
+
 </Ui>
