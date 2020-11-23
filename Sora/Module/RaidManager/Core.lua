@@ -11,7 +11,7 @@ end
 
 local function CreateInstance(parent)
     local instance = CreateFrame("Frame", nil, UIParent)
-    instance:SetSize(36 * 4 + 8 * 3 + 16, 20 + 16)
+    instance:SetSize(36 * 5 + 8 * 4 + 16, 20 + 16)
     instance:SetMovable(true)
     instance:EnableMouse(true)
     instance:SetToplevel(true)
@@ -60,14 +60,27 @@ local function CreateConverter(instance)
     local btn = S.CreateButton(instance, 12)
     btn:SetText("转换")
     btn:SetSize(36, 20)
-    btn:SetPoint("RIGHT", -(8 + 36 + 8), 0)
+    btn:SetPoint("LEFT", 8 + 36 * 2 + 8 * 2, 0)
 
     local function OnClick()
         if IsInRaid() then
-            ConvertToParty()
+            C_PartyInfo.ConvertToParty()
         else
-            ConvertToRaid()
+            C_PartyInfo.ConvertToRaid()
         end
+    end
+
+    btn:HookScript("OnClick", OnClick)
+end
+
+local function CreateCountDown(instance)
+    local btn = S.CreateButton(instance, 12)
+    btn:SetText("倒数")
+    btn:SetSize(36, 20)
+    btn:SetPoint("LEFT", 8 + 36 * 3 + 8 * 3, 0)
+
+    local function OnClick()
+        C_PartyInfo.DoCountdown(5)
     end
 
     btn:HookScript("OnClick", OnClick)
@@ -77,7 +90,7 @@ local function CreateWorldMarker(instance)
     local btn = S.CreateButton(instance, 12)
     btn:SetText("标记")
     btn:SetSize(36, 20)
-    btn:SetPoint("RIGHT", -8, 0)
+    btn:SetPoint("LEFT", 8 + 36 * 4 + 8 * 4, 0)
 
     local marker = CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton
 
@@ -147,6 +160,7 @@ local function OnPlayerLogin(self, event, ...)
     CreateReady(instance)
     CreateRolePoll(instance)
     CreateConverter(instance)
+    CreateCountDown(instance)
     CreateWorldMarker(instance)
 
     do
@@ -158,12 +172,8 @@ local function OnPlayerLogin(self, event, ...)
     end
 end
 
-local function OnGroupRosterUpdate(self, event, ...)
-end
-
 -- Handler
 local EventHandler = S.CreateEventHandler()
 EventHandler.Event.INITIALIZE = OnInitialize
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler.Event.GROUP_ROSTER_UPDATE = OnGroupRosterUpdate
 EventHandler:Register()
