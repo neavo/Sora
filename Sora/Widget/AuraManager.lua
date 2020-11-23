@@ -153,13 +153,15 @@ function AM.UpdateContent(self)
         local _, _, icon = GetSpellInfo(v)
 
         local unit = S.CreateButton(self.content, 12)
-        unit:SetText(link)
         unit:SetSize(150, 24)
-
         unit:HookScript("OnClick", OnClick)
 
         unit.key = k
         unit.value = v
+
+        unit.text = S.MakeText(unit, 12)
+        unit.text:SetText(link)
+        unit.text:SetPoint("CENTER", 0, 0)
 
         unit.icon = unit:CreateTexture(nil, "ARTWORK")
         unit.icon:SetSize(12, 12)
