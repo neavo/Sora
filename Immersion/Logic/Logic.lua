@@ -416,7 +416,7 @@ function NPC:IsModifierDown(modifier)
 end
 
 function NPC:OnKeyDown(button)
-	if button == 'ESCAPE' then
+	if (button == 'ESCAPE' or GetBindingAction(button) == 'TOGGLEGAMEMENU') then
 		self:ForceClose()
 		return
 	elseif self:ParseControllerCommand(button) then
@@ -454,6 +454,9 @@ function NPC:OnKeyUp(button)
 		inspector:Hide()
 	end
 end
+
+NPC.OnGamePadButtonDown = NPC.OnKeyDown;
+NPC.OnGamePadButtonUp   = NPC.OnKeyUp;
 
 ----------------------------------
 -- TalkBox "button"
