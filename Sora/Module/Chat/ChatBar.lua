@@ -16,14 +16,12 @@ local colors = {
 
 -- Begin
 local function OnPlayerLogin(self, event, ...)
-    local btn = nil
-    local btns = {}
-
-    local sise = (ChatFrame1:GetHeight() - 4 * (9 - 1)) / 9
+    local size = 12
+    local btn, btns = nil, {}
 
     local anchor = CreateFrame("Frame", nil, UIParent)
-    anchor:SetSize(sise, sise * 9 + 4 * (9 - 1))
-    anchor:SetPoint("TOPLEFT", ChatFrame1, "TOPRIGHT", 24, 0)
+    anchor:SetSize(size, size * 10 + 4 * (10 - 1))
+    anchor:SetPoint("TOPLEFT", ChatFrame1, "TOPRIGHT", 24, 6)
 
     local function OnEnter(self, ...)
         if InCombatLockdown() then
@@ -41,25 +39,42 @@ local function OnPlayerLogin(self, event, ...)
         end
     end
 
-    for i = 1, 9 do
-        local function OnClick(self, btn, ...)
-            PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
-            ChatFrame_OpenChat(channels[i], SELECTED_DOCK_FRAME)
-        end
-
+    for i = 1, 10 do
         if i < 8 then
+            local function OnClick(self, btn, ...)
+                PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
+                ChatFrame_OpenChat(channels[i], SELECTED_DOCK_FRAME)
+            end
+
             btn = CreateFrame("Button", nil, anchor)
-            btn:SetSize(sise, sise)
+            btn:SetSize(size, size)
             btn:SetScript("OnClick", OnClick)
         elseif i == 8 then
             btn = CreateFrame("Button", nil, anchor, "SecureActionButtonTemplate")
-            btn:SetSize(sise, sise)
+            btn:SetSize(size, size)
             btn:SetAttribute("*type*", "macro")
             btn:SetAttribute("macrotext", "/roll")
+        elseif i == 9 then
+            local CustomEmoteFrame = _G["CustomEmoteFrame"]
+            local function OnClick()
+                if CustomEmoteFrame:IsShown() then
+                    CustomEmoteFrame:Hide()
+                else
+                    CustomEmoteFrame:Show()
+                end
+
+                PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
+            end
+
+            btn = S.CreateButton(anchor, 11)
+            btn:SetText("表")
+            btn:SetSize(size + 2, size + 2)
+            btn:HookScript("OnClick", OnClick)
         else
             btn = _G["ChatFrameChannelButton"]
             btn:ClearAllPoints()
-            btn:SetSize(sise + 2, sise + 2)
+            btn:SetSize(size + 2, size + 2)
+            btn.Icon:SetSize(size + 1, size + 1)
         end
 
         btn:SetAlpha(0.25)

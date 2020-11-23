@@ -131,7 +131,7 @@ do
     frame:SetWidth(column*(width+space) + 24)
     frame:SetClampedToScreen(true)
     frame:SetFrameStrata("DIALOG")
-    frame:SetPoint("TOPRIGHT", GeneralDockManager, "TOPRIGHT", 0, 220)  --這裡調整位置
+    frame:SetPoint("BOTTOM", ChatFrame1, "TOP", 24, 24)  --這裡調整位置
     for _, v in ipairs(emotes) do
         button = CreateFrame("Button", nil, frame)
         button.emote = "{" .. (v[locale] or v.key) .. "}"
