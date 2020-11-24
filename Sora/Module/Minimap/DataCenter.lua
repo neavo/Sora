@@ -79,7 +79,12 @@ local function OnPlayerLogin(self, event, ...)
             units[3]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
 
-        if HasArtifactEquipped() or C_AzeriteItem.FindActiveAzeriteItem() then
+        local azeriteItem = C_AzeriteItem.FindActiveAzeriteItem()
+        local showAzeriteBar = azeriteItem and azeriteItem:IsEquipmentSlot() and C_AzeriteItem.IsAzeriteItemEnabled(azeriteItem)
+        local showArtifactBar = HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()
+
+        units[4].ArtifactPower:ForceUpdate()
+        if showAzeriteBar or showArtifactBar then
             row = row + 1
             units[4]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end

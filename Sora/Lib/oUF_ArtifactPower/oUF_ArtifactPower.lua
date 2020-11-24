@@ -268,7 +268,10 @@ local function Update(self, event, arg)
 	local current, max, level, show
 	local isUsable = true
 	if (not UnitHasVehicleUI('player')) then
-		local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
+		-- local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
+        local azeriteItem = C_AzeriteItem.FindActiveAzeriteItem()
+        local showAzeriteBar = azeriteItem and azeriteItem:IsEquipmentSlot() and C_AzeriteItem.IsAzeriteItemEnabled(azeriteItem)
+
 		if (HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()) then
 			local _, _, _, _, unspentPower, numTraitsLearned, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
 			local numTraitsLearnable, power, powerForNextTrait = GetNumTraitsLearnable(numTraitsLearned, unspentPower, tier)
@@ -280,12 +283,12 @@ local function Update(self, event, arg)
 			element.numTraitsLearnable = numTraitsLearnable
 			element.unspentPower = unspentPower
 			show = true
-		elseif (azeriteItemLocation) then
+		elseif (showAzeriteBar) then
 			element.numTraitsLearnable = nil
 			element.unspentPower = nil
 
-			current, max = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
-			level = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
+			current, max = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItem)
+			level = C_AzeriteItem.GetPowerLevel(azeriteItem)
 			show = true
 		end
 	end
