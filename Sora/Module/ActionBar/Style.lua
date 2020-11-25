@@ -36,15 +36,21 @@ local function OnPlayerLogin(self, event, ...)
             file = "",
             texCoord = {0.08, 0.92, 0.08, 0.92}
         },
+        -- pushedTexture = {
+        -- },
+        -- highlightTexture = {
+        -- },
+        -- checkedTexture = {
+        -- },
         shine = {
+            points = {{"TOPLEFT", 0.00, 0.00}, {"BOTTOMRIGHT", 0.00, 0.00}}
+        },
+        cooldown = {
             points = {{"TOPLEFT", 0.00, 0.00}, {"BOTTOMRIGHT", 0.00, 0.00}}
         },
         autocastable = {
             texCoord = {0.22, 0.78, 0.22, 0.78},
             points = {{"TOPLEFT", -2 * p, 2 * p}, {"BOTTOMRIGHT", 2 * p, -2 * p}}
-        },
-        highlightTexture = {
-            texCoord = {0.08, 0.92, 0.08, 0.92}
         },
         name = {
             font = {STANDARD_TEXT_FONT, 10, "OUTLINE"},
