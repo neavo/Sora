@@ -2,18 +2,8 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Common
-local function IsPlayerMaxLevel()
-    local maxLevel = GetRestrictedAccountData()
-
-    if (maxLevel == 0) then
-        maxLevel = GetMaxLevelForPlayerExpansion()
-    end
-
-    return maxLevel == UnitLevel("player")
-end
-
 local function ShouldShowHonor()
-    return IsPlayerMaxLevel() and (IsWatchingHonorAsXP() or C_PvP.IsActiveBattlefield() or IsInActiveWorldPVP())
+    return IsPlayerAtEffectiveMaxLevel() and (IsWatchingHonorAsXP() or C_PvP.IsActiveBattlefield() or IsInActiveWorldPVP())
 end
 
 -- Event
@@ -69,7 +59,7 @@ local function OnPlayerLogin(self, event, ...)
             units[1]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
 
-        if not IsPlayerMaxLevel() then
+        if not IsPlayerAtEffectiveMaxLevel() then
             row = row + 1
             units[2]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
