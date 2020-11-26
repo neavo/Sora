@@ -77,6 +77,7 @@ local function OnPlayerLogin(self, event, ...)
 		module:RegisterDebuff(TIER, INSTANCE, 0, 322817) -- 疑云密布
 		module:RegisterDebuff(TIER, INSTANCE, 0, 324154) -- 暗影迅步
 		module:RegisterDebuff(TIER, INSTANCE, 0, 335805) -- 执政官的壁垒
+		module:RegisterDebuff(TIER, INSTANCE, 0, 317661) -- 险恶毒液
 	end
 
 	-- SL Dungeon
