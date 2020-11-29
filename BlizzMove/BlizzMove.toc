@@ -3,7 +3,7 @@
 ## Notes: Makes blizzard frames movable
 ## Author: the-rebel-Mermaid - github.com/the-rebel-Mermaid/BlizzMove/
 ## X-WoWI-ID: 23875
-## Version: v3.0.3
+## Version: v3.0.4
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
 ## SavedVariables: BlizzMoveDB
