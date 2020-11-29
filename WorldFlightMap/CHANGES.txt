@@ -1,28 +1,10 @@
-tag 25cca6ea465e7aab1cf4f95648ece7f4f11c3f25 9.0.0.1
+tag 55a9ff818dc03e1cbf4754c3c815c32a5ddf8b7e 9.0.2.1
 Author:	semlar <teslagraafs@gmail.com>
-Date:	Wed Nov 18 20:57:31 2020 -0500
+Date:	Sat Nov 28 14:01:32 2020 -0500
 
-commit 0122c6b99abc30b37784e213affd15b8ed255162
+commit 7d2512b74453c158cde9cf2250ac1ab04e82ca07
 Author: semlar <teslagraafs@gmail.com>
-Date:   Wed Nov 18 20:57:20 2020 -0500
+Date:   Sat Nov 28 14:01:17 2020 -0500
 
-    Bump addon version
-
-commit 855bb740cdd9108a6421d29f1ebaca213435f747
-Author: semlar <teslagraafs@gmail.com>
-Date:   Wed Nov 18 20:57:15 2020 -0500
-
-    Add comment explaining new mixin method
-
-commit 33577208c12c1cab971131554aa30700ddacca8d
-Author: Asteaguinity <patrick.colbaut@gmail.com>
-Date:   Wed Nov 18 21:49:08 2020 +0100
-
-    bump toc
-
-commit cda9ee4a07db35951913ca6b25d900b1ec4f7335
-Author: Asteaguinity <patrick.colbaut@gmail.com>
-Date:   Wed Nov 18 21:39:51 2020 +0100
-
-    add a stub definition of ResetTitleAndPortraitIcon to WorldMapFrame (fixes #1)
+    Fix error caused by maps with Bastion nodes
 
