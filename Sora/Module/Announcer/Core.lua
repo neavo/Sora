@@ -6,7 +6,7 @@ local lastMsgTime = nil
 
 -- Common
 local function SendMessage(msg, sound)
-    if sound and SoraDB.Announcer.AlertMode == 2 then
+    if sound and C.Announcer.AlertMode == 2 then
         PlaySound(SOUNDKIT.RAID_WARNING, "Master")
     end
 

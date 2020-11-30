@@ -73,6 +73,11 @@ function DD.UpdateDataBinding(self)
     end
     table.wipe(childs)
 
+    local function SortFunc(l, r)
+        return l.index < r.index
+    end
+    table.sort(options, SortFunc)
+
     local i = 1
     for k, v in pairs(options) do
         local child = CreateFrame("Button", nil, self.menu)
@@ -85,11 +90,11 @@ function DD.UpdateDataBinding(self)
         child.hl:SetVertexColor(1.00, 1.00, 1.00, 0.30)
 
         child.text = S.MakeText(child, select(2, self.left:GetFont()))
-        child.text:SetText(k)
+        child.text:SetText(v.text)
         child.text:SetPoint("CENTER", child, "CENTER", 0, 0)
 
-        if v == value then
-            self.left:SetText(k)
+        if v.data == value then
+            self.left:SetText(v.text)
         end
 
         local function OnEnter(_, ...)
@@ -101,7 +106,7 @@ function DD.UpdateDataBinding(self)
         end
 
         local function OnClick(_, btn, ...)
-            data.value = v
+            data.value = v.data
 
             self.menu:Hide()
             self.OnDataChanged(self, self.data, ...)

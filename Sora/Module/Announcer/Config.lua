@@ -21,13 +21,15 @@ local function CreateConfig(self, ...)
     C.Config.Announcer = C.Config.Announcer or {}
 
     C.Config.Announcer.Tab = {index = 4, text = "信息通报"}
-
     C.Config.Announcer.Menu = {
         {
             type = "dropdown",
             text = "通报范围",
             key = "SoraDB.Announcer.OnlyPlayer",
-            options = {["全部"] = false, ["仅玩家施放的技能"] = true},
+            options = {
+                {index = 1, text = "全部技能", data = false},
+                {index = 2, text = "仅玩家施放技能", data = true}
+            },
             OnDataChanged = function(self, data, ...)
                 if S.ToBoolean(data.value) ~= nil then
                     SoraDB.Announcer.OnlyPlayer = S.ToBoolean(data.value)
@@ -38,7 +40,10 @@ local function CreateConfig(self, ...)
             type = "dropdown",
             text = "通报频道",
             key = "SoraDB.Announcer.AlertForPlayer",
-            options = {["智能"] = false, ["仅玩家个人频道"] = true},
+            options = {
+                {index = 1, text = "优先队伍频道", data = false},
+                {index = 2, text = "优先个人频道", data = true}
+            },
             OnDataChanged = function(self, data, ...)
                 if S.ToBoolean(data.value) ~= nil then
                     SoraDB.Announcer.AlertForPlayer = S.ToBoolean(data.value)
@@ -49,7 +54,10 @@ local function CreateConfig(self, ...)
             type = "dropdown",
             text = "通报方式",
             key = "SoraDB.Announcer.AlertMode",
-            options = {["仅文字"] = 1, ["文字 + 声音"] = 2},
+            options = {
+                {index = 1, text = "文字", data = 1},
+                {index = 2, text = "文字与声音", data = 2}
+            },
             OnDataChanged = function(self, data, ...)
                 if data.value ~= nil then
                     SoraDB.Announcer.AlertMode = data.value
