@@ -26,6 +26,12 @@ local function OnPlayerLogin(self, event, ...)
 	C.UnitFrame.RaidAuras[22842] = 65535 + 1 -- 狂暴回复
 
 	-- Class Spell
+	-- Hunter
+	C.UnitFrame.RaidAuras[288613] = 65535 + 5 -- 百发百中
+	C.UnitFrame.RaidAuras[186265] = 65535 + 4 -- 灵龟守护
+	C.UnitFrame.RaidAuras[264735] = 65535 + 3 -- 优胜劣汰
+
+	-- Class Spell
 	-- Priest
 	C.UnitFrame.RaidAuras[47788] = 65535 + 4 -- 守护之魂
 	C.UnitFrame.RaidAuras[33206] = 65535 + 3 -- 痛苦压制
@@ -62,8 +68,6 @@ local function OnPlayerLogin(self, event, ...)
 	C.UnitFrame.RaidAuras[104773] = 65535 -- 不灭决心
 	C.UnitFrame.RaidAuras[108271] = 65535 -- 星界转移
 	C.UnitFrame.RaidAuras[160029] = 65535 -- 正在复活
-	C.UnitFrame.RaidAuras[186265] = 65535 -- 灵龟守护
-	C.UnitFrame.RaidAuras[264735] = 65535 -- 优胜劣汰
 end
 
 -- Handler
