@@ -37,7 +37,7 @@ local function CreateDB(self, ...)
     SoraDB.UnitFrame.Focus = SoraDB.UnitFrame.Focus or {}
     SoraDB.UnitFrame.Focus.Width = SoraDB.UnitFrame.Focus.Width or 220
     SoraDB.UnitFrame.Focus.Height = SoraDB.UnitFrame.Focus.Height or 36
-    SoraDB.UnitFrame.Focus.Postion = SoraDB.UnitFrame.Focus.Postion or {"CENTER", "UIParent", "CENTER", 0, 192}
+    SoraDB.UnitFrame.Focus.Postion = SoraDB.UnitFrame.Focus.Postion or {"CENTER", "UIParent", "CENTER", -384, 64}
 
     SoraDB.UnitFrame.Boss = SoraDB.UnitFrame.Boss or {}
     SoraDB.UnitFrame.Boss.Width = SoraDB.UnitFrame.Boss.Width or 220
@@ -103,7 +103,8 @@ local function CreateDB(self, ...)
                     1044, -- 自由祝福
                     6940, -- 牺牲祝福
                     223306, -- 赋予信仰
-                    25771 -- 自律
+                    25771, -- 自律
+                    31821 -- 光环掌握
                 },
                 WARRIOR = {
                     114030 -- 警戒
