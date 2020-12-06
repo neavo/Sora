@@ -50,6 +50,15 @@ local function OnPlayerLogin(self, event, ...)
 		module:RegisterDebuff(TIER, INSTANCE, 0, 331172) -- 心灵连接
 		module:RegisterDebuff(TIER, INSTANCE, 0, 322563) -- 被标记的猎物
 		module:RegisterDebuff(TIER, INSTANCE, 0, 341198) -- 易燃爆炸
+		module:RegisterDebuff(TIER, INSTANCE, 0, 325418) -- 不稳定的酸液
+		module:RegisterDebuff(TIER, INSTANCE, 0, 326092) -- 衰弱毒药
+		module:RegisterDebuff(TIER, INSTANCE, 0, 325021) -- 纱雾撕裂
+		module:RegisterDebuff(TIER, INSTANCE, 0, 325224) -- 心能注入
+		module:RegisterDebuff(TIER, INSTANCE, 0, 322486) -- 过度生长
+		module:RegisterDebuff(TIER, INSTANCE, 0, 322487) -- 过度生长
+		module:RegisterDebuff(TIER, INSTANCE, 0, 323137) -- 迷乱花粉
+		module:RegisterDebuff(TIER, INSTANCE, 0, 328756) -- 憎恨之容
+		module:RegisterDebuff(TIER, INSTANCE, 0, 321828) -- 肉饼蛋糕
 	end
 
 	-- SL Dungeon
@@ -78,6 +87,10 @@ local function OnPlayerLogin(self, event, ...)
 		module:RegisterDebuff(TIER, INSTANCE, 0, 324154) -- 暗影迅步
 		module:RegisterDebuff(TIER, INSTANCE, 0, 335805) -- 执政官的壁垒
 		module:RegisterDebuff(TIER, INSTANCE, 0, 317661) -- 险恶毒液
+		module:RegisterDebuff(TIER, INSTANCE, 0, 328331) -- 严刑逼供
+		module:RegisterDebuff(TIER, INSTANCE, 0, 323195) -- 净化冲击波
+		module:RegisterDebuff(TIER, INSTANCE, 0, 328453) -- 压迫
+		module:RegisterDebuff(TIER, INSTANCE, 0, 331997) -- 心能澎湃
 	end
 
 	-- SL Dungeon
@@ -105,6 +118,11 @@ local function OnPlayerLogin(self, event, ...)
 		module:RegisterDebuff(TIER, INSTANCE, 0, 321038) -- 烦扰之魂
 		module:RegisterDebuff(TIER, INSTANCE, 0, 328593) -- 苦痛刑罚
 		module:RegisterDebuff(TIER, INSTANCE, 0, 325254) -- 钢铁尖刺
+		module:RegisterDebuff(TIER, INSTANCE, 0, 335306) -- 尖刺镣铐
+		module:RegisterDebuff(TIER, INSTANCE, 0, 327814) -- 邪恶创口
+		module:RegisterDebuff(TIER, INSTANCE, 0, 331415) -- 邪恶创口
+		module:RegisterDebuff(TIER, INSTANCE, 0, 328737) -- 光辉残片
+		module:RegisterDebuff(TIER, INSTANCE, 0, 324092) -- 闪耀光辉
 	end
 
 	-- SL Dungeon
@@ -123,6 +141,13 @@ local function OnPlayerLogin(self, event, ...)
 		module:RegisterDebuff(TIER, INSTANCE, 0, 327401) -- 共受苦难
 		module:RegisterDebuff(TIER, INSTANCE, 0, 327397) -- 严酷命运
 		module:RegisterDebuff(TIER, INSTANCE, 0, 322681) -- 肉钩
+		module:RegisterDebuff(TIER, INSTANCE, 0, 333492) -- 通灵粘液
+		module:RegisterDebuff(TIER, INSTANCE, 0, 321807) -- 白骨剥离
+		module:RegisterDebuff(TIER, INSTANCE, 0, 323347) -- 黑暗纠缠
+		module:RegisterDebuff(TIER, INSTANCE, 0, 320788) -- 冻结之缚
+		module:RegisterDebuff(TIER, INSTANCE, 0, 320839) -- 衰弱
+		module:RegisterDebuff(TIER, INSTANCE, 0, 343556) -- 病态凝视
+		module:RegisterDebuff(TIER, INSTANCE, 0, 338606) -- 病态凝视
 	end
 end
 
