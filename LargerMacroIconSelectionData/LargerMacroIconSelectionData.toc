@@ -1,0 +1,9 @@
+## Interface: 90001
+## Version: v1.5.7
+## Title: LargerMacroIconSelectionData
+## Author: Xinhuan, Ketho
+## Notes: Load on Demand Icon FileData
+## LoadOnDemand: 1
+
+FileDataRetail.lua
+FileDataClassic.lua
