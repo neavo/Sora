@@ -4,6 +4,8 @@ local LibSchedule = LibStub:GetLibrary("LibSchedule.7000")
 
 local mounts = {}
 
+if (not C_MountJournal) then return end
+
 local function GetAllMountSource()
     local mountIDs = C_MountJournal.GetMountIDs()
     local _, spellID, isCollected, source

@@ -3,7 +3,7 @@ local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 local addon = TinyTooltip
 
 local function ParseHyperLink(link)
-    local name, value = string.match(link or "", "|?H?(%a+):(%d+):")
+    local name, value = string.match(link or "", "|?H(%a+):(%d+):")
     if (name and value) then
         return name:gsub("^([a-z])", strupper), value
     end

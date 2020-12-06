@@ -560,7 +560,7 @@ addon.filterfunc.samerealm = function(raw)
 end
 
 addon.filterfunc.samecrossrealm = function(raw)
-    return UnitRealmRelationship(raw.unit) == LE_REALM_RELATION_SAME
+    return UnitRealmRelationship(raw.unit) ~= LE_REALM_RELATION_COALESCED
 end
 
 addon.filterfunc.inpvp = function(raw)

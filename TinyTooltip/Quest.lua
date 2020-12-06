@@ -10,9 +10,9 @@ local function ColorBorder(tip, r, g, b)
 end
 
 hooksecurefunc(ItemRefTooltip, "SetHyperlink", function(self, link)
-    local schema, id, level = string.match(link, "|?H?(%a+):(%d+):([%-%d]+)")
-    level = tonumber(level)
-    if (schema and schema == "quest" and level) then
+    local schema, id = string.match(link, "|?H?(%a+):(%d+):([%-%d]+)")
+    if (schema and schema == "quest") then
+        local level = C_QuestLog.GetQuestDifficultyLevel(id)
         local color = GetQuestDifficultyColor(level < 0 and UnitLevel("player") or level)
         ColorBorder(self, color.r, color.g, color.b)
     end
