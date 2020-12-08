@@ -420,7 +420,7 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
             castbar.Icon:ClearAllPoints()
             castbar.Icon:SetSize(castbar:GetHeight(), castbar:GetHeight())
             castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
-        elseif unit == "player" and not IsCaster() then
+        elseif (unit == "player" and not IsCaster()) or unit == "focus" then
             castbar:ClearAllPoints()
             castbar:SetSize(self:GetWidth() - size - spacing, size)
             castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -spacing)
@@ -428,7 +428,7 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
             castbar.Icon:ClearAllPoints()
             castbar.Icon:SetSize(castbar:GetHeight(), castbar:GetHeight())
             castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
-        elseif unit == "target" or unit == "focus" then
+        elseif unit == "target" then
             castbar:ClearAllPoints()
             castbar:SetSize(self:GetWidth() - size - spacing, size)
             castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -spacing)

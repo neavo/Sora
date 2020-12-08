@@ -8,7 +8,7 @@ local function RegisterStyle(self, unit, ...)
     local height = (oUF_Sora_Focus:GetWidth() - 4 * 8) / 9
 
     self:SetSize(height * 3, height)
-    self:SetPoint("TOPLEFT", oUF_Sora_Focus, "BOTTOMRIGHT", 4, -4)
+    self:SetPoint("TOPRIGHT", oUF_Sora_Focus, "BOTTOMLEFT", -4, -4)
 
     self:RegisterForClicks("AnyUp")
     self:SetScript("OnEnter", UnitFrame_OnEnter)
