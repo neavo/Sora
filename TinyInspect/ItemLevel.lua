@@ -39,14 +39,14 @@ local function GetItemLevelFrame(self, category)
         self.ItemLevelFrame:SetSize(w, h)
         self.ItemLevelFrame:SetPoint("CENTER", anchor, "CENTER", 0, 0)
         self.ItemLevelFrame.slotString = self.ItemLevelFrame:CreateFontString(nil, "OVERLAY")
-        self.ItemLevelFrame.slotString:SetFont(STANDARD_TEXT_FONT, 8, "OUTLINE")
+        self.ItemLevelFrame.slotString:SetFont(STANDARD_TEXT_FONT, 8+fontAdjust, "OUTLINE")
         self.ItemLevelFrame.slotString:SetPoint("BOTTOMRIGHT", 1, 2)
         self.ItemLevelFrame.slotString:SetTextColor(1, 1, 1)
         self.ItemLevelFrame.slotString:SetJustifyH("RIGHT")
         self.ItemLevelFrame.slotString:SetWidth(30)
         self.ItemLevelFrame.slotString:SetHeight(0)
         self.ItemLevelFrame.levelString = self.ItemLevelFrame:CreateFontString(nil, "OVERLAY")
-        self.ItemLevelFrame.levelString:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+        self.ItemLevelFrame.levelString:SetFont(STANDARD_TEXT_FONT, 12+fontAdjust, "OUTLINE")
         self.ItemLevelFrame.levelString:SetPoint("TOP")
         self.ItemLevelFrame.levelString:SetTextColor(1, 0.82, 0)
         LibEvent:trigger("ITEMLEVEL_FRAME_CREATED", self.ItemLevelFrame, self)
@@ -185,7 +185,7 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, sup
         --QuestInfo
         elseif (self.type and self.objectType == "item") then
             if (QuestInfoFrame and QuestInfoFrame.questLog) then
-                link = GetQuestLogItemLink(self.type, self:GetID())
+                link = LibItemInfo:GetQuestItemlink(self.type, self:GetID())
             else
                 link = GetQuestItemLink(self.type, self:GetID())
             end
