@@ -11,7 +11,7 @@ local function OnPlayerLogin(self, event, ...)
 	-- Hack
 	local module = {}
 	local TIER, INSTANCE, BOSS, PRIORITY = 0, 0, 0, 0
-	module.RegisterDebuff = function(TIER, INSTANCE, BOSS, spellID)
+	module.RegisterDebuff = function(self, TIER, INSTANCE, BOSS, spellID)
 		PRIORITY = PRIORITY + 1
 		C.UnitFrame.RaidAuras[spellID] = PRIORITY
 	end

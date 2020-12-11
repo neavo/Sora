@@ -11,7 +11,7 @@ local function OnPlayerLogin(self, event, ...)
 	-- Hack
 	local module = {}
 	local TIER, INSTANCE, BOSS, PRIORITY = 0, 0, 0, 0
-	module.RegisterDebuff = function(TIER, INSTANCE, BOSS, spellID)
+	module.RegisterDebuff = function(self, TIER, INSTANCE, BOSS, spellID)
 		PRIORITY = PRIORITY + 1
 		C.UnitFrame.RaidAuras[spellID] = PRIORITY
 	end
@@ -59,6 +59,7 @@ local function OnPlayerLogin(self, event, ...)
 		module:RegisterDebuff(TIER, INSTANCE, 0, 323137) -- 迷乱花粉
 		module:RegisterDebuff(TIER, INSTANCE, 0, 328756) -- 憎恨之容
 		module:RegisterDebuff(TIER, INSTANCE, 0, 321828) -- 肉饼蛋糕
+		module:RegisterDebuff(TIER, INSTANCE, 0, 340191) -- 再生辐光
 	end
 
 	-- SL Dungeon
@@ -122,7 +123,7 @@ local function OnPlayerLogin(self, event, ...)
 		module:RegisterDebuff(TIER, INSTANCE, 0, 327814) -- 邪恶创口
 		module:RegisterDebuff(TIER, INSTANCE, 0, 331415) -- 邪恶创口
 		module:RegisterDebuff(TIER, INSTANCE, 0, 328737) -- 光辉残片
-		module:RegisterDebuff(TIER, INSTANCE, 0, 324092) -- 闪耀光辉
+		module:RegisterDebuff(TIER, INSTANCE, 0, 324092) -- 闪耀光辉		
 	end
 
 	-- SL Dungeon
