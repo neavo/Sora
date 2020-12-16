@@ -99,7 +99,7 @@ local function SetBlzFrame()
     -- Mail icon
     MiniMapMailFrame:SetScale(0.90)
     MiniMapMailFrame:ClearAllPoints()
-    MiniMapMailFrame:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -2, 4)
+    MiniMapMailFrame:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -4, 3)
 
     -- Garrison
     local function OnGarrisonLandingPageMinimapButtonUpdateIcon(self)
