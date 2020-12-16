@@ -132,18 +132,6 @@ local function HideBlzFrame()
 end
 
 local function SetMouseClick()
-    local function ToggleWeeklyRewardsFrame()
-        if InCombatLockdown() then
-            return 0
-        end
-
-        if not WeeklyRewardsFrame then
-            LoadAddOn("Blizzard_WeeklyRewards")
-        end
-
-        ToggleFrame(WeeklyRewardsFrame)
-    end
-
     local menu = S.CreateEasyMenu()
     menu.NewLine("系统菜单", nil, nil, {isTitle = true})
     menu.NewLine(CHARACTER_BUTTON, ToggleCharacter, {"PaperDollFrame"})
@@ -160,7 +148,6 @@ local function SetMouseClick()
     menu.NewLine(INVTYPE_BAG, ToggleAllBags)
     menu.NewLine(SOCIAL_BUTTON, ToggleFriendsFrame, {1})
     menu.NewLine(HELP_BUTTON, HelpMicroButton.Click, {HelpMicroButton})
-    menu.NewLine("宏伟宝库", ToggleWeeklyRewardsFrame, {HelpMicroButton})
 
     local function OnMouseDown(self, btn, ...)
         if btn == "RightButton" then
