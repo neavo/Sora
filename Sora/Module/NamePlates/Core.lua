@@ -230,17 +230,16 @@ local function CreateCastbar(self, unit, ...)
     castbar:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, spacing)
     castbar.Icon:SetPoint("LEFT", castbar, "RIGHT", spacing, 0)
 
-    local OnTimeUpdate = function(self, duration)
-        self.Text:SetText(S.SubString(self.Text:GetText(), 7, "..."))
+    local function OnPostCastFail(self, unit, spellid)
+        UIFrameFadeRemoveFrame(self)
 
-        if duration < 60 and self.max < 60 then
-            self.Time:SetText(("%.1f / %.1f"):format(duration, self.max))
-        else
-            self.Time:SetText(S.FormatTime(duration, true) .. " / " .. S.FormatTime(self.max, true))
-        end
+        self:SetAlpha(1.00)
+        self:SetStatusBarColor(1.00, 0.25, 0.25)
+
+        UIFrameFadeOut(self, 0.30, 1.00, 0.00)
     end
 
-    local function OnCastStart(self, unit, name, castid, spellid)
+    local function OnPostCastStart(self, unit)
         UIFrameFadeRemoveFrame(self)
 
         if self.notInterruptible then
@@ -250,24 +249,24 @@ local function CreateCastbar(self, unit, ...)
         end
 
         self:SetAlpha(1.00)
+        self.Text:SetText(S.SubString(self.Text:GetText(), 10, "…"))
     end
 
-    local function OnCastStopped(self, unit, spellname, castid, spellid)
-        UIFrameFadeRemoveFrame(self)
-
-        self:SetAlpha(1.00)
-        self:SetStatusBarColor(1.00, 0.05, 0.00)
-
-        self.holdTime = 0.30
-        UIFrameFadeOut(self, 0.30, 1.00, 0.00)
+    local function OnTimeUpdate(self, duration)
+        if duration < 60 and self.max < 60 then
+            self.Time:SetText(("%.1f/%.1f"):format(duration, self.max))
+        elseif self.max == nil or self.max <= 0 then
+            self.Time:SetText(S.FormatTime(duration, true) .. "/∞")
+        else
+            self.Time:SetText(S.FormatTime(duration, true) .. "/" .. S.FormatTime(self.max, true))
+        end
     end
 
+    castbar.timeToHold = 0.30
+    castbar.PostCastFail = OnPostCastFail
+    castbar.PostCastStart = OnPostCastStart
     castbar.CustomTimeText = OnTimeUpdate
     castbar.CustomDelayText = OnTimeUpdate
-    castbar.PostCastStart = OnCastStart
-    castbar.PostCastFailed = OnCastStopped
-    castbar.PostChannelStart = OnCastStart
-    castbar.PostCastInterrupted = OnCastStopped
 
     self.Castbar = castbar
 end
@@ -365,7 +364,7 @@ local function OnPlayerLogin(self, event, ...)
     SetCVar("nameplateSelfScale", 1) -- 固定大小，提高性能，玩家姓名板的缩放
     SetCVar("nameplateLargerScale", 1) -- 固定大小，提高性能，重要目标（如首領）姓名板的缩放
     SetCVar("nameplateSelectedScale", 1) -- 固定大小，提高性能，目标（选中）姓名板的縮放
-    
+
     SetCVar("nameplateMaxDistance", 40) -- 还原最远显示距离（40码）
     SetCVar("showQuestTrackingTooltips", 1) -- 显示姓名板任务标记
 end
