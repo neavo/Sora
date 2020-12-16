@@ -13,6 +13,7 @@ local function OnTradeSkillShow(self, event, ...)
 		local name, icon, _, _, _, spelloffset = GetProfessionInfo(v)
 
 		local data = {}
+		data.name = name
 		data.icon = icon
 		data.spelloffset = spelloffset
 
@@ -25,15 +26,27 @@ local function OnTradeSkillShow(self, event, ...)
 		button:SetFrameLevel(TradeSkillFrame:GetFrameLevel())
 
 		button.icon = button:CreateTexture(nil, "ARTWORK")
-		button.icon:SetSize(36, 36)
+		button.icon:SetSize(32, 32)
 		button.icon:SetPoint("CENTER", button, "CENTER", 0, 0)
 		button.icon:SetTexture(v.icon)
 		button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+		local function OnEnter(self, ...)
+			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+			GameTooltip:AddLine(v.name, 0.90, 0.90, 0.90)
+			GameTooltip:Show()
+		end
+
+		local function OnLeave(self, event, ...)
+			GameTooltip:Hide()
+		end
 
 		local function OnClick(self, btn, ...)
 			CastSpell(v.spelloffset + 1, BOOKTYPE_PROFESSION)
 		end
 
+		button:HookScript("OnEnter", OnEnter)
+		button:HookScript("OnLeave", OnLeave)
 		button:HookScript("OnClick", OnClick)
 
 		if k == 1 then

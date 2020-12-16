@@ -3,7 +3,6 @@
 	<Script file = "Focuser.lua" />
 	<Script file = "ReloadUI.lua" />
 	<Script file = "NeckSlot.lua" />
-	<Script file = "TradeTabs.lua" />
 	<Script file = "RightMenu.lua" />
 	<Script file = "CombatAlert.lua" />
 	<Script file = "MountSource.lua" />
@@ -12,5 +11,7 @@
 	<Script file = "UIParentFade.lua" />
 	<Script file = "DeleteConfirm.lua" />
 	<Script file = "AlignmentGrid.lua" />
+	<Script file = "PVEFrameTabs.lua" />
+	<Script file = "TradeSkillFrameTabs.lua" />
 
 </Ui>
