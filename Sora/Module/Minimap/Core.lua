@@ -30,7 +30,7 @@ end
 local function CreateClock()
     local clock = S.CreateButton(Minimap, 12)
     clock:SetSize(48, 16)
-    clock:SetPoint("TOP", Minimap, 0, -4)
+    clock:SetPoint("TOP", Minimap, 0, -3)
     clock:SetFrameLevel(Minimap:GetFrameLevel() + 1)
 
     local function OnTicker()
@@ -82,32 +82,33 @@ local function SetBlzFrame()
     -- Cluster
     MinimapCluster:EnableMouse(false)
 
-    -- Tracking
-    MiniMapTracking:SetScale(1.00)
-    MiniMapTracking:ClearAllPoints()
-    MiniMapTracking:SetPoint("BOTTOMLEFT", Minimap, -5, -5)
-    MiniMapTrackingButton:SetAlpha(0.00)
-    MiniMapTrackingBackground:SetAlpha(0.00)
-
-    -- Random Group icon
-    QueueStatusMinimapButton:SetScale(0.90)
-    QueueStatusMinimapButton:ClearAllPoints()
-    QueueStatusMinimapButton:SetFrameStrata("MEDIUM")
-    QueueStatusMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 4)
-    QueueStatusMinimapButtonBorder:SetAlpha(0.00)
-
     -- Mail icon
     MiniMapMailFrame:SetScale(0.90)
     MiniMapMailFrame:ClearAllPoints()
     MiniMapMailFrame:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -4, 3)
 
+    -- Random Group icon
+    QueueStatusMinimapButton:SetScale(0.90)
+    QueueStatusMinimapButton:ClearAllPoints()
+    QueueStatusMinimapButton:SetFrameStrata("MEDIUM")
+    QueueStatusMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 5, 5)
+    QueueStatusMinimapButtonBorder:SetAlpha(0.00)
+
+    -- Tracking
+    MiniMapTracking:SetScale(1.00)
+    MiniMapTracking:ClearAllPoints()
+    MiniMapTracking:SetPoint("BOTTOMLEFT", Minimap, -6, -6)
+    MiniMapTrackingButton:SetAlpha(0.00)
+    MiniMapTrackingBackground:SetAlpha(0.00)
+    MiniMapTrackingIconOverlay:SetAlpha(0.00)
+
     -- Garrison
-    local function OnGarrisonLandingPageMinimapButtonUpdateIcon(self)
+    local function HookGarrisonLandingPageMinimapButtonUpdateIcon(self)
         self:ClearAllPoints()
-        self:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 2, -4)
-        self:SetScale(0.55)
+        self:SetSize(36, 26)
+        self:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 8, -2)
     end
-    hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", OnGarrisonLandingPageMinimapButtonUpdateIcon)
+    hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", HookGarrisonLandingPageMinimapButtonUpdateIcon)
 end
 
 local function HideBlzFrame()
