@@ -107,6 +107,7 @@ local function SetBlzFrame()
         self:ClearAllPoints()
         self:SetSize(36, 26)
         self:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 8, -2)
+        self.LoopingGlow:SetSize(36, 26)
     end
     hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", HookGarrisonLandingPageMinimapButtonUpdateIcon)
 end
