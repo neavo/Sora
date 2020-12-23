@@ -27,9 +27,8 @@ local function OnPlayerLogin(self, event, ...)
 
 	-- Class Spell
 	-- Hunter
-	C.UnitFrame.RaidAuras[288613] = 65535 + 5 -- 百发百中
-	C.UnitFrame.RaidAuras[186265] = 65535 + 4 -- 灵龟守护
-	C.UnitFrame.RaidAuras[264735] = 65535 + 3 -- 优胜劣汰
+	C.UnitFrame.RaidAuras[186265] = 65535 + 2 -- 灵龟守护
+	C.UnitFrame.RaidAuras[264735] = 65535 + 1 -- 优胜劣汰
 
 	-- Class Spell
 	-- Priest
