@@ -121,12 +121,12 @@ local function OnPlayerLogin(self, event, ...)
 					["insets"] = 0
 				},
 				["bagFont"] = {
-					["size"] = 10
+					["size"] = 11
 				},
 				["compactLayout"] = true,
 				["hideAnchor"] = true,
 				["sectionFont"] = {
-					["size"] = 13
+					["size"] = 11
 				},
 				["positionMode"] = "manual",
 				["columnWidth"] = {
