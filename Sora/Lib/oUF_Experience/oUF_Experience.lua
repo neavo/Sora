@@ -91,21 +91,21 @@ oUF.colors.honor = {
 	{1, 0.71, 0}, -- Normal
 }
 
-local function IsPlayerMaxLevel()
-	local maxLevel = GetRestrictedAccountData()
-	if(maxLevel == 0) then
-		maxLevel = WOW_9 and GetMaxLevelForPlayerExpansion() or MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()]
-	end
+-- local function IsPlayerMaxLevel()
+-- 	local maxLevel = GetRestrictedAccountData()
+-- 	if(maxLevel == 0) then
+-- 		maxLevel = WOW_9 and GetMaxLevelForPlayerExpansion() or MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()]
+-- 	end
 
-	return maxLevel == UnitLevel('player')
-end
+-- 	return maxLevel == UnitLevel('player')
+-- end
 
 local function IsPlayerMaxHonorLevel()
 	return not C_PvP.GetNextHonorLevelForReward(UnitHonorLevel('player'))
 end
 
 local function ShouldShowHonor()
-	return IsPlayerMaxLevel() and (IsWatchingHonorAsXP() or C_PvP.IsActiveBattlefield() or IsInActiveWorldPVP())
+	return IsPlayerAtEffectiveMaxLevel() and (IsWatchingHonorAsXP() or C_PvP.IsActiveBattlefield() or IsInActiveWorldPVP())
 end
 
 --[[ Tags:header
@@ -325,7 +325,7 @@ local function Visibility(self, event, unit)
 	local shouldEnable
 
 	if(not UnitHasVehicleUI('player')) then
-		if(not IsPlayerMaxLevel() and not IsXPUserDisabled()) then
+		if(not IsPlayerAtEffectiveMaxLevel() and not IsXPUserDisabled()) then
 			shouldEnable = true
 		elseif(ShouldShowHonor() and not IsPlayerMaxHonorLevel()) then
 			shouldEnable = true
