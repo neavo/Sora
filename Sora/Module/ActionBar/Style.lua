@@ -54,7 +54,7 @@ local function OnPlayerLogin(self, event, ...)
         },
         name = {
             font = {STANDARD_TEXT_FONT, 10, "OUTLINE"},
-            points = {{"BOTTOM", 0, 1}}
+            points = {{"BOTTOM", 0.5, 1}}
         },
         count = {
             font = {STANDARD_TEXT_FONT, 12, "OUTLINE"},
