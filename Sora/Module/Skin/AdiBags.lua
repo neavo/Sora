@@ -89,6 +89,10 @@ local function CheckAdiBagsContainer(k, v)
 end
 
 local function OnPlayerLogin(self, event, ...)
+	if not IsAddOnLoaded("AdiBags") then
+		return 0
+	end
+
 	for k, v in pairs(bags) do
 		CheckAdiBagsContainer(k, v)
 	end
