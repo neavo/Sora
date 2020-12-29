@@ -7,43 +7,11 @@ local function OnPlayerLogin(self, event, ...)
 		return 0
 	end
 
-	TinyInspectDB = {
-		["EnableItemLevelBag"] = true,
-		["EnableItemLevelChat"] = true,
-		["ShowPartySpecialization"] = true,
-		["ShowInspectColoredLabel"] = true,
-		["EnableItemLevelPaperDoll"] = true,
-		["EnableRaidItemLevel"] = false,
-		["SendPartyItemLevelToParty"] = false,
-		["ShowOwnFrameWhenInspecting"] = true,
-		["EnableItemLevelGuildNews"] = true,
-		["ShowCharacterItemSheet"] = true,
-		["EnableItemLevelMerchant"] = true,
-		["version"] = 2.5,
-		["ShowCorruptedMark"] = false,
-		["ShowItemSlotString"] = true,
-		["ShowItemBorder"] = true,
-		["EnableItemLevelGuildBank"] = true,
-		["EnableItemLevelAuction"] = true,
-		["SendPartyItemLevelToSelf"] = true,
-		["EnableItemLevelAltEquipment"] = true,
-		["EnableItemLevelBank"] = true,
-		["EnableItemLevel"] = true,
-		["ShowColoredItemLevelString"] = false,
-		["ItemLevelAnchorPoint"] = "TOP",
-		["EnableItemLevelLoot"] = true,
-		["ShowInspectAngularBorder"] = true,
-		["ShowItemStats"] = false,
-		["EnablePartyItemLevel"] = true,
-		["EnableItemLevelOther"] = true,
-		["ShowInspectItemSheet"] = true,
-		["EnableMouseItemLevel"] = true,
-		["EnableMouseSpecialization"] = true,
-		["EnableMouseWeaponLevel"] = true,
-		["PaperDollItemLevelOutsideString"] = false,
-		["EnableItemLevelTrade"] = true,
-		["ShowPluginGreenState"] = false,
-	}
+	TinyInspectDB = {}
+	TinyInspectDB.version = 0.01
+	TinyInspectDB.ShowItemStats = true
+	TinyInspectDB.ShowInspectAngularBorder = true
+	TinyInspectDB.ShowOwnFrameWhenInspecting = true
 end
 
 -- Handler

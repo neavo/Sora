@@ -7,19 +7,15 @@ local function OnPlayerLogin(self, event, ...)
 		return 0
 	end
 
-	QuesterDB = {
-		["profiles"] = {
-			["Default"] = {
-				["questLevels"] = true,
-				["morework"] = false,
-				["showTagIcons"] = true,
-				["jobsdone"] = false,
-				["trackerMovable"] = false,
-				["sinkOptions"] = {
-					["sink20OutputSink"] = "None"
-				}
-			}
-		}
+	QuesterDB = {}
+	QuesterDB.profiles = {}
+	QuesterDB.profiles.Default = {}
+	QuesterDB.profiles.Default.morework = false
+	QuesterDB.profiles.Default.jobsdone = false
+	QuesterDB.profiles.Default.questLevels = true
+	QuesterDB.profiles.Default.showTagIcons = true
+	QuesterDB.profiles.Default.sinkOptions = {
+		["sink20OutputSink"] = "None"
 	}
 end
 

@@ -7,19 +7,9 @@ local function OnPlayerLogin(self, event, ...)
 		return 0
 	end
 
-	AuroraClassicDB = {
-		["Shadow"] = true,
-		["FlatMode"] = true,
-		["ChatBubbles"] = true,
-		["Bags"] = false,
-		["Alpha"] = 0.5,
-		["ObjectiveTracker"] = true,
-		["Loot"] = true,
-		["FontOutline"] = false,
-		["FontScale"] = 1,
-		["Tooltips"] = false,
-		["UIScale"] = 0.71111,
-	}
+	AuroraClassicDB = {}
+	AuroraClassicDB.FlatMode = true
+	AuroraClassicDB.FontOutline = false
 end
 
 -- Handler
