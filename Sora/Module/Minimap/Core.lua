@@ -105,9 +105,9 @@ local function SetBlzFrame()
     -- Garrison
     local function HookGarrisonLandingPageMinimapButtonUpdateIcon(self)
         self:ClearAllPoints()
-        self:SetSize(36, 26)
-        self:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 8, -2)
-        self.LoopingGlow:SetSize(36, 26)
+        self:SetSize(26, 26)
+        self:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 4, -2)
+        self.LoopingGlow:SetSize(26, 26)
     end
     hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", HookGarrisonLandingPageMinimapButtonUpdateIcon)
 end
