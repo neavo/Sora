@@ -17,13 +17,21 @@ local function IsCaster()
         (class == "WARLOCK")
 end
 
+local function IsUnitBoss(unit)
+    return string.find(unit, "^boss%d$") ~= nil or string.find(unit, "^arena%d$") ~= nil
+end
+
+local function IsUnitBossTarget(unit)
+    return string.find(unit, "^boss%dtarget$") ~= nil or string.find(unit, "^arena%dtarget$") ~= nil
+end
+
 -- Power
 S.UnitFrame.CreatePower = function(self, unit, ...)
     local height = nil
 
-    if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
+    if unit == "player" or unit == "target" or unit == "focus" or IsUnitBoss(unit) then
         height = 4
-    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or IsUnitBossTarget(unit) then
         height = 2
     elseif unit == "raid" then
         height = 2
@@ -53,9 +61,9 @@ end
 S.UnitFrame.CreateHealth = function(self, unit, ...)
     local height = nil
 
-    if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
+    if unit == "player" or unit == "target" or unit == "focus" or IsUnitBoss(unit) then
         height = self:GetHeight() - 8
-    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or IsUnitBossTarget(unit) then
         height = self:GetHeight() - 4
     elseif unit == "raid" then
         height = self:GetHeight() - 4
@@ -127,7 +135,7 @@ end
 
 -- Tag
 S.UnitFrame.CreateTag = function(self, unit, ...)
-    if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
+    if unit == "player" or unit == "target" or unit == "focus" or IsUnitBoss(unit) then
         local nameTag = S.MakeText(self.Health, 12)
         nameTag:SetAlpha(0.00)
         nameTag:SetPoint("LEFT", 4, -1)
@@ -146,7 +154,7 @@ S.UnitFrame.CreateTag = function(self, unit, ...)
         self.nameTag = nameTag
         self.powerTag = powerTag
         self.healthTag = healthTag
-    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or IsUnitBossTarget(unit) then
         local nameTag = S.MakeText(self.Health, 10)
         nameTag:SetAlpha(0.00)
         nameTag:SetPoint("CENTER", 0, -1)
@@ -717,10 +725,10 @@ end
 S.UnitFrame.CreateRaidTargetIndicator = function(self, unit, ...)
     local size, base = nil, nil
 
-    if unit == "player" or unit == "target" or unit == "focus" or string.find(unit, "^boss%d$") ~= nil then
+    if unit == "player" or unit == "target" or unit == "focus" or IsUnitBoss(unit) then
         size = 16
         base = self.Portrait
-    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or string.find(unit, "^boss%dtarget$") ~= nil then
+    elseif unit == "pet" or unit == "targettarget" or unit == "focustarget" or IsUnitBossTarget(unit) then
         size = 12
         base = self.Health
     elseif unit == "raid" then

@@ -11,7 +11,7 @@ local r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLA
 local function CreateAnchor()
     local anchor = S.CreateButton(UIParent, 16, "SoraUFBoss")
     anchor:Hide()
-    anchor:SetText("单位框体 - 首领")
+    anchor:SetText("单位框体 - 首领和竞技场")
     anchor:SetSize(C.UnitFrame.Boss.Width * MAX_BOSS_FRAMES + 32 * (MAX_BOSS_FRAMES - 1), C.UnitFrame.Boss.Height)
     anchor:SetPoint(unpack(C.UnitFrame.Boss.Postion))
     anchor:SetMovable(true)
@@ -30,12 +30,13 @@ local function CreateAnchor()
 end
 
 local function RegisterStyle(self, unit, ...)
+    local prefix = self:GetName():gsub("%d+", "")
     local i = tonumber(self:GetName():match("%d+"))
 
     if i == 1 then
         self:SetPoint("LEFT", SoraUFBoss, "LEFT", 0, 0)
     else
-        self:SetPoint("LEFT", _G["oUF_Sora_Boss" .. (i - 1)], "RIGHT", 32, 0)
+        self:SetPoint("LEFT", _G[prefix .. (i - 1)], "RIGHT", 32, 0)
     end
 
     self:RegisterForClicks("AnyUp")
@@ -61,6 +62,13 @@ local function OnPlayerLogin(self, event, ...)
 
     for i = 1, MAX_BOSS_FRAMES do
         oUF:Spawn("boss" .. i, "oUF_Sora_Boss" .. i)
+    end
+
+    oUF:RegisterStyle("oUF_Sora_Arena", RegisterStyle)
+    oUF:SetActiveStyle("oUF_Sora_Arena")
+
+    for i = 1, MAX_BOSS_FRAMES do
+        oUF:Spawn("arena" .. i, "oUF_Sora_Arena" .. i)
     end
 end
 

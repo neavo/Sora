@@ -31,6 +31,13 @@ local function OnPlayerLogin(self, event, ...)
     for i = 1, 5 do
         oUF:Spawn("boss" .. i .. "target", "oUF_Sora_Boss" .. i .. "Target")
     end
+    
+    oUF:RegisterStyle("oUF_Sora_ArenaTarget", RegisterStyle)
+    oUF:SetActiveStyle("oUF_Sora_ArenaTarget")
+
+    for i = 1, 5 do
+        oUF:Spawn("arena" .. i .. "target", "oUF_Sora_Arena" .. i .. "Target")
+    end
 end
 
 -- EventHandler
