@@ -21,8 +21,9 @@ local function OnPlayerLogin(self, event, ...)
 	DBT_AllPersistentOptions.Default.DBM.FontFlag = "OUTLINE"
 	DBT_AllPersistentOptions.Default.DBM.IconLeft = true
 	DBT_AllPersistentOptions.Default.DBM.IconRight = true
+	DBT_AllPersistentOptions.Default.DBM.HugeScale = 1.00
 	DBT_AllPersistentOptions.Default.DBM.HugeTimerX = 0
-	DBT_AllPersistentOptions.Default.DBM.HugeTimerY = -48
+	DBT_AllPersistentOptions.Default.DBM.HugeTimerY = -64
 	DBT_AllPersistentOptions.Default.DBM.HugeTimerPoint = "CENTER"
 
 	if IsAddOnLoaded("DBM-VPYike") then
