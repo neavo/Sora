@@ -5,26 +5,22 @@ local rowCount = 3
 
 local requestPartyKeystones
 
--- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
-local affixScheduleText = {
-	{"Fortified",	"Bolstering",	"Grievous"},
-	{"Tyrannical",	"Raging",	"Explosive"},
-	{"Fortified",	"Sanguine",	"Grievous"},
-	{"Tyrannical",	"Teeming",	"Volcanic"},
-	{"Fortified",	"Bolstering",	"Skittish"},
-	{"Tyrannical",	"Bursting",	"Necrotic"},
-	{"Fortified",	"Sanguine",	"Quaking"},
-	{"Tyrannical",	"Bolstering",	"Explosive"},
-	{"Fortified",	"Bursting",	"Volcanic"},
-	{"Tyrannical",	"Raging",	"Necrotic"},
-	{"Fortified",	"Teeming",	"Quaking"},
-	{"Tyrannical",	"Bursting",	"Skittish"}
+-- 1:Overflowing, 2:Skittish, 3:Volcanic, 4:Necrotic, 5:Teeming, 6:Raging, 7:Bolstering, 8:Sanguine, 9:Tyrannical, 10:Fortified, 11:Bursting, 12:Grievous, 13:Explosive, 14:Quaking, 16:Infested, 117: Reaping, 119:Beguiling 120:Awakened, 121:Prideful, 122:Inspiring, 123:Spiteful, 124:Storming
+local affixSchedule = {
+	-- Shadowlands Season 2
+	[1] =  {[1]=11, [2]=124,[3]=10}, -- 1 Bursting Storming Fortified
+	[2] =  {[1]=6,  [2]=3,  [3]=9},  -- 2 Raging Volcanic Tyrannical
+	[3] =  {[1]=122,[2]=12, [3]=10}, -- 3 Inspiring Grievous Fortified
+	[4] =  {[1]=123,[2]=4,  [3]=9},  -- 4 Spiteful Necrotic Tyrannical
+	[5] =  {[1]=7,  [2]=14, [3]=10}, -- 5 Bolstering Quaking Fortified
+	[6] =  {[1]=8,  [2]=124,[3]=9},  -- 6 Sanguine Storming Tyrannical
+	[7] =  {[1]=6,  [2]=13, [3]=10}, -- 7 Raging Explosive Fortified
+	[8] =  {[1]=11, [2]=3,  [3]=9},  -- 8 Bursting Volcanic Tyrannical
+	[9] =  {[1]=123,[2]=12, [3]=10}, -- 9 Spiteful Grievous Fortified
+	[10] = {[1]=122,[2]=14, [3]=9},  --10 Inspiring Quaking Tyrannical
+	[11] = {[1]=8,  [2]=4,  [3]=10}, --11 Sanguine Necrotic Fortified
+	[12] = {[1]=7,  [2]=13, [3]=9},  --12 Bolstering Explosive Tyrannical
 }
-local affixScheduleKeys = {["Overflowing"]=1, ["Skittish"]=2, ["Volcanic"]=3, ["Necrotic"]=4, ["Teeming"]=5, ["Raging"]=6, ["Bolstering"]=7, ["Sanguine"]=8, ["Tyrannical"]=9, ["Fortified"]=10, ["Bursting"]=11, ["Grievous"]=12, ["Explosive"]=13, ["Quaking"]=14 }
-local affixSchedule = {}
-for i,v in ipairs(affixScheduleText) do
-	affixSchedule[i] = { affixScheduleKeys[v[1]], affixScheduleKeys[v[2]], affixScheduleKeys[v[3]] }
-end
 
 local affixScheduleUnknown = false
 local currentWeek
@@ -47,7 +43,7 @@ local function UpdatePartyKeystones()
 
 	if not IsAddOnLoaded("Blizzard_ChallengesUI") then return end
 
-	local playerRealm = select(2, UnitFullName("player"))
+	local playerRealm = select(2, UnitFullName("player")) or ""
 
 	local e = 1
 	for i = 1, 4 do
@@ -116,10 +112,6 @@ local function UpdateFrame()
 	description:SetWidth(240)
 	description:ClearAllPoints()
 	description:SetPoint("TOP", weeklyChest, "TOP", 0, 75)
-
-	local legacyWeeklyChest = ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest
-	legacyWeeklyChest:ClearAllPoints()
-	legacyWeeklyChest:SetPoint("TOP", weeklyChest, "TOP", 0, 50)
 
 	local currentKeystoneName = GetNameForKeystone(C_MythicPlus.GetOwnedKeystoneChallengeMapID(), C_MythicPlus.GetOwnedKeystoneLevel())
 	if currentKeystoneName then
@@ -295,7 +287,7 @@ function Mod:Blizzard_ChallengesUI()
 
 	local keystoneText = ChallengesFrame.WeeklyInfo.Child:CreateFontString(nil, "ARTWORK", "GameFontNormalMed2")
 	keystoneText:SetPoint("TOP", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "BOTTOM", 0, -15)
-	keystoneText:SetWidth(220)
+	keystoneText:SetWidth(320)
 	Mod.KeystoneText = keystoneText
 
 	hooksecurefunc("ChallengesFrame_Update", UpdateFrame)

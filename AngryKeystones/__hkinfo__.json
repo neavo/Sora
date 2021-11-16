@@ -1,0 +1,14 @@
+{
+    "target": "curse",
+    "searchName": "Angry Keystones",
+    "localName": "AngryKeystones",
+    "version": "v0.22.1",
+    "fileName": "angry-keystones",
+    "addonsMap": [
+        "AngryKeystones"
+    ],
+    "interfaceMap": [],
+    "children": [],
+    "name": "Angry Keystones",
+    "gameVersion": "9.1.0"
+}
