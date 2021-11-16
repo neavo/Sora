@@ -136,22 +136,12 @@ function NPC:HandleGossipQuestOverlap(event)
 end
 
 function NPC:HandleGossipOpenEvent(kit)
-	local handler = kit and self:GetGossipHandler(kit)
-	if handler then
-		self.customGossipFrame = handler(kit)
-	else
+	if not self.gossipHandlers[kit] then
 		self:SetBackground(kit)
 		self:UpdateTalkingHead(API:GetUnitName('npc'), API:GetGossipText(), 'GossipGossip')
 		if self:IsGossipAvailable() then
 			self:PlayIntro('GOSSIP_SHOW')
 		end
-	end
-end
-
-function NPC:HandleGossipCloseEvent()
-	if self.customGossipFrame then
-		self.customGossipFrame:Hide()
-		self.customGossipFrame = nil;
 	end
 end
 
@@ -164,13 +154,13 @@ function NPC:SetBackground(kit)
 		local atlasInfo = C_Texture.GetAtlasInfo(backgroundAtlas)
 		if atlasInfo then
 			overlay:Show()
-			overlay:SetGradientAlpha('HORIZONTAL', 1, 1, 1, 0, 1, 1, 1, 1)
+			overlay:SetGradientAlpha('HORIZONTAL', 1, 1, 1, 0, 1, 1, 1, 0.5)
 
 			overlay:SetSize(atlasInfo.width, atlasInfo.height)
 			overlay:SetTexture(atlasInfo.file)
 			overlay:SetTexCoord(
-				atlasInfo.leftTexCoord, atlasInfo.rightTexCoord + 0.035,
-				atlasInfo.topTexCoord, atlasInfo.bottomTexCoord + 0.035)
+				atlasInfo.leftTexCoord, atlasInfo.rightTexCoord,-- + 0.035,
+				atlasInfo.topTexCoord, atlasInfo.bottomTexCoord)-- + 0.035)
 			return
 		end
 	end
@@ -614,24 +604,21 @@ function TalkBox:OnDragStop()
 
 	point = point:sub(1,1) .. point:sub(2):lower()
 
+	-- convert center point to bottom
 	if ( point == 'Center' ) then
 		point = 'Bottom'
-
-		local cX = self:GetCenter()
-
-		x = ( cX * self:GetScale() ) - ( GetScreenWidth() / 2 ) 
+		-- calculate the horz offset from the center of the screen
+		x = ( self:GetCenter() * ImmersionFrame:GetScale() ) - ( GetScreenWidth() / 2 )
 		y = self:GetBottom()
-
 	end
+	
 	local isBottom = point == 'Bottom'
-
 	if isBottom then
 		y = y - (self.extraY or 0)
 	end
 
 	self:ClearAllPoints()
-	self.offsetX = x
-	self.offsetY = y
+	self.offsetX, self.offsetY = x, y
 
 	L.Set('boxpoint', point)
 	L.Set('boxoffsetX', x)
