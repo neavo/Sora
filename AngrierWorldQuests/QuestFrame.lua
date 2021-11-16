@@ -897,12 +897,16 @@ local function QuestFrame_Update()
 		end
 	end
 
-	for header in QuestScrollFrame.headerFramePool:EnumerateActive() do
-		if header.questLogIndex == 1 then
-			firstButton = header
-			if layoutIndex == 0 then
+	if Config.showAtTop then
+		for header in QuestScrollFrame.headerFramePool:EnumerateActive() do
+			if header and (firstButton == nil or header.layoutIndex < firstButton.layoutIndex) then
+				firstButton = header
 				layoutIndex = firstButton.layoutIndex - 1 + 0.001
 			end
+		end
+		-- if no storyheader and no quests, stay on bottom
+		if layoutIndex == 0 then
+			layoutIndex = 10000
 		end
 	end
 
