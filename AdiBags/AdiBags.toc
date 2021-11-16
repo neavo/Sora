@@ -1,5 +1,5 @@
 # AdiBags - Adirelle's bag addon.
-# Copyright 2010-2014 Adirelle (adirelle@gmail.com)
+# Copyright 2010-2021 Adirelle (adirelle@gmail.com)
 # All rights reserved.
 #
 # This file is part of AdiBags.
@@ -17,16 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with AdiBags.  If not, see <http://www.gnu.org/licenses/>.
 
-## Interface: 90002
+## Interface: 90105
 
 ## Title: AdiBags
 ## Notes: Adirelle's bag addon.
 ## Author: Adirelle
-## Version: v1.9.22
+## Version: v1.9.26
 ## SavedVariables: AdiBagsDB
-## X-Date: 2020-11-17T18:16:59Z
+## X-Date: 2021-11-12T16:27:20Z
 ## X-License: GPL v3
-## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibSharedMedia-3.0, Scrap, BrainDead, !BugGrabber, SyLevel
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibSharedMedia-3.0, Scrap, BrainDead, SyLevel
 #@alpha@
 # ## OptionalDeps: AdiDebug, BugSack, Swatter
 #@end-alpha@
@@ -34,7 +34,6 @@
 #@no-lib-strip@
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
-libs\BugGrabber\load.xml
 libs\AceAddon-3.0\AceAddon-3.0.xml
 libs\AceDB-3.0\AceDB-3.0.xml
 libs\AceHook-3.0\AceHook-3.0.xml
