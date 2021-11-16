@@ -1,6 +1,6 @@
-## Interface: 90001
+## Interface: 90105
 ## Author: p3lim
-## Version: 90000.29-Release
+## Version: 90105.31-Release
 ## Title: oUF Experience
 ## Notes: Experience Bar support for oUF layouts.
 ## RequiredDeps: oUF

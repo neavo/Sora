@@ -18,6 +18,8 @@ At least one of the above widgets must be present for the element to work.
 .disableMouse       - Disables mouse events (boolean)
 .disableCooldown    - Disables the cooldown spiral (boolean)
 .size               - Aura icon size. Defaults to 16 (number)
+.width              - Aura icon width. Takes priority over `size` (number)
+.height             - Aura icon height. Takes priority over `size` (number)
 .onlyShowPlayer     - Shows only auras created by player/vehicle (boolean)
 .showStealableBuffs - Displays the stealable texture on buffs that can be stolen (boolean)
 .spacing            - Spacing between each icon. Defaults to 0 (number)
@@ -74,17 +76,24 @@ local VISIBLE = 1
 local HIDDEN = 0
 
 local function UpdateTooltip(self)
+	if(GameTooltip:IsForbidden()) then return end
+
 	GameTooltip:SetUnitAura(self:GetParent().__owner.unit, self:GetID(), self.filter)
 end
 
 local function onEnter(self)
-	if(not self:IsVisible()) then return end
+	if(GameTooltip:IsForbidden() or not self:IsVisible()) then return end
 
-	GameTooltip:SetOwner(self, self:GetParent().tooltipAnchor)
+	-- Avoid parenting GameTooltip to frames with anchoring restrictions,
+	-- otherwise it'll inherit said restrictions which will cause issues with
+	-- its further positioning, clamping, etc
+	GameTooltip:SetOwner(self, self:GetParent().__restricted and 'ANCHOR_CURSOR' or self:GetParent().tooltipAnchor)
 	self:UpdateTooltip()
 end
 
 local function onLeave()
+	if(GameTooltip:IsForbidden()) then return end
+
 	GameTooltip:Hide()
 end
 
@@ -224,8 +233,9 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 			if(button.icon) then button.icon:SetTexture(texture) end
 			if(button.count) then button.count:SetText(count > 1 and count) end
 
-			local size = element.size or 16
-			button:SetSize(size, size)
+			local width = element.width or element.size or 16
+			local height = element.height or element.size or 16
+			button:SetSize(width, height)
 
 			button:EnableMouse(not element.disableMouse)
 			button:SetID(index)
@@ -256,8 +266,10 @@ local function updateIcon(element, unit, index, offset, filter, isDebuff, visibl
 end
 
 local function SetPosition(element, from, to)
-	local sizex = (element.size or 16) + (element['spacing-x'] or element.spacing or 0)
-	local sizey = (element.size or 16) + (element['spacing-y'] or element.spacing or 0)
+	local width = element.width or element.size or 16
+	local height = element.height or element.size or 16
+	local sizex = width + (element['spacing-x'] or element.spacing or 0)
+	local sizey = height + (element['spacing-y'] or element.spacing or 0)
 	local anchor = element.initialAnchor or 'BOTTOMLEFT'
 	local growthx = (element['growth-x'] == 'LEFT' and -1) or 1
 	local growthy = (element['growth-y'] == 'DOWN' and -1) or 1
@@ -485,19 +497,13 @@ local function Enable(self)
 		local buffs = self.Buffs
 		if(buffs) then
 			buffs.__owner = self
+			-- check if there's any anchoring restrictions
+			buffs.__restricted = not pcall(self.GetCenter, self)
 			buffs.ForceUpdate = ForceUpdate
 
 			buffs.createdIcons = buffs.createdIcons or 0
 			buffs.anchoredIcons = 0
-
-			-- Avoid parenting GameTooltip to frames with anchoring restrictions,
-			-- otherwise it'll inherit said restrictions which will cause issues
-			-- with its further positioning, clamping, etc
-			if(not pcall(self.GetCenter, self)) then
-				buffs.tooltipAnchor = 'ANCHOR_CURSOR'
-			else
-				buffs.tooltipAnchor = buffs.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
-			end
+			buffs.tooltipAnchor = buffs.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
 
 			buffs:Show()
 		end
@@ -505,19 +511,13 @@ local function Enable(self)
 		local debuffs = self.Debuffs
 		if(debuffs) then
 			debuffs.__owner = self
+			-- check if there's any anchoring restrictions
+			debuffs.__restricted = not pcall(self.GetCenter, self)
 			debuffs.ForceUpdate = ForceUpdate
 
 			debuffs.createdIcons = debuffs.createdIcons or 0
 			debuffs.anchoredIcons = 0
-
-			-- Avoid parenting GameTooltip to frames with anchoring restrictions,
-			-- otherwise it'll inherit said restrictions which will cause issues
-			-- with its further positioning, clamping, etc
-			if(not pcall(self.GetCenter, self)) then
-				debuffs.tooltipAnchor = 'ANCHOR_CURSOR'
-			else
-				debuffs.tooltipAnchor = debuffs.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
-			end
+			debuffs.tooltipAnchor = debuffs.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
 
 			debuffs:Show()
 		end
@@ -525,19 +525,13 @@ local function Enable(self)
 		local auras = self.Auras
 		if(auras) then
 			auras.__owner = self
+			-- check if there's any anchoring restrictions
+			auras.__restricted = not pcall(self.GetCenter, self)
 			auras.ForceUpdate = ForceUpdate
 
 			auras.createdIcons = auras.createdIcons or 0
 			auras.anchoredIcons = 0
-
-			-- Avoid parenting GameTooltip to frames with anchoring restrictions,
-			-- otherwise it'll inherit said restrictions which will cause issues
-			-- with its further positioning, clamping, etc
-			if(not pcall(self.GetCenter, self)) then
-				auras.tooltipAnchor = 'ANCHOR_CURSOR'
-			else
-				auras.tooltipAnchor = auras.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
-			end
+			auras.tooltipAnchor = auras.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
 
 			auras:Show()
 		end

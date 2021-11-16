@@ -11,7 +11,6 @@ local function HookDBTCreateBar(self, ...)
 			local frame = v.frame
 			local bar = _G[frame:GetName() .. "Bar"]
 			local spark = _G[frame:GetName() .. "BarSpark"]
-			local texture = _G[frame:GetName() .. "BarTexture"]
 			local icon1 = _G[frame:GetName() .. "BarIcon1"]
 			local icon2 = _G[frame:GetName() .. "BarIcon2"]
 			local name = _G[frame:GetName() .. "BarName"]
@@ -20,9 +19,6 @@ local function HookDBTCreateBar(self, ...)
 			bar.shadow = S.MakeShadow(bar, 2)
 			bar:SetStatusBarTexture(DB.Statusbar)
 			bar.SetStatusBarTexture = Dummy
-
-			texture:SetTexture(DB.Statusbar)
-			texture.SetTexture = Dummy
 
 			icon1:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 			icon1.shadow = S.MakeTextureShadow(icon1:GetParent(), icon1, 2)

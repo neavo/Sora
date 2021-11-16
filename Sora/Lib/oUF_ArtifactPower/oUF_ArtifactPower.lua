@@ -66,10 +66,24 @@ local function GetNumTraitsLearnable(numTraitsLearned, power, tier)
 	return numPoints, power, powerForNextTrait
 end
 
+local function GetHeartOfAzeroth()
+	local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
+
+	if azeriteItemLocation == nil then
+		return
+	end
+
+	local item = Item:CreateFromItemLocation(azeriteItemLocation)
+
+	if not item:IsItemEmpty() then
+		return azeriteItemLocation, item
+	end
+end
+
 for tag, func in next, {
 	['artifactpower:name'] = function()
 		if (not UnitHasVehicleUI('player')) then
-			local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
+			local azeriteItemLocation = GetHeartOfAzeroth()
 			if (HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()) then
 				local _, _, name = C_ArtifactUI.GetEquippedArtifactInfo()
 				return name
@@ -81,7 +95,7 @@ for tag, func in next, {
 	end,
 	['artifactpower:power'] = function()
 		if (not UnitHasVehicleUI('player')) then
-			local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
+			local azeriteItemLocation = GetHeartOfAzeroth()
 			if (HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()) then
 				local _, _, _, _, unspentPower, numTraitsLearned, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
 				local _, power = GetNumTraitsLearnable(numTraitsLearned, unspentPower, tier)
@@ -94,7 +108,7 @@ for tag, func in next, {
 	end,
 	['artifactpower:until_next'] = function()
 		if (not UnitHasVehicleUI('player')) then
-			local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
+			local azeriteItemLocation = GetHeartOfAzeroth()
 			if (HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()) then
 				local _, _, _, _, unspentPower, numTraitsLearned, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
 				local _, power, powerForNextTrait = GetNumTraitsLearnable(numTraitsLearned, unspentPower, tier)
@@ -107,7 +121,7 @@ for tag, func in next, {
 	end,
 	['artifactpower:until_next_per'] = function()
 		if (not UnitHasVehicleUI('player')) then
-			local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
+			local azeriteItemLocation = GetHeartOfAzeroth()
 			if (HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()) then
 				local _, _, _, _, unspentPower, numTraitsLearned, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
 				local _, power, powerForNextTrait = GetNumTraitsLearnable(numTraitsLearned, unspentPower, tier)
@@ -120,7 +134,7 @@ for tag, func in next, {
 	end,
 	['artifactpower:total_until_next'] = function() -- was next_trait_cost
 		if (not UnitHasVehicleUI('player')) then
-			local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
+			local azeriteItemLocation = GetHeartOfAzeroth()
 			if (HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()) then
 				local _, _, _, _, unspentPower, numTraitsLearned, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
 				local _, _, powerForNextTrait = GetNumTraitsLearnable(numTraitsLearned, unspentPower, tier)
@@ -154,7 +168,7 @@ for tag, func in next, {
 	end,
 	['artifactpower:level'] = function()
 		if (not UnitHasVehicleUI('player')) then
-			local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
+			local azeriteItemLocation = GetHeartOfAzeroth()
 			if (HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()) then
 				local _, _, _, _, unspentPower, numTraitsLearned, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
 				local numTraitsLearnable = GetNumTraitsLearnable(numTraitsLearned, unspentPower, tier)
@@ -179,7 +193,7 @@ Called when the mouse cursor enters the widget's interactive area.
 local function OnEnter(element)
 	element:SetAlpha(element.onAlpha)
 
-	local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
+	local _, azeriteItem = GetHeartOfAzeroth()
 
 	if (HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()) then
 		local _, _, name = C_ArtifactUI.GetEquippedArtifactInfo()
@@ -195,8 +209,7 @@ local function OnEnter(element)
 		)
 		GameTooltip:AddLine(ARTIFACT_POWER_TOOLTIP_BODY:format(element.numTraitsLearnable), nil, nil, nil, true)
 		GameTooltip:Show()
-	elseif (azeriteItemLocation) then
-		local azeriteItem = Item:CreateFromItemLocation(azeriteItemLocation)
+	elseif (azeriteItem) then
 		ItemDataLoadedCancelFunc = azeriteItem:ContinueWithCancelOnItemLoad(function()
 			GameTooltip:SetOwner(element, element.tooltipAnchor)
 			GameTooltip:SetText(
@@ -206,6 +219,8 @@ local function OnEnter(element)
 			GameTooltip:AddLine(AZERITE_POWER_TOOLTIP_BODY:format(azeriteItem:GetItemName()))
 			GameTooltip:Show()
 		end)
+	else
+		element:Hide()
 	end
 end
 
@@ -268,10 +283,7 @@ local function Update(self, event, arg)
 	local current, max, level, show
 	local isUsable = true
 	if (not UnitHasVehicleUI('player')) then
-		-- local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
-        local azeriteItem = C_AzeriteItem.FindActiveAzeriteItem()
-        local showAzeriteBar = azeriteItem and azeriteItem:IsEquipmentSlot() and C_AzeriteItem.IsAzeriteItemEnabled(azeriteItem)
-
+		local azeriteItemLocation = GetHeartOfAzeroth()
 		if (HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()) then
 			local _, _, _, _, unspentPower, numTraitsLearned, _, _, _, _, _, _, tier = C_ArtifactUI.GetEquippedArtifactInfo()
 			local numTraitsLearnable, power, powerForNextTrait = GetNumTraitsLearnable(numTraitsLearned, unspentPower, tier)
@@ -283,12 +295,12 @@ local function Update(self, event, arg)
 			element.numTraitsLearnable = numTraitsLearnable
 			element.unspentPower = unspentPower
 			show = true
-		elseif (showAzeriteBar) then
+		elseif (azeriteItemLocation) then
 			element.numTraitsLearnable = nil
 			element.unspentPower = nil
 
-			current, max = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItem)
-			level = C_AzeriteItem.GetPowerLevel(azeriteItem)
+			current, max = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
+			level = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
 			show = true
 		end
 	end

@@ -1,3 +1,37 @@
+**Changes in 10.1.0:**
+
+- _Adrian L Lange (7):_
+    1. Add workflow to automatically update license ([#588](https://github.com/oUF-wow/oUF/issues/588))
+    2. Update LICENSE ([#587](https://github.com/oUF-wow/oUF/issues/587))
+    3. Update packager version ([#586](https://github.com/oUF-wow/oUF/issues/586))
+    4. Update Interface version ([#569](https://github.com/oUF-wow/oUF/issues/569))
+    5. tags: Fix typo ([#567](https://github.com/oUF-wow/oUF/issues/567))
+    6. tags: Untag fontstrings correctly ([#566](https://github.com/oUF-wow/oUF/issues/566))
+    7. Add issue templates ([#558](https://github.com/oUF-wow/oUF/issues/558))
+- _Rainrider (3):_
+    1. core: add a combat log event system
+    2. core: make element's update optional
+    3. core: signify all AddElement args as mandatory
+- _Thatmemedk (1):_
+    1. auras: Allow separate width and height of icons ([#582](https://github.com/oUF-wow/oUF/issues/582))
+- _Val Voronov (15):_
+    1. tags: Streamline code
+    2. tags: Leave invalid tags in as text
+    3. Add Private.nierror method
+    4. classpower: Fix chargedPoints unpacking
+    5. Update Interface version
+    6. classpower: Add support for multiple charged power points
+    7. tags: Add missing unitless event
+    8. tags: Remove unnecessary escapes
+    9. tags: Fix suffix extraction
+    10. auras: Bail out if GameTooltip is forbidden
+    11. auras: Update workaround for restricted frames
+    12. classpower: Hardcode powerType for UPPC
+    13. Replace wrapped register*Event with validateEvent
+    14. Add validateEvent method
+    15. Wrap event registration to check event validity ([#563](https://github.com/oUF-wow/oUF/issues/563))
+- 15 files changed, 301 insertions(+), 99 deletions(-)
+
 **Changes in 10.0.3:**
 
 - _Rainrider (1):_
