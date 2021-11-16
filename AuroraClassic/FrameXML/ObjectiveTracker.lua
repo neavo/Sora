@@ -115,6 +115,50 @@ local function GetMawBuffsAnchor(frame)
 	end
 end
 
+local function container_OnClick(container)
+	local direc = GetMawBuffsAnchor(container)
+	if not container.lastDirec or container.lastDirec ~= direc then
+		container.List:ClearAllPoints()
+		if direc == "LEFT" then
+			container.List:SetPoint("TOPLEFT", container, "TOPRIGHT", 15, 1)
+		else
+			container.List:SetPoint("TOPRIGHT", container, "TOPLEFT", 15, 1)
+		end
+		container.lastDirec = direc
+	end
+end
+
+local function blockList_Show(self)
+	self.button:SetWidth(253)
+	self.button:SetButtonState("NORMAL")
+	self.button:SetPushedTextOffset(1.25, -1)
+	self.button:SetButtonState("PUSHED", true)
+	self.__bg:SetBackdropBorderColor(1, .8, 0, .7)
+end
+
+local function blockList_Hide(self)
+	self.__bg:SetBackdropBorderColor(0, 0, 0, 1)
+end
+
+local function ReskinMawBuffsContainer(container)
+	F.StripTextures(container)
+	container:GetPushedTexture():SetAlpha(0)
+	container:GetHighlightTexture():SetAlpha(0)
+	local bg = F.SetBD(container, 0, 13, -11, -3, 11)
+	F.CreateGradient(bg)
+	container:HookScript("OnClick", container_OnClick)
+
+	local blockList = container.List
+	F.StripTextures(blockList)
+	blockList.__bg = bg
+	local bg = F.SetBD(blockList)
+	bg:SetPoint("TOPLEFT", 7, -12)
+	bg:SetPoint("BOTTOMRIGHT", -7, 12)
+
+	blockList:HookScript("OnShow", blockList_Show)
+	blockList:HookScript("OnHide", blockList_Hide)
+end
+
 tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.ObjectiveTracker then return end
 
@@ -122,8 +166,11 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", reskinQuestIcons)
 	hooksecurefunc(WORLD_QUEST_TRACKER_MODULE, "AddObjective", reskinQuestIcons)
 	hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "AddObjective", reskinQuestIcons)
+	hooksecurefunc(BONUS_OBJECTIVE_TRACKER_MODULE, "AddObjective", reskinQuestIcons)
 
 	-- Reskin Progressbars
+	BonusObjectiveTrackerProgressBar_PlayFlareAnim = F.Dummy
+
 	hooksecurefunc(QUEST_TRACKER_MODULE, "AddProgressBar", reskinProgressbar)
 	hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "AddProgressBar", reskinProgressbar)
 
@@ -145,21 +192,37 @@ tinsert(C.defaultThemes, function()
 
 	hooksecurefunc(SCENARIO_CONTENT_TRACKER_MODULE, "Update", function()
 		local widgetContainer = ScenarioStageBlock.WidgetContainer
-		if not widgetContainer then return end
+		if widgetContainer.widgetFrames then
+			for _, widgetFrame in pairs(widgetContainer.widgetFrames) do
+				if widgetFrame.Frame then widgetFrame.Frame:SetAlpha(0) end
 
-		local widgetFrame = widgetContainer:GetChildren()
-		if widgetFrame and widgetFrame.Frame then
-			widgetFrame.Frame:SetAlpha(0)
+				local bar = widgetFrame.TimerBar
+				if bar and not bar.bg then
+					hooksecurefunc(bar, "SetStatusBarAtlas", F.ReplaceWidgetBarTexture)
+					bar.bg = F.CreateBDFrame(bar, .25)
+				end
 
-			if widgetFrame.CurrencyContainer then -- this may be removed, needs review
-				for i = 1, widgetFrame.CurrencyContainer:GetNumChildren() do
-					local bu = select(i, widgetFrame.CurrencyContainer:GetChildren())
-					if bu and bu.Icon and not bu.styled then
-						F.ReskinIcon(bu.Icon)
-						bu.styled = true
+				if widgetFrame.CurrencyContainer then
+					for currencyFrame in widgetFrame.currencyPool:EnumerateActive() do
+						if not currencyFrame.bg then
+							currencyFrame.bg = F.ReskinIcon(currencyFrame.Icon)
+						end
 					end
 				end
 			end
+		end
+	end)
+
+	hooksecurefunc("ScenarioSpellButton_UpdateCooldown", function(spellButton)
+		if not spellButton.styled then
+			local bg = F.ReskinIcon(spellButton.Icon)
+			spellButton:SetNormalTexture(nil)
+			spellButton:SetPushedTexture(nil)
+			local hl = spellButton:GetHighlightTexture()
+			hl:SetColorTexture(1, 1, 1, .25)
+			hl:SetInside(bg)
+
+			spellButton.styled = true
 		end
 	end)
 
@@ -182,6 +245,10 @@ tinsert(C.defaultThemes, function()
 	end)
 
 	hooksecurefunc("Scenario_ChallengeMode_SetUpAffixes", F.AffixesSetup)
+
+	-- Maw buffs container
+	ReskinMawBuffsContainer(ScenarioBlocksFrame.MawBuffsBlock.Container)
+	ReskinMawBuffsContainer(MawBuffsBelowMinimapFrame.Container)
 
 	-- Reskin Headers
 	local headers = {
@@ -208,18 +275,4 @@ tinsert(C.defaultThemes, function()
 			reskinMinimizeButton(minimize)
 		end
 	end
-
-	-- MawBuffsBlock
-	ScenarioBlocksFrame.MawBuffsBlock.Container:HookScript("OnClick", function(container)
-		local direc = GetMawBuffsAnchor(container)
-		if not container.lastDirec or container.lastDirec ~= direc then
-			container.List:ClearAllPoints()
-			if direc == "LEFT" then
-				container.List:SetPoint("TOPLEFT", container, "TOPRIGHT", 15, 1)
-			else
-				container.List:SetPoint("TOPRIGHT", container, "TOPLEFT", 15, 1)
-			end
-			container.lastDirec = direc
-		end
-	end)
 end)

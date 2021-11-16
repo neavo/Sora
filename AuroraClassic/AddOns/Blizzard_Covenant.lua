@@ -25,7 +25,6 @@ C.themes["Blizzard_CovenantPreviewUI"] = function()
 			self.ModelSceneContainer.ModelSceneBorder:SetAlpha(0)
 			F.CreateBDFrame(self.Title, .25)
 			F.ReskinClose(self.CloseButton)
-			self.CloseButton.Border:SetAlpha(0)
 			self.bg = F.SetBD(self)
 		end
 		self.CloseButton:SetPoint("TOPRIGHT", -6, -6)
@@ -33,14 +32,6 @@ C.themes["Blizzard_CovenantPreviewUI"] = function()
 end
 
 -- Blizzard_CovenantSanctum
-
-local function replaceIconString(self, text)
-	if not text then text = self:GetText() end
-	if not text or text == "" then return end
-
-	local newText, count = gsub(text, "|T([^:]-):[%d+:]+|t", "|T%1:14:14:0:0:64:64:5:59:5:59|t")
-	if count > 0 then self:SetFormattedText("%s", newText) end
-end
 
 local function reskinTalentsList(self)
 	for frame in self.talentPool:EnumerateActive() do
@@ -56,8 +47,8 @@ local function reskinTalentsList(self)
 			F.ReskinIcon(frame.Icon)
 			frame.Icon:SetPoint("TOPLEFT", 7, -7)
 
-			replaceIconString(frame.InfoText)
-			hooksecurefunc(frame.InfoText, "SetText", replaceIconString)
+			F.ReplaceIconString(frame.InfoText)
+			hooksecurefunc(frame.InfoText, "SetText", F.ReplaceIconString)
 		end
 	end
 end
@@ -65,8 +56,8 @@ end
 local function replaceCurrencies(displayGroup)
 	for frame in displayGroup.currencyFramePool:EnumerateActive() do
 		if not frame.styled then
-			replaceIconString(frame.Text)
-			hooksecurefunc(frame.Text, "SetText", replaceIconString)
+			F.ReplaceIconString(frame.Text)
+			hooksecurefunc(frame.Text, "SetText", F.ReplaceIconString)
 
 			frame.styled = true
 		end
@@ -82,7 +73,6 @@ C.themes["Blizzard_CovenantSanctum"] = function()
 			self.NineSlice:SetAlpha(0)
 			self.LevelFrame.Background:SetAlpha(0)
 			F.ReskinClose(self.CloseButton)
-			self.CloseButton.Border:SetAlpha(0)
 		end
 	end)
 
@@ -109,13 +99,14 @@ end
 
 -- Covenant renown
 C.themes["Blizzard_CovenantRenown"] = function()
-	local CovenantRenownFrame = CovenantRenownFrame
-
-	F.SetBD(CovenantRenownFrame)
-	F.ReskinClose(CovenantRenownFrame.CloseButton)
-
 	hooksecurefunc(CovenantRenownFrame, "SetUpCovenantData", function(self)
 		F.StripTextures(self)
-		self.CloseButton.Border:Hide()
+
+		if not self.styled then
+			F.SetBD(self)
+			F.ReskinClose(self.CloseButton)
+
+			self.styled = true
+		end
 	end)
 end

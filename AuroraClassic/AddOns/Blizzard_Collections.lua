@@ -578,6 +578,7 @@ C.themes["Blizzard_Collections"] = function()
 	F.StripTextures(WardrobeTransmogFrame.SpecButton)
 	F.ReskinArrow(WardrobeTransmogFrame.SpecButton, "down")
 	WardrobeTransmogFrame.SpecButton:SetPoint("RIGHT", WardrobeTransmogFrame.ApplyButton, "LEFT", -3, 0)
+	F.ReskinCheck(WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox)
 
 	local modelScene = WardrobeTransmogFrame.ModelScene
 	modelScene.ClearAllPendingButton:DisableDrawLayer("BACKGROUND")
@@ -600,31 +601,6 @@ C.themes["Blizzard_Collections"] = function()
 	F.ReskinDropDown(WardrobeOutfitDropDown)
 	WardrobeOutfitDropDown:SetHeight(32)
 	WardrobeOutfitDropDown.SaveButton:SetPoint("LEFT", WardrobeOutfitDropDown, "RIGHT", -13, 2)
-	F.StripTextures(WardrobeOutfitFrame)
-	F.SetBD(WardrobeOutfitFrame, .7)
-
-	hooksecurefunc(WardrobeOutfitFrame, "Update", function(self)
-		for i = 1, C_TransmogCollection.GetNumMaxOutfits() do
-			local button = self.Buttons[i]
-			if button and button:IsShown() and not button.styled then
-				F.ReskinIcon(button.Icon)
-				button.Selection:SetColorTexture(1, 1, 1, .25)
-				button.Highlight:SetColorTexture(r, g, b, .25)
-
-				button.styled = true
-			end
-		end
-	end)
-
-	F.StripTextures(WardrobeOutfitEditFrame)
-	WardrobeOutfitEditFrame.EditBox:DisableDrawLayer("BACKGROUND")
-	F.SetBD(WardrobeOutfitEditFrame)
-	local bg = F.CreateBDFrame(WardrobeOutfitEditFrame.EditBox, .25, true)
-	bg:SetPoint("TOPLEFT", -5, -3)
-	bg:SetPoint("BOTTOMRIGHT", 5, 3)
-	F.Reskin(WardrobeOutfitEditFrame.AcceptButton)
-	F.Reskin(WardrobeOutfitEditFrame.CancelButton)
-	F.Reskin(WardrobeOutfitEditFrame.DeleteButton)
 
 	if F.ReskinTooltip then
 		F.ReskinTooltip(PetJournalPrimaryAbilityTooltip)

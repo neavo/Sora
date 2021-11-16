@@ -46,38 +46,54 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc("AlertFrame_PauseOutAnimation", fixBg)
 
 	-- AlertFrames
+	local garrAlertTemplate = {
+		[GarrisonMissionAlertSystem] = true,
+		[GarrisonRandomMissionAlertSystem] = true,
+		[GarrisonShipMissionAlertSystem] = true,
+		[GarrisonShipFollowerAlertSystem] = true,
+	}
+
+	local newAlertTemplate = {
+		[NewPetAlertSystem] = true,
+		[NewMountAlertSystem] = true,
+		[NewToyAlertSystem] = true,
+		[NewRuneforgePowerAlertSystem] = true,
+		[NewCosmeticAlertFrameSystem] = true,
+	}
+
 	hooksecurefunc(AlertFrame, "AddAlertFrame", function(_, frame)
 		if frame.queue == AchievementAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 0, -7)
-				frame.bg:SetPoint("BOTTOMRIGHT", 0, 8)
-
-				frame.Unlocked:SetTextColor(1, 1, 1)
+				frame.Unlocked:SetTextColor(1, .8, 0)
+				frame.Unlocked:SetFontObject(NumberFont_GameNormal)
 				frame.GuildName:ClearAllPoints()
 				frame.GuildName:SetPoint("TOPLEFT", 50, -14)
 				frame.GuildName:SetPoint("TOPRIGHT", -50, -14)
 				F.ReskinIcon(frame.Icon.Texture)
 
 				frame.GuildBanner:SetTexture("")
-				frame.OldAchievement:SetTexture("")
 				frame.GuildBorder:SetTexture("")
 				frame.Icon.Bling:SetTexture("")
 			end
 			frame.glow:SetTexture("")
 			frame.Background:SetTexture("")
 			frame.Icon.Overlay:SetTexture("")
-			-- otherwise it hides
-			frame.Shield.Points:Show()
-			frame.Shield.Icon:Show()
+			if frame.GuildBanner:IsShown() then
+				frame.bg:SetPoint("TOPLEFT", 2, -29)
+				frame.bg:SetPoint("BOTTOMRIGHT", -2, 4)
+			else
+				frame.bg:SetPoint("TOPLEFT", frame, -2, -17)
+				frame.bg:SetPoint("BOTTOMRIGHT", 2, 12)
+			end
 		elseif frame.queue == CriteriaAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", frame, -18, 5)
-				frame.bg:SetPoint("BOTTOMRIGHT", frame, 18, -1)
+				frame.bg:SetPoint("TOPLEFT", frame, 5, -7)
+				frame.bg:SetPoint("BOTTOMRIGHT", frame, 18, 10)
 
-				frame.Icon:SetScale(.8)
-				frame.Unlocked:SetTextColor(1, 1, 1)
+				frame.Unlocked:SetTextColor(1, .8, 0)
+				frame.Unlocked:SetFontObject(NumberFont_GameNormal)
 				F.ReskinIcon(frame.Icon.Texture)
 				frame.Background:SetTexture("")
 				frame.Icon.Bling:SetTexture("")
@@ -93,6 +109,9 @@ tinsert(C.defaultThemes, function()
 				frame.bg:SetPoint("BOTTOMRIGHT", frame, -13, 13)
 
 				F.ReskinIcon(lootItem.Icon)
+				lootItem.Icon:SetInside()
+				lootItem.IconOverlay:SetInside()
+				lootItem.IconOverlay2:SetInside()
 				lootItem.SpecRing:SetTexture("")
 				lootItem.SpecIcon:SetPoint("TOPLEFT", lootItem.Icon, -5, 5)
 				lootItem.SpecIcon.bg = F.ReskinIcon(lootItem.SpecIcon)
@@ -185,7 +204,7 @@ tinsert(C.defaultThemes, function()
 				frame.shine:SetTexture("")
 			end
 			frame.FollowerBG:SetTexture("")
-		elseif frame.queue == GarrisonMissionAlertSystem or frame.queue == GarrisonRandomMissionAlertSystem or frame.queue == GarrisonShipMissionAlertSystem or frame.queue == GarrisonShipFollowerAlertSystem then
+		elseif garrAlertTemplate[frame.queue] then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
 				frame.bg:SetPoint("TOPLEFT", 8, -8)
@@ -248,8 +267,8 @@ tinsert(C.defaultThemes, function()
 		elseif frame.queue == DungeonCompletionAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 2, -10)
-				frame.bg:SetPoint("BOTTOMRIGHT", 0, 2)
+				frame.bg:SetPoint("TOPLEFT", 3, -8)
+				frame.bg:SetPoint("BOTTOMRIGHT", -3, 8)
 
 				F.ReskinIcon(frame.dungeonTexture)
 				frame:DisableDrawLayer("Border")
@@ -285,7 +304,7 @@ tinsert(C.defaultThemes, function()
 				frame.Background3:SetTexture("")
 				frame.glow:SetTexture("")
 			end
-		elseif frame.queue == NewPetAlertSystem or frame.queue == NewMountAlertSystem or frame.queue == NewToyAlertSystem or frame.queue == NewRuneforgePowerAlertSystem then
+		elseif newAlertTemplate[frame.queue] then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
 				frame.bg:SetPoint("TOPLEFT", 12, -13)

@@ -32,18 +32,6 @@ local function reskinTableAttribute(frame)
 end
 
 C.themes["Blizzard_DebugTools"] = function()
-	-- EventTraceFrame
-	F.StripTextures(EventTraceFrame)
-	F.SetBD(EventTraceFrame)
-	F.ReskinClose(EventTraceFrameCloseButton, EventTraceFrame, -7, -7)
-
-	local bg, bu = EventTraceFrameScroll:GetRegions()
-	bg:Hide()
-	bu:SetAlpha(0)
-	bu:SetWidth(16)
-	bu.bg = F.CreateBDFrame(EventTraceFrame, 0, true)
-	bu.bg:SetAllPoints(bu)
-
 	-- Table Attribute Display
 	reskinTableAttribute(TableAttributeDisplay)
 	hooksecurefunc(TableInspectorMixin, "InspectTable", reskinTableAttribute)
@@ -51,9 +39,6 @@ C.themes["Blizzard_DebugTools"] = function()
 	-- Tooltips
 	if F.ReskinTooltip then
 		F.ReskinTooltip(FrameStackTooltip)
-		F.ReskinTooltip(EventTraceTooltip)
 		FrameStackTooltip:SetScale(UIParent:GetScale())
-		EventTraceTooltip:SetParent(UIParent)
-		EventTraceTooltip:SetFrameStrata("TOOLTIP")
 	end
 end

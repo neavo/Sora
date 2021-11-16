@@ -33,6 +33,19 @@ local function ReskinSessionDialog(_, dialog)
 	end
 end
 
+local function ReskinAWQHeader()
+	if IsAddOnLoaded("AngrierWorldQuests") then
+		local button = _G["AngrierWorldQuestsHeader"]
+		if button and not button.styled then
+			F.ReskinCollapse(button, true)
+			button:GetPushedTexture():SetAlpha(0)
+			button:GetHighlightTexture():SetAlpha(0)
+
+			button.styled = true
+		end
+	end
+end
+
 tinsert(C.defaultThemes, function()
 	-- Quest frame
 
@@ -60,6 +73,7 @@ tinsert(C.defaultThemes, function()
 	F.StripTextures(DetailsFrame)
 	F.StripTextures(DetailsFrame.RewardsFrame)
 	F.StripTextures(DetailsFrame.ShareButton)
+	DetailsFrame.Bg:SetAlpha(0)
 	DetailsFrame.SealMaterialBG:SetAlpha(0)
 
 	F.Reskin(DetailsFrame.BackButton)
@@ -102,6 +116,8 @@ tinsert(C.defaultThemes, function()
 		for header in QuestScrollFrame.covenantCallingsHeaderFramePool:EnumerateActive() do
 			ReskinQuestHeader(header, true)
 		end
+
+		ReskinAWQHeader()
 	end)
 
 	-- Complete quest frame
@@ -118,6 +134,7 @@ tinsert(C.defaultThemes, function()
 	F.Reskin(QuestLogPopupDetailFrame.AbandonButton)
 	F.Reskin(QuestLogPopupDetailFrame.TrackButton)
 	F.Reskin(QuestLogPopupDetailFrame.ShareButton)
+	QuestLogPopupDetailFrame.SealMaterialBG:SetAlpha(0)
 
 	-- Show map button
 
