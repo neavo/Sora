@@ -1,10 +1,28 @@
-tag 55a9ff818dc03e1cbf4754c3c815c32a5ddf8b7e 9.0.2.1
+tag 7cf793cdc3ea8eb32a578e1dc11e518e688fd6e9 9.0.2.2
 Author:	semlar <teslagraafs@gmail.com>
-Date:	Sat Nov 28 14:01:32 2020 -0500
+Date:	Fri Feb 19 01:44:24 2021 -0500
 
-commit 7d2512b74453c158cde9cf2250ac1ab04e82ca07
+commit e6699278886f483debbdb69491223ddaca0d32d4
 Author: semlar <teslagraafs@gmail.com>
-Date:   Sat Nov 28 14:01:17 2020 -0500
+Date:   Fri Feb 19 01:44:09 2021 -0500
 
-    Fix error caused by maps with Bastion nodes
+    Bump toc version
+
+commit 438181349eb2c367319457ae7efe42cd52b2e0a6
+Author: Adrian L Lange <p3lim@users.noreply.github.com>
+Date:   Wed Feb 10 16:20:04 2021 +0100
+
+    Hide discovered POIs while active
+    
+    The FlightPointPin(s) show all flight points as POIs, even ones undiscovered, and when WFM shows its pins they get nudged out of position.
+    This patch will hide the POIs that are known, and un-nudge the ones that are not.
+
+commit 438181349eb2c367319457ae7efe42cd52b2e0a6
+Author: Adrian L Lange <p3lim@users.noreply.github.com>
+Date:   Wed Feb 10 16:20:04 2021 +0100
+
+    Hide discovered POIs while active
+    
+    The FlightPointPin(s) show all flight points as POIs, even ones undiscovered, and when WFM shows its pins they get nudged out of position.
+    This patch will hide the POIs that are known, and un-nudge the ones that are not.
 
