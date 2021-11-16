@@ -1,9 +1,9 @@
-## Interface: 90002
+## Interface: 90100
 
 ## Title: Quester
 ## Notes: Improved Questing Experience
 ## Author: Nevcairiel
-## Version: 9.0.2.0
+## Version: 9.1.0.0
 ## X-Credits: SmoothQuest by Ammo
 ## X-Website: http://www.wowace.com/addons/quester/
 ## X-Curse-Project-ID: 84833
@@ -12,6 +12,7 @@
 
 ## SavedVariables: QuesterDB
 
+#@no-lib-strip@
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 
@@ -25,6 +26,7 @@ libs\AceConsole-3.0\AceConsole-3.0.xml
 libs\AceConfig-3.0\AceConfig-3.0.xml
 
 libs\LibSink-2.0\lib.xml
+#@end-no-lib-strip@
 
 Localization.lua
 Quester.lua
