@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90100
 ## Notes: Simple Map Mod
 ## Notes-zhCN: 简单实用的地图模块
 ## Notes-frFR: Simples modifications de la carte.
@@ -6,13 +6,14 @@
 ## Author: Nevcairiel
 ## SavedVariables: MapsterDB
 ## X-Category: Map
-## Version: 1.9.1
+## Version: 1.9.5
 ## X-License: All rights reserved.
 ## X-Curse-Project-ID: 14376
 ## X-WoWI-ID: 8306
 
 ## OptionalDeps: Ace3, LibWindow-1.1
 
+#@no-lib-strip@
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
 
@@ -28,6 +29,7 @@ Libs\AceConsole-3.0\AceConsole-3.0.xml
 Libs\AceConfig-3.0\AceConfig-3.0.xml
 
 Libs\LibWindow-1.1\LibWindow-1.1.lua
+#@end-no-lib-strip@
 
 Locale\locale.xml
 
