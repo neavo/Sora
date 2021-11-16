@@ -1,5 +1,22 @@
 # tullaRange release notes
 
+## 9.1.0
+
+* Updated TOC files for 9.1.0
+
+## 9.0.4
+
+* Add Burning Crusade Classic support
+
+## 9.0.3
+
+* If you create a macro with a name that starts with #, tullaRange will now use spell cost checks to determine if the ability is usable (thanks merijn)
+* Updated TOCs for various wow versions
+
+## 9.0.2
+
+* Updated TOC for 9.0.2
+
 ## 9.0.1
 
 * Fix a nil value exception when moving pet actions
@@ -37,10 +54,6 @@
 ## 8.2.2
 
 * Added classic build
-
-## 9.0.2
-
-* Updated TOC for 9.0.2
 
 ## 8.2.1
 
