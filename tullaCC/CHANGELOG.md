@@ -1,6 +1,6 @@
 # tullaCC
 
-## [9.0.0](https://github.com/tullamods/tullaCC/tree/9.0.0) (2020-10-13)
-[Full Changelog](https://github.com/tullamods/tullaCC/commits/9.0.0) [Previous Releases](https://github.com/tullamods/tullaCC/releases)
+## [9.0.1](https://github.com/tullamods/tullaCC/tree/9.0.1) (2021-05-06)
+[Full Changelog](https://github.com/tullamods/tullaCC/commits/9.0.1) [Previous Releases](https://github.com/tullamods/tullaCC/releases)
 
-- minor code cleanup  
+- update packager  
