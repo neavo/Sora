@@ -24,22 +24,25 @@ LibEvent:attachEvent("VARIABLES_LOADED", function()
     LibSchedule:AddTask({
         identity = "GetAllMountSource",
         elasped  = 10,
-        begined  = GetTime() + 10,
+        begined  = GetTime() + 2,
         expired  = GetTime() + 100,
         override = true,
         onExecute = GetAllMountSource,
     })
 end)
 
-hooksecurefunc(GameTooltip, "SetUnitBuff", function(self, ...)
-    local spellID = select(10, UnitBuff(...))
-    if (mounts[spellID]) then
-        self:AddLine(" ")
-        if (mounts[spellID].isCollected) then
-            self:AddDoubleLine(mounts[spellID].source, COLLECTED, 1, 1, 1, 0.1, 1, 0.1)
-        else
-            self:AddLine(mounts[spellID].source, 1, 1, 1)
+
+LibEvent:attachTrigger("tooltip:aura", function(self, tip, args)
+    if (args and args[2] and args[2].intVal) then
+        local spellID = args[2].intVal
+        if (mounts[spellID]) then
+            tip:AddLine(" ")
+            if (mounts[spellID].isCollected) then
+                tip:AddDoubleLine(mounts[spellID].source, COLLECTED, 1, 1, 1, 0.1, 1, 0.1)
+            else
+                tip:AddLine(mounts[spellID].source, 1, 1, 1)
+            end
+            tip:Show()
         end
-        self:Show()
     end
 end)

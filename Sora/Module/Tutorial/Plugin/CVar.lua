@@ -32,76 +32,65 @@ local function OnPlayerLogin(self, event, ...)
     -- 启用 - 自动置顶当前区域任务
     SetCVar("autoQuestProgress", 1)
 
-    -- 系统 - 网络
-    -- 启用 - 高级战斗日志
-    SetCVar("advancedCombatLogging", 1)
-
-    -- 系统 - 音乐
-    -- 启用 - 音乐循环
-    SetCVar("Sound_ZoneMusicNoDelay", 1)
-
-    -- 系统 - 音乐
-    -- 启用 - 背景音乐
-    SetCVar("Sound_EnableSoundWhenGameIsInBG", 1)
-
-    -- 系统 - 音乐
-    -- 启用 - 混响
-    SetCVar("sound_EnableReverb", 1)
-
-    -- 系统 - 音乐
-    -- 启用 - 距离过滤
-    SetCVar("Sound_EnablePositionalLowPassFilter", 1)
-
-    -- 界面 - 控制
-    -- 启用 - 自动取消飞行
+    -- 控制 - 启用自动取消飞行
     SetCVar("autoDismountFlying", 1)
 
-    -- 界面 - 控制
-    -- 启用 - 自动拾取
+    -- 控制 - 启用 - 自动拾取
     SetCVar("autoLootDefault", 1)
 
-    -- 界面 - 战斗
-    -- 启用 - 自动自我施法
-    SetCVar("autoSelfCast", 1)
+    -- 控制 - 启用合并背包
+    SetCVar("combinedBags", 1)
 
-    -- 界面 - 战斗
-    -- 启用 - 生命值过低时不闪烁屏幕
-    SetCVar("doNotFlashLowHealthWarning", 1)
+    -- 控制 - 设置镜头跟随模式为移动时只调整水平角度
+    SetCVar("cameraSmoothStyle", 1)
 
-    -- 界面 - 显示
-    -- 关闭 - 教程
+    -- 界面 - 设置NPC姓名为敌对及任务NPC
+    SetCVar("UnitNameHostleNPC", 0)
+    SetCVar("ShowQuestUnitCircles", 0)
+
+    -- 界面 - 关闭教程
     SetCVar("showTutorials", 0)
 
-    -- 界面 - 动作条
-    -- 启用 - 所有动作条
+    -- 动作条 - 启用2-7号动作条
     C_Timer.After(
         1 / 30,
         function(args)
-            SetActionBarToggles(1, 1, 1, 1)
+            SetActionBarToggles(1, 1, 1, 1, 1, 1)
         end
     )
 
-    -- 界面 - 动作条
-    -- 启用 - 总是显示所有动作条
-    SetCVar("alwaysShowActionBars", 1)
-
-    -- 界面 - 动作条
-    -- 关闭 - 显示冷却时间
+    -- 动作条 - 关闭显示冷却时间
     SetCVar("countdownForCooldowns", 0)
 
-    -- 界面 - 名字
-    -- NPC姓名 - 仅任务NPC
-    SetCVar("UnitNameHostleNPC", 0)
-    SetCVar("UnitNameInteractiveNPC", 0)
-    SetCVar("UnitNameFriendlySpecialNPCName", 1)
-
-    -- 界面 - 名字
-    -- 关闭 - 显示个人资源
+    -- 战斗 - 关闭显示个人资源
     SetCVar("nameplateShowSelf", 0)
 
-    -- 界面 - 镜头
-    -- 镜头跟随模式 - 移动时只调整水平角度
-    SetCVar("cameraSmoothStyle", 1)
+    -- 战斗 - 启用自动自我施法
+    SetCVar("autoSelfCast", 1)
+
+    -- 战斗 - 启用生命值过低时不闪烁屏幕
+    SetCVar("doNotFlashLowHealthWarning", 1)
+
+    -- 音频 - 设置伴音通道
+    SetCVar("Sound_NumChannels", 128)
+
+    -- 音频 - 启用音乐循环
+    SetCVar("Sound_ZoneMusicNoDelay", 1)
+
+    -- 音频 - 启用背景音乐
+    SetCVar("Sound_EnableSoundWhenGameIsInBG", 1)
+
+    -- 音频 - 启用混响
+    SetCVar("sound_EnableReverb", 1)
+
+    -- 音频 - 启用距离过滤
+    SetCVar("Sound_EnablePositionalLowPassFilter", 1)
+
+    -- 网络 - 启动当IPv6可用时开启
+    SetCVar("useIPv6", 1)
+
+    -- 网络 - 启用高级战斗日志
+    SetCVar("advancedCombatLogging", 1)
 end
 
 -- Handler

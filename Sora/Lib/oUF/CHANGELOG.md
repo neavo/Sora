@@ -1,3 +1,90 @@
+**Changes in 11.1.1:**
+
+- _Adrian L Lange (1):_
+    1. Update Interface version
+- 1 file changed, 1 insertion(+), 1 deletion(-)
+
+**Changes in 11.1.0:**
+
+- _Adrian L Lange (2):_
+    1. blizzard: Disable PlayerFrame.classPowerBar
+    2. blizzard: Remove legacy code that is now causing problems
+- _Val Voronov (8):_
+    1. events: Remove unnecessary workaround ([#629](https://github.com/oUF-wow/oUF/issues/629))
+    2. auras: Update element ([#624](https://github.com/oUF-wow/oUF/issues/624))
+    3. blizzard: Better way of disabling unit frames ([#623](https://github.com/oUF-wow/oUF/issues/623))
+    4. blizzard: Properly disable unit frames ([#619](https://github.com/oUF-wow/oUF/issues/619))
+    5. castbar: Fix element disabling ([#618](https://github.com/oUF-wow/oUF/issues/618))
+    6. blizzard: Properly disable unit frames ([#617](https://github.com/oUF-wow/oUF/issues/617))
+    7. auras: Add isPlayerAura to data ([#616](https://github.com/oUF-wow/oUF/issues/616))
+    8. classpower: All classes can have charged points ([#615](https://github.com/oUF-wow/oUF/issues/615))
+- 6 files changed, 381 insertions(+), 282 deletions(-)
+
+**Changes in 11.0.0:**
+
+- _Adrian L Lange (19):_
+    1. colors: Document CreateColor
+    2. colors: Use pre-generated hex color
+    3. colors: Use existing methods of ColorMixin
+    4. auras: Linting fix
+    5. castbar: Update docs
+    6. auras: Update docs
+    7. leaderindicator: Rename variable to be more descriptive
+    8. auras: Linting pass
+    9. auras: Rename Icon -> Button to be consistent
+    10. Update Interface version
+    11. castbar: Fix linting
+    12. castbar: Fix error with empowered casts on nameplates
+    13. castbar: Fix empowering holding "stage"
+    14. castbar: Fix error in docs
+    15. castbar: Fix error in pips updater
+    16. castbar: Follow styleguide
+    17. elements: StatusBar:GetStatusBarAtlas() method removed
+    18. castbar: Fix linting
+    19. castbar: Add untested/unfinished empowering stages
+- _Rainrider (3):_
+    1. elements: reference color components by index instead of name ([#605](https://github.com/oUF-wow/oUF/issues/605))
+    2. core: use ColorMixin for colors ([#604](https://github.com/oUF-wow/oUF/issues/604))
+    3. tags: look for args in the suffix only ([#602](https://github.com/oUF-wow/oUF/issues/602))
+- _Val Voronov (18):_
+    1. colors: Override Blizz SetRGBA
+    2. blizzard: Update arena frame handling
+    3. castbar: Update pip code
+    4. auras: Update sub-element name capitalisation
+    5. leaderindicator: Revamp element
+    6. auras: Fix UpdateAuras flow
+    7. castbar: Fix more errors
+    8. core: Fix eventless object handling
+    9. auras: Remove registration for clicks
+    10. auras: Element revamp
+    11. castbar: Add basic empowerment support
+    12. castbar: Fix errors
+    13. classpower: Add Evoker Essence support
+    14. auras: SetText now only accepts strings and nil
+    15. portrait: Update element ([#609](https://github.com/oUF-wow/oUF/issues/609))
+    16. castbar: Use proper spell names ([#610](https://github.com/oUF-wow/oUF/issues/610))
+    17. core: Run UAE on UEV ([#606](https://github.com/oUF-wow/oUF/issues/606))
+    18. core: Rework how eventless units are handled ([#603](https://github.com/oUF-wow/oUF/issues/603))
+- 20 files changed, 968 insertions(+), 464 deletions(-)
+
+**Changes in 10.1.1:**
+
+- _Adrian L Lange (5):_
+    1. core: Delay arena prep if in combat ([#598](https://github.com/oUF-wow/oUF/issues/598))
+    2. core: Check if event is unitless ([#599](https://github.com/oUF-wow/oUF/issues/599))
+    3. Bump packager version ([#597](https://github.com/oUF-wow/oUF/issues/597))
+    4. Update Interface version ([#596](https://github.com/oUF-wow/oUF/issues/596))
+    5. Disable color output from luacheck ([#591](https://github.com/oUF-wow/oUF/issues/591))
+- _Rainrider (1):_
+    1. Add linting configuration ([#557](https://github.com/oUF-wow/oUF/issues/557))
+- _Val Voronov (3):_
+    1. core: Evaluate units on PEW ([#601](https://github.com/oUF-wow/oUF/issues/601))
+    2. threatindicator: Fix docs
+    3. tags: Use UnitEffectiveLevel instead of UnitLevel
+- _github-actions[bot] (1):_
+    1. Update license ([#595](https://github.com/oUF-wow/oUF/issues/595))
+- 26 files changed, 276 insertions(+), 76 deletions(-)
+
 **Changes in 10.1.0:**
 
 - _Adrian L Lange (7):_

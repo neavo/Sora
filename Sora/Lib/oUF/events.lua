@@ -1,11 +1,11 @@
-local parent, ns = ...
+local _, ns = ...
 local oUF = ns.oUF
 local Private = oUF.Private
 
 local argcheck = Private.argcheck
-local error = Private.error
 local validateEvent = Private.validateEvent
 local validateUnit = Private.validateUnit
+local isUnitEvent = Private.isUnitEvent
 local frame_metatable = Private.frame_metatable
 
 -- Original event methods
@@ -49,10 +49,7 @@ function Private.UpdateUnits(frame, unit, realUnit)
 				-- we don't want to re-register unitless/shared events in case
 				-- someone added them by hand to the unitEvents table
 				if(not registered or unit1 and (unit1 ~= unit or unit2 ~= realUnit)) then
-					-- BUG: passing explicit nil units to RegisterUnitEvent
-					-- makes it silently fall back to RegisterEvent, using ''
-					-- instead of explicit nils doesn't cause this behaviour
-					registerUnitEvent(frame, event, unit, realUnit or '')
+					registerUnitEvent(frame, event, unit, realUnit)
 				end
 
 				if(resetRealUnit) then
@@ -145,6 +142,10 @@ function frame_metatable.__index:RegisterEvent(event, func, unitless)
 				if(secondaryUnits[event]) then
 					unit2 = secondaryUnits[event][unit1]
 				end
+
+				-- be helpful and throw a custom error when attempting to register
+				-- an event that is unitless
+				assert(isUnitEvent(event, unit1), string.format('Event "%s" is not an unit event', event))
 
 				registerUnitEvent(self, event, unit1, unit2 or '')
 			end

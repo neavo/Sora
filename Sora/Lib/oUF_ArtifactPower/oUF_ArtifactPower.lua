@@ -69,8 +69,8 @@ end
 local function GetHeartOfAzeroth()
 	local azeriteItemLocation = C_AzeriteItem and C_AzeriteItem.FindActiveAzeriteItem()
 
-	if azeriteItemLocation == nil then
-		return
+	if not azeriteItemLocation then
+		return nil, nil
 	end
 
 	local item = Item:CreateFromItemLocation(azeriteItemLocation)

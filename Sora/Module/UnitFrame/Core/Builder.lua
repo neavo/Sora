@@ -423,7 +423,7 @@ S.UnitFrame.CreateCastbar = function(self, unit, ...)
 
             castbar:ClearAllPoints()
             castbar:SetSize(raidWidth * 5 + 8 * (5 - 1) - (24 + spacing), 24)
-            castbar:SetPoint("BOTTOM", UIParent, "BOTTOM", -(24 + spacing) / 2, 140)
+            castbar:SetPoint("BOTTOM", UIParent, "BOTTOM", -(24 + spacing) / 2, 143)
 
             castbar.Icon:ClearAllPoints()
             castbar.Icon:SetSize(castbar:GetHeight(), castbar:GetHeight())

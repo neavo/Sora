@@ -26,7 +26,7 @@ alertFrame:SetScript("OnUpdate", function(self, elapsed)
     if (self.timer > self.totalTime) then self:Hide() end
     if (self.timer <= 0.5) then
         self:SetAlpha(self.timer * 2)
-    elseif (self.timer > 2) then
+    elseif (self.timer > 2 and self.timer/self.totalTime <=1 ) then
         self:SetAlpha(1-self.timer/self.totalTime)
     end
 end)

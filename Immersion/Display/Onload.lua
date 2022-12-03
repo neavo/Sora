@@ -42,8 +42,12 @@ for _, event in pairs({
 --	'MERCHANT_SHOW', 	-- Force close gossip on merchant interaction.
 	'NAME_PLATE_UNIT_ADDED', 	-- For nameplate mode
 	'NAME_PLATE_UNIT_REMOVED', 	-- For nameplate mode
-	'SUPER_TRACKING_CHANGED',
-}) do frame:RegisterEvent(event) end
+	ImmersionAPI.IsRetail and 'SUPER_TRACKING_CHANGED',
+	ImmersionAPI.IsWoW10 and 'PLAYER_INTERACTION_MANAGER_FRAME_SHOW',
+}) do if event then
+		frame:RegisterEvent(event)
+	end
+end
 
 
 frame.IgnoreResetEvent = {
@@ -78,8 +82,6 @@ for _, event in pairs({
 }) do titles:RegisterEvent(event) end
 
 titles:RegisterUnitEvent('UNIT_QUEST_LOG_CHANGED', 'player')
-
-
 
 ----------------------------------
 -- Load SavedVaribles, config and compat
@@ -171,28 +173,21 @@ function frame:ADDON_LOADED(name)
 	end
 end
 
-----------------------------------
--- Hide regular frames
-----------------------------------
-L.HideFrame(GossipFrame)
-L.HideFrame(QuestFrame)
---L.HideFrame(ItemTextFrame)
-----------------------------------
-
-----------------------------------
 -- Set backdrops on elements
-----------------------------------
-L.SetBackdrop(talkbox.Hilite, L.Backdrops.GOSSIP_HILITE)
+L.SetBackdrop(talkbox.Hilite, L.Backdrops.TALKBOX_HILITE)
 
-----------------------------------
 -- Initiate titlebuttons
-----------------------------------
 L.Mixin(titles, L.TitlesMixin)
 
-----------------------------------
 -- Initiate elements
-----------------------------------
 L.Mixin(elements, L.ElementsMixin)
+
+-- Initiate reputation bar
+L.Mixin(talkbox.ReputationBar, NPCFriendshipStatusBarMixin or {})
+talkbox.ReputationBar.Update = talkbox.ReputationBar.Update or nop;
+if talkbox.ReputationBar.SetColorFill then
+	talkbox.ReputationBar:SetColorFill(1, 1, 1)
+end
 
 ----------------------------------
 -- Set up dynamically sized frames
@@ -208,18 +203,13 @@ do
 	L.Mixin(inspector.Choices, AdjustToChildren)
 end
 
-----------------------------------
--- Set point since the relative
--- region didn't exist on load.
-----------------------------------
+-- Set point since the relative region didn't exist on load.
 local name = talkbox.NameFrame.Name
 name:SetPoint('TOPLEFT', talkbox.PortraitFrame.Portrait, 'TOPRIGHT', 2, -19)
 
-----------------------------------
 -- Model script, light
-----------------------------------
 local model = talkbox.MainFrame.Model
-model:SetLight(unpack(L.ModelMixin.LightValues))
+--L.SetLight(model, true, L.ModelMixin.LightValues)
 L.Mixin(model, L.ModelMixin)
 
 ----------------------------------
@@ -290,13 +280,13 @@ titles:SetUserPlaced(false)
 -- Hooks and hacks
 --------------------------------
 
+-- Hide regular frames
+L.HideFrame(GossipFrame)
+L.HideFrame(QuestFrame)
+--L.HideFrame(ItemTextFrame)
+
 -- Handle custom gossip events (new in Shadowlands)
-if CustomGossipFrameManager then
-	frame.gossipHandlers = CustomGossipFrameManager.handlers;
-	GossipFrame_HandleShow = nop; -- let's hope blizz doesn't call this anywhere else
-else
-	frame.gossipHandlers = {}
-end
+frame.gossipHandlers = CustomGossipFrameManager and CustomGossipFrameManager.handlers or {};
 
 -- Anchor the real talking head to the fake talking head,
 -- make it appear IN PLACE of the fake one if the fake one isn't shown.
@@ -304,7 +294,7 @@ do
 	local function HookTalkingHead()
 		-- use this as assertion. if something else beat Immersion to it and manipulated the frame,
 		-- it shouldn't be moved, even if enabled by user. in essence, dummy protection.
-		if UIPARENT_MANAGED_FRAME_POSITIONS.TalkingHeadFrame then
+		if UIPARENT_MANAGED_FRAME_POSITIONS and UIPARENT_MANAGED_FRAME_POSITIONS.TalkingHeadFrame then
 			local managedFramePos = UIPARENT_MANAGED_FRAME_POSITIONS.TalkingHeadFrame
 			local alertFrameIndex, alertFrameSettings
 			local isTalkingHeadMoved, isDragging

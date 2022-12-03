@@ -2,19 +2,176 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local auras = {}
 local size, space, postion = nil, nil, nil
 
 -- Common
-local function DoSkin(aura)
-    aura.count:SetShadowColor(0.00, 0.00, 0.00, 1.00)
-    aura.count:SetShadowOffset(1.00, -1.00)
+local function SortByExpirationTime(l, r)
+    local flag = false
 
-    aura.duration:SetShadowColor(0.00, 0.00, 0.00, 1.00)
-    aura.duration:SetShadowOffset(1.00, -1.00)
+    if not l or not r then
+        flag = flase
+    elseif l.buttonInfo.expirationTime == 0 and r.buttonInfo.expirationTime == 0 then
+        flag = false
+    elseif l.buttonInfo.expirationTime == 0 and r.buttonInfo.expirationTime > 0 then
+        flag = true
+    elseif l.buttonInfo.expirationTime > 0 and r.buttonInfo.expirationTime == 0 then
+        flag = false
+    else
+        flag = l.buttonInfo.expirationTime > r.buttonInfo.expirationTime
+    end
+
+    return flag
 end
 
-local function CreateAnchor()
+local function AuraButtonUpdate(self, info, expanded, ...)
+    if not info or not self.Border or self:GetFilter() == "HELPFUL" then
+        return
+    end
+
+    local color = nil
+
+    if info.debuffType then
+        color = DebuffTypeColor[info.debuffType]
+    else
+        color = {r = 0.00, g = 0.00, b = 0.00}
+    end
+
+    self.shadow:SetBackdropBorderColor(color.r, color.g, color.b, 1.00)
+end
+
+local function AuraButtonUpdateDuration(self, timeLeft, ...)
+    if not timeLeft or timeLeft < 0 then
+        return 0
+    end
+
+    if timeLeft < BUFF_DURATION_WARNING_TIME then
+        self.duration:SetTextColor(1.00, 0.00, 0.00)
+    else
+        self.duration:SetTextColor(1.00, 0.84, 0.00)
+    end
+end
+
+local function BuffFrameUpdateAuraButtons(self, ...)
+    if not self.__Initialized then
+        self.__Initialized = true
+
+        self:ClearAllPoints()
+        self.SetPoint = S.Dummy
+
+        self.AuraContainer:ClearAllPoints()
+        self.AuraContainer.SetPoint = S.Dummy
+
+        self.CollapseAndExpandButton:SetAlpha(0.00)
+        self.CollapseAndExpandButton:ClearAllPoints()
+        self.CollapseAndExpandButton.SetPoint = S.Dummy
+    end
+end
+
+local function BuffFrameAuraContainerUpdateGridLayout(self, auras, ...)
+    table.sort(auras, SortByExpirationTime)
+
+    for k, v in pairs(auras) do
+        if not v.__Initialized then
+            v.__Initialized = true
+
+            v.shadow = S.MakeShadow(v, 4)
+            v.shadow:SetFrameLevel(v:GetFrameLevel() - 1)
+
+            v.count:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+            v.count:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+            v.count:SetShadowOffset(1.00, -1.00)
+
+            v.duration:SetFont(DB.AuraFont, 12, "OUTLINE")
+            v.duration:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+            v.duration:SetShadowOffset(1.00, -1.00)
+        end
+
+        v:SetScale(1.00)
+        v:SetSize(size, size)
+        v:ClearAllPoints()
+
+        v.Icon:SetAllPoints()
+        v.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+        v.count:ClearAllPoints()
+        v.count:SetPoint("TOPRIGHT", -1.0, -1.5)
+
+        v.duration:ClearAllPoints()
+        v.duration:SetPoint("BOTTOM", 2, -10)
+
+        if v.buttonInfo.expirationTime <= 0 then
+            v.duration:Show()
+            v.duration:SetText("N/A")
+            v.duration:SetTextColor(1.00, 0.84, 0.00)
+        end
+
+        if k == 1 then
+            v:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, 0)
+        elseif mod(k, 12) == 1 then
+            v:SetPoint("TOP", auras[k - 12], "BOTTOM", 0, -space)
+        else
+            v:SetPoint("RIGHT", auras[k - 1], "LEFT", -space, 0)
+        end
+    end
+end
+
+local function DebuffFrameAuraContainerUpdateGridLayout(self, auras, ...)
+    table.sort(auras, SortByExpirationTime)
+
+    for k, v in pairs(auras) do
+        if not v.__Initialized then
+            v.__Initialized = true
+
+            v.Border:Hide()
+            v.Border:ClearAllPoints()
+            v.Border.SetPoint = S.Dummy
+
+            v.shadow = S.MakeShadow(v, 4)
+            v.shadow:SetFrameLevel(v:GetFrameLevel() - 1)
+
+            v.count:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+            v.count:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+            v.count:SetShadowOffset(1.00, -1.00)
+
+            v.duration:SetFont(DB.AuraFont, 12, "OUTLINE")
+            v.duration:SetShadowColor(0.00, 0.00, 0.00, 1.00)
+            v.duration:SetShadowOffset(1.00, -1.00)
+        end
+
+        v:ClearAllPoints()
+        v:SetSize(size, size)
+
+        v.Icon:ClearAllPoints()
+        v.Icon:SetAllPoints()
+        v.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+        v.Border:SetTexCoord(0.296875, 0.5703125, 0, 0.515625)
+        v.Border:SetVertexColor(1.00, 0, 0)
+
+        v.count:ClearAllPoints()
+        v.count:SetPoint("TOPRIGHT", -1.0, -1.5)
+
+        v.duration:ClearAllPoints()
+        v.duration:SetPoint("BOTTOM", 2, -10)
+
+        if v.buttonInfo.expirationTime <= 0 then
+            v.duration:Show()
+            v.duration:SetText("N/A")
+            v.duration:SetTextColor(1.00, 0.84, 0.00)
+        end
+
+        if k == 1 then
+            v:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, -(size + space) * 3)
+        elseif mod(k, 12) == 1 then
+            v:SetPoint("TOP", auras[k - 12], "BOTTOM", 0, -space)
+        else
+            v:SetPoint("RIGHT", auras[k - 1], "LEFT", -space, 0)
+        end
+    end
+end
+
+-- Begin
+local function SetAnchor()
     local anchor = S.CreateButton(UIParent, 16, "SoraAura")
     anchor:Hide()
     anchor:SetText("状态")
@@ -28,6 +185,15 @@ local function CreateAnchor()
     anchor:SetClampedToScreen(true)
 
     if C.Config.Aura.Mover and C.Config.Aura.Mover.SoraAura then
+        local frames = EditModeManagerFrame.registeredSystemFrames
+        for i = #frames, 1, -1 do
+            if frames[i]:GetName() == "BuffFrame" or frames[i]:GetName() == "DebuffFrame" then
+                table.remove(frames, i)
+            end
+        end
+
+        EditModeManagerFrame.AccountSettings.RefreshAuraFrame = S.Dummy
+
         anchor:SetScript("OnDragStop", C.Config.Aura.Mover.SoraAura.OnDragStop)
         anchor:SetScript("OnDragStart", C.Config.Aura.Mover.SoraAura.OnDragStart)
 
@@ -35,91 +201,14 @@ local function CreateAnchor()
     end
 end
 
--- Hook
-local function HookAuraButtonUpdateDuration(self, timeLeft, ...)
-    if not timeLeft then
-        return 0
-    end
+local function SetHookSecureFunction()
+    hooksecurefunc(BuffButtonMixin, "UpdateDuration", AuraButtonUpdateDuration)
+    hooksecurefunc(DebuffButtonMixin, "Update", AuraButtonUpdate)
+    hooksecurefunc(DebuffButtonMixin, "UpdateDuration", AuraButtonUpdateDuration)
 
-    if timeLeft < BUFF_DURATION_WARNING_TIME then
-        self.duration:SetTextColor(1.00, 0.00, 0.00)
-    else
-        self.duration:SetTextColor(1.00, 0.84, 0.00)
-    end
-end
-
-local function HookDebuffButtonUpdateAnchors(name, index, ...)
-    table.wipe(auras)
-
-    for i = 1, DEBUFF_MAX_DISPLAY do
-        local aura = _G["DebuffButton" .. i]
-
-        if not aura then
-            break
-        end
-
-        table.insert(auras, aura)
-    end
-
-    for k, v in pairs(auras) do
-        if not v.__skined then
-            DoSkin(v)
-            v.__skined = true
-        end
-
-        v:ClearAllPoints()
-        v:SetSize(size, size)
-
-        if k == 1 then
-            v:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, -(size * 3 + space * 3))
-        elseif mod(k, 12) == 1 then
-            v:SetPoint("TOP", auras[k - 12], "BOTTOM", 0, -space)
-        else
-            v:SetPoint("RIGHT", auras[k - 1], "LEFT", -space, 0)
-        end
-    end
-end
-
-local function HookBuffFrameUpdateAllBuffAnchors(self, ...)
-    table.wipe(auras)
-
-    for i = 1, BuffFrame.numEnchants do
-        local aura = _G["TempEnchant" .. i]
-
-        if not aura then
-            break
-        end
-
-        table.insert(auras, aura)
-    end
-
-    for i = 1, BUFF_MAX_DISPLAY do
-        local aura = _G["BuffButton" .. i]
-
-        if not aura then
-            break
-        end
-
-        table.insert(auras, aura)
-    end
-
-    for k, v in pairs(auras) do
-        if not v.__skined then
-            DoSkin(v)
-            v.__skined = true
-        end
-
-        v:ClearAllPoints()
-        v:SetSize(size, size)
-
-        if k == 1 then
-            v:SetPoint("TOPRIGHT", SoraAura, "TOPRIGHT", 0, 0)
-        elseif mod(k, 12) == 1 then
-            v:SetPoint("TOP", auras[k - 12], "BOTTOM", 0, -space)
-        else
-            v:SetPoint("RIGHT", auras[k - 1], "LEFT", -space, 0)
-        end
-    end
+    hooksecurefunc(BuffFrame, "UpdateAuraButtons", BuffFrameUpdateAuraButtons)
+    hooksecurefunc(BuffFrame.AuraContainer, "UpdateGridLayout", BuffFrameAuraContainerUpdateGridLayout)
+    hooksecurefunc(DebuffFrame.AuraContainer, "UpdateGridLayout", DebuffFrameAuraContainerUpdateGridLayout)
 end
 
 -- Event
@@ -128,12 +217,8 @@ local function OnInitialize()
 end
 
 local function OnPlayerLogin(self, event, ...)
-    OnInitialize()
-    CreateAnchor()
-
-    hooksecurefunc("AuraButton_UpdateDuration", HookAuraButtonUpdateDuration)
-    hooksecurefunc("DebuffButton_UpdateAnchors", HookDebuffButtonUpdateAnchors)
-    hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", HookBuffFrameUpdateAllBuffAnchors)
+    SetAnchor()
+    SetHookSecureFunction()
 end
 
 -- Handler

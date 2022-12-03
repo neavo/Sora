@@ -7,20 +7,15 @@
 	<Script file = "Core\Builder.lua" />
 
 	<Script file = "RaidAuras\All.lua" />
-	<Script file = "RaidAuras\SLRaid.lua" />
-	<Script file = "RaidAuras\SLDungeon.lua" />
-	<Script file = "RaidAuras\BFARaid.lua" />
-	<Script file = "RaidAuras\BFADungeon.lua" />
-	<Script file = "RaidAuras\LegionRaid.lua" />
-	<Script file = "RaidAuras\LegionDungeon.lua" />
-	<Script file = "RaidAuras\WoDRaid.lua" />
-	<Script file = "RaidAuras\WoDDungeon.lua" />
-	<Script file = "RaidAuras\MoPRaid.lua" />
-	<Script file = "RaidAuras\MoPDungeon.lua" />
-	<Script file = "RaidAuras\CataRaid.lua" />
-	<Script file = "RaidAuras\CataDungeon.lua" />
-	<Script file = "RaidAuras\WLKRaid.lua" />
-	<Script file = "RaidAuras\WLKDungeon.lua" />
+	<Script file = "RaidAuras\SL.lua" />
+	<Script file = "RaidAuras\BFA.lua" />
+	<Script file = "RaidAuras\Legion.lua" />
+	<Script file = "RaidAuras\WoD.lua" />
+	<Script file = "RaidAuras\MoP.lua" />
+	<Script file = "RaidAuras\Cata.lua" />
+	<Script file = "RaidAuras\WotLK.lua" />
+	<Script file = "RaidAuras\Classic.lua" />
+
 	<Script file = "RaidAuras\TBCRaid.lua" />
 	<Script file = "RaidAuras\TBCDungeon.lua" />
 

@@ -17,6 +17,7 @@ hooksecurefunc("CreateFrame", CreateFrame_Hook)
 local f = CreateFrame("CheckButton", "FocuserButton", UIParent, "SecureActionButtonTemplate")
 f:SetAttribute("type1", "macro")
 f:SetAttribute("macrotext", "/focus mouseover")
+f:RegisterForClicks("AnyDown", "AnyUp")
 SetOverrideBindingClick(FocuserButton, true, modifier.."-BUTTON"..mouseButton, "FocuserButton")
 
 local duf = {

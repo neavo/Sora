@@ -36,6 +36,7 @@ ns.L = {
     PaperDoll                   = "人物面板",
     Chat                        = "聊天",
     Loot                        = "拾取",
+    ShowGemAndEnchant           = "显示宝石和附魔信息",
 }
 
 BINDING_NAME_InspectRaidFrame = "显示团队观察面板"

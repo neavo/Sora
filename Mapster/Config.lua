@@ -6,6 +6,7 @@ All rights reserved.
 local Mapster = LibStub("AceAddon-3.0"):GetAddon("Mapster")
 local L = LibStub("AceLocale-3.0"):GetLocale("Mapster")
 
+local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
 local WoWClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE)
 
 local optGetter, optSetter
@@ -20,6 +21,27 @@ do
 		Mapster.db.profile[key] = value
 		Mapster:Refresh()
 	end
+end
+
+local function showStaticPopupReload()
+	if not StaticPopupDialogs["MAPSTER_RELOAD_UI_SCALING"] then
+		StaticPopupDialogs["MAPSTER_RELOAD_UI_SCALING"] = {
+			text = L["After toggling Map Scaling in Mapster you should reload your UI for the changes to fully take effect. Do you want to reload now?"],
+			button1 = L["Reload Now"],
+			button2 = NO,
+
+			OnAccept = function(f)
+				ReloadUI()
+			end,
+
+			timeout = 0,
+			hideOnEscape = 1,
+			preferredIndex = STATICPOPUP_NUMDIALOGS,
+		}
+	end
+
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+	StaticPopup_Show("MAPSTER_RELOAD_UI_SCALING")
 end
 
 local options, moduleOptions = nil, {}
@@ -52,7 +74,7 @@ local function getOptions()
 							name = MAP_FADE_TEXT,
 							desc = L["The map will fade out to the configured Fade Alpha level when you start moving."],
 							get = function() return GetCVarBool("mapFade") end,
-							set = function(_, v) v = v and 1 or 0; SetCVar("mapFade", v); end,
+							set = function(_, v) v = v and 1 or 0; SetCVar("mapFade", v); Mapster:Refresh(); end,
 							width = "full",
 						},
 						alpha = {
@@ -72,8 +94,20 @@ local function getOptions()
 							isPercent = true,
 							disabled = function() return not GetCVarBool("mapFade") end,
 						},
-						scaledesc = {
+						enableScaling = {
 							order = 5,
+							type = "toggle",
+							name = L["Enable Map Scaling (Can break the UI in WoW 10.0)"],
+							desc = L["Enable the ability to change the scale of the map. Due to issues in WoW 10.0 this can break your UI in unexpected ways."],
+							width = "full",
+							hidden = not WoWRetail,
+							set = function(...)
+								optSetter(...)
+								showStaticPopupReload()
+							end,
+						},
+						scaledesc = {
+							order = 5.1,
 							type = "description",
 							name = L["Change the scale of the world map if you do not want the whole screen filled while the map is open."],
 						},
@@ -84,6 +118,13 @@ local function getOptions()
 							type = "range",
 							min = 0.1, max = 2, bigStep = 0.01,
 							isPercent = true,
+							disabled = function() return WoWRetail and not Mapster.db.profile.enableScaling end,
+						},
+						nl_scale = {
+							order = 6.1,
+							type = "description",
+							name = "",
+							hidden = not WoWRetail,
 						},
 						arrowScale = {
 							order = 7,
@@ -146,7 +187,9 @@ local function optFunc()
 	-- open the profiles tab before, so the menu expands
 	InterfaceOptionsFrame_OpenToCategory(Mapster.optionsFrames.Profiles)
 	InterfaceOptionsFrame_OpenToCategory(Mapster.optionsFrames.Mapster)
-	InterfaceOptionsFrame:Raise()
+	if InterfaceOptionsFrame then
+		InterfaceOptionsFrame:Raise()
+	end
 end
 
 function Mapster:SetupOptions()
@@ -168,7 +211,7 @@ end
 
 function Mapster:SetupMapButton()
 	-- create button on the worldmap to toggle the options
-	self.optionsButton = CreateFrame("Button", "MapsterOptionsButton", WorldMapFrame.BorderFrame, "UIPanelButtonTemplate")
+	self.optionsButton = CreateFrame("Button", "MapsterOptionsButton", WorldMapFrame.BorderFrame.TitleContainer or WorldMapFrame, "UIPanelButtonTemplate")
 	self.optionsButton:SetWidth(95)
 	self.optionsButton:SetHeight(18)
 	self.optionsButton:SetText("Mapster")
@@ -179,7 +222,7 @@ function Mapster:SetupMapButton()
 		self.optionsButton:SetWidth(110)
 		self.optionsButton:SetHeight(22)
 	else
-		self.optionsButton:SetPoint("TOPRIGHT", WorldMapFrame.BorderFrame.TitleBg, "TOPRIGHT", -21, 1)
+		self.optionsButton:SetPoint("TOPRIGHT", WorldMapFrame.BorderFrame.TitleContainer, "TOPRIGHT", -48, -1)
 	end
 
 	if self.db.profile.hideMapButton then

@@ -1,12 +1,13 @@
-## Interface: 90105
+## Interface: 90200
 ## Author: p3lim
-## Version: 90105.21-Release
+## Version: 90200.22-Release
 ## Title: oUF Reputation
 ## Notes: Reputation Bar support for oUF layouts.
 ## RequiredDeps: oUF
 
 ## X-Curse-Project-ID: 20341
 ## X-WoWI-ID: 12017
+## X-Wago-ID: anKWJZ6E
 
 PARAGON.lua
 oUF_Reputation.lua

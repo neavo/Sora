@@ -2,106 +2,127 @@
 local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
-local channels = {"/s ", "/y ", "/p ", "/g ", "/raid ", "/1 ", "/2 "}
-local colors = {
-    {255 / 255, 255 / 255, 255 / 255},
-    {255 / 255, 64 / 255, 64 / 255},
-    {170 / 255, 170 / 255, 255 / 255},
-    {64 / 255, 255 / 255, 64 / 255},
-    {255 / 255, 127 / 255, 0 / 255},
-    {210 / 255, 180 / 255, 140 / 255},
-    {160 / 255, 120 / 255, 90 / 255},
-    {255 / 255, 255 / 255, 0 / 255}
+local size, width, height = nil
+local texts = {
+    "说",
+    "喊",
+    "队",
+    "会",
+    "团",
+    "综",
+    "世",
+    "表",
+    "骰"
+}
+local channels = {
+    "/s ",
+    "/y ",
+    "/p ",
+    "/g ",
+    "/raid ",
+    "/1 "
 }
 
--- Begin
-local function OnPlayerLogin(self, event, ...)
-    local size = 12
+-- Common
+local function GetWorldChannel()
+    local last = nil
+    local list = {GetChannelList()}
+
+    for i, v in ipairs(list) do
+        if v == "大脚世界频道" then
+            return last
+        end
+
+        last = v
+    end
+end
+
+local function OnEnter(self, ...)
+    self.BG:GetScript("OnEnter")()
+end
+
+local function OnLeave(self, ...)
+    self.BG:GetScript("OnLeave")()
+end
+
+local function OnClick(self, btn, ...)
+    if self.i <= 6 then
+        ChatFrame_OpenChat(channels[self.i], SELECTED_DOCK_FRAME)
+    elseif self.i == 7 then
+        local id = GetWorldChannel()
+
+        if id then
+            ChatFrame_OpenChat("/" .. id .. " ", SELECTED_DOCK_FRAME)
+        else
+            DEFAULT_CHAT_FRAME:AddMessage('|cff70C0F5[Sora\'s]|r 未找到大脚世界频道，请输入"/加入 大脚世界频道"')
+        end
+    elseif self.i == 8 then
+        if CustomEmoteFrame:IsShown() then
+            CustomEmoteFrame:Hide()
+        else
+            CustomEmoteFrame:Show()
+        end
+    elseif self.i == 9 then
+        RandomRoll(1, 100)
+    end
+end
+
+local function CreateAnchor()
+    local anchor = CreateFrame("Frame", "SoraChatBar", UIParent)
+    anchor:SetSize(size, height)
+    anchor:SetPoint("TOPLEFT", SoraChat, "TOPRIGHT", 4, 0)
+end
+
+local function CreateChatBarButton()
     local btn, btns = nil, {}
 
-    local anchor = CreateFrame("Frame", nil, UIParent)
-    anchor:SetSize(size, size * 10 + 4 * (10 - 1))
-    anchor:SetPoint("TOPLEFT", ChatFrame1, "TOPRIGHT", 24, 6)
-
-    local function OnEnter(self, ...)
-        if InCombatLockdown() then
-            self:SetAlpha(1.00)
-        else
-            UIFrameFadeIn(self, 0.25, 0.25, 1.00)
-        end
-    end
-
-    local function OnLeave(self, ...)
-        if InCombatLockdown() then
-            self:SetAlpha(0.25)
-        else
-            UIFrameFadeOut(self, 0.25, 1.00, 0.25)
-        end
-    end
-
     for i = 1, 10 do
-        if i < 8 then
-            local function OnClick(self, btn, ...)
-                PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
-                ChatFrame_OpenChat(channels[i], SELECTED_DOCK_FRAME)
-            end
-
-            btn = CreateFrame("Button", nil, anchor)
+        if i <= 9 then
+            btn = S.CreateButton(SoraChatBar, 11)
+            btn:SetText(texts[i])
             btn:SetSize(size, size)
-            btn:SetScript("OnClick", OnClick)
-        elseif i == 8 then
-            btn = CreateFrame("Button", nil, anchor, "SecureActionButtonTemplate")
-            btn:SetSize(size, size)
-            btn:SetAttribute("*type*", "macro")
-            btn:SetAttribute("macrotext", "/roll")
-        elseif i == 9 then
-            local CustomEmoteFrame = _G["CustomEmoteFrame"]
-            local function OnClick()
-                if CustomEmoteFrame:IsShown() then
-                    CustomEmoteFrame:Hide()
-                else
-                    CustomEmoteFrame:Show()
-                end
-
-                PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK)
-            end
-
-            btn = S.CreateButton(anchor, 11)
-            btn:SetText("表")
-            btn:SetSize(size + 2, size + 2)
             btn:HookScript("OnClick", OnClick)
-        else
-            btn = _G["ChatFrameChannelButton"]
+        elseif i == 10 then
+            btn = ChatFrameChannelButton
+            btn:SetSize(size, size)
             btn:ClearAllPoints()
-            btn:SetSize(size + 2, size + 2)
-            btn.Icon:SetSize(size + 1, size + 1)
+            btn:SetParent(SoraChatBar)
+            btn:SetScript("OnEnter", OnEnter)
+            btn:SetScript("OnLeave", OnLeave)
+
+            btn.__bg:Hide()
+            btn.BG = S.CreateButton(btn, 12, nil)
+            btn.BG:SetAllPoints()
+            btn.BG:SetFrameStrata("BACKGROUND")
+
+            btn.Icon:SetSize(btn:GetHeight() - 3, btn:GetWidth() - 3)
+            btn.Icon:ClearAllPoints()
+            btn.Icon:SetPoint("CENTER", btn, "CENTER", 1, 1)
         end
 
-        btn:SetAlpha(0.25)
-        btn:SetScript("OnEnter", OnEnter)
-        btn:SetScript("OnLeave", OnLeave)
-
-        if i <= 8 then
-            btn.bg = btn:CreateTexture(nil, "BORDER")
-            btn.bg:SetAllPoints()
-            btn.bg:SetTexture(DB.Backdrop)
-            btn.bg:SetVertexColor(unpack(colors[i]))
-
-            btn.shadow = S.MakeShadow(btn, 2)
-            btn.shadow:SetFrameLevel(btn:GetFrameLevel())
-        end
-
-        if i == 1 then
-            btn:SetPoint("TOP", anchor, "TOP", 0, 0)
-        else
-            btn:SetPoint("TOP", btns[i - 1], "BOTTOM", 0, -4)
-        end
-
-        table.insert(btns, btn)
+        btn.i = i
+        btn:SetPoint("TOP", SoraChatBar, "TOP", 0, -(4 + size) * (i - 1))
     end
+end
+
+-- Event
+local function OnInitialize()
+    height = SoraChat:GetHeight()
+    width = (height - 4 * 9) / 10
+    size = (height - 4 * 9) / 10
+end
+
+local function OnPlayerLogin(self, event, ...)
+    CreateAnchor()
+    CreateChatBarButton()
+end
+
+local function OnPlayerEnteringWorld(self, event, ...)
 end
 
 -- Handler
 local EventHandler = S.CreateEventHandler()
+EventHandler.Event.INITIALIZE = OnInitialize
 EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
+EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
 EventHandler.Register()

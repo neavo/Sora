@@ -1,17 +1,18 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 
+	<Include file = "TaintLess.xml" />
+
 	<Script file = "Focuser.lua" />
 	<Script file = "ReloadUI.lua" />
-	<Script file = "NeckSlot.lua" />
-	<Script file = "RightMenu.lua" />
+	<Script file = "BlzHacker.lua" />
 	<Script file = "CombatAlert.lua" />
 	<Script file = "MountSource.lua" />
 	<Script file = "BorderShadow.lua" />
 	<Script file = "FilterKiller.lua" />
 	<Script file = "UIParentFade.lua" />
-	<Script file = "DeleteConfirm.lua" />
-	<Script file = "AlignmentGrid.lua" />
 	<Script file = "PVEFrameTabs.lua" />
+	<Script file = "DeleteConfirm.lua" />
+	<Script file = "TinyInspectHacker.lua" />
 	<Script file = "TradeSkillFrameTabs.lua" />
 
 </Ui>

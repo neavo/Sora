@@ -1,5 +1,30 @@
 # tullaRange release notes
 
+## 10.0.3
+
+* Updated TOC files for 10.0.2
+
+## 10.0.2
+
+* Improve check for new Settings UI
+
+## 10.0.1
+
+* Add support for 10.0.0
+
+## 9.2.1
+
+* Updated TOC files for 9.2.5, 3.4.0, 2.5.4, and 1.14.3.
+
+## 9.2.0
+
+* Updated TOC files for 9.2.0, 2.5.3, and 1.14.2.
+* Packaged the addon using multiple TOC files
+
+## 9.1.1
+
+* Updated TOC files
+
 ## 9.1.0
 
 * Updated TOC files for 9.1.0

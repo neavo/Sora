@@ -66,21 +66,28 @@ self.Reputation.Reward = Reward
 --]]
 local _, ns = ...
 local oUF = ns.oUF or oUF
-assert(oUF, 'oUF Reputation was unable to locate oUF install')
+assert(oUF, "oUF Reputation was unable to locate oUF install")
 
 local function GetReputation()
 	local pendingReward
 	local name, standingID, min, max, cur, factionID = GetWatchedFactionInfo()
+	local reputation = C_GossipInfo.GetFriendshipReputation(factionID)
 
-	local friendID, _, _, _, _, _, standingText, _, nextThreshold = GetFriendshipReputation(factionID)
-	if(friendID) then
-		if(not nextThreshold) then
+	if reputation then
+		local friendID, standingText, nextThreshold = reputation.friendshipFactionID, reputation.text, reputation.nextThreshold
+	else
+		local friendID, standingText, nextThreshold = 0, "", 0
+	end
+
+	if (friendID) then
+		if (not nextThreshold) then
 			min, max, cur = 0, 1, 1 -- force a full bar when maxed out
 		end
 		standingID = 5 -- force friends' color
 	else
 		local value, nextThreshold, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID)
-		if(value) then
+
+		if (value) then
 			cur = value % nextThreshold
 			min = 0
 			max = nextThreshold
@@ -93,10 +100,10 @@ local function GetReputation()
 	max = max - min
 	cur = cur - min
 	-- cur and max are both 0 for maxed out factions
-	if(cur == max) then
+	if (cur == max) then
 		cur, max = 1, 1
 	end
-	standingText = standingText or GetText('FACTION_STANDING_LABEL' .. standingID, UnitSex('player'))
+	standingText = standingText or GetText("FACTION_STANDING_LABEL" .. standingID, UnitSex("player"))
 
 	return cur, max, name, factionID, standingID, standingText, pendingReward
 end
@@ -112,28 +119,28 @@ A few basic tags are included:
 See the [Examples](./#example-implementation) section on how to use the tags.
 --]]
 for tag, func in next, {
-	['reputation:cur'] = function()
+	["reputation:cur"] = function()
 		return (GetReputation())
 	end,
-	['reputation:max'] = function(unit, runit)
+	["reputation:max"] = function(unit, runit)
 		local _, max = GetReputation()
 		return max
 	end,
-	['reputation:per'] = function()
+	["reputation:per"] = function()
 		local cur, max = GetReputation()
-		return math.floor(cur / max * 100 + 1/2)
+		return math.floor(cur / max * 100 + 1 / 2)
 	end,
-	['reputation:standing'] = function()
+	["reputation:standing"] = function()
 		local _, _, _, _, _, standingText = GetReputation()
 		return standingText
 	end,
-	['reputation:faction'] = function()
+	["reputation:faction"] = function()
 		local _, _, name = GetReputation()
 		return name
-	end,
+	end
 } do
 	oUF.Tags.Methods[tag] = func
-	oUF.Tags.Events[tag] = 'UPDATE_FACTION'
+	oUF.Tags.Events[tag] = "UPDATE_FACTION"
 end
 
 oUF.Tags.SharedEvents.UPDATE_FACTION = true
@@ -147,7 +154,7 @@ local function UpdateTooltip(element)
 
 	GameTooltip:SetText(name, color[1], color[2], color[3])
 	GameTooltip:AddLine(desc, nil, nil, nil, true)
-	if(cur ~= max) then
+	if (cur ~= max) then
 		GameTooltip:AddLine(format("%s (%s / %s)  %s", standingText, BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max), rewardAtlas), 1, 1, 1)
 	else
 		GameTooltip:AddLine(standingText, 1, 1, 1)
@@ -166,9 +173,9 @@ local function OnEnter(element)
 
 	- `self` - the Reputation element
 	--]]
-	if(element.OverrideUpdateTooltip) then
+	if (element.OverrideUpdateTooltip) then
 		element:OverrideUpdateTooltip()
-	elseif(element.UpdateTooltip) then -- DEPRECATED
+	elseif (element.UpdateTooltip) then -- DEPRECATED
 		element:UpdateTooltip()
 	else
 		UpdateTooltip(element)
@@ -186,7 +193,7 @@ end
 
 local function Update(self, event, unit)
 	local element = self.Reputation
-	if(element.PreUpdate) then
+	if (element.PreUpdate) then
 		--[[ Callbacks:header
 		### element:PreUpdate(_unit_)
 
@@ -199,23 +206,23 @@ local function Update(self, event, unit)
 	end
 
 	local cur, max, name, factionID, standingID, standingText, pendingReward = GetReputation()
-	if(name) then
+	if (name) then
 		element:SetMinMaxValues(0, max)
 		element:SetValue(cur)
 
-		if(element.colorStanding) then
+		if (element.colorStanding) then
 			local colors = self.colors.reaction[standingID]
 			element:SetStatusBarColor(colors[1], colors[2], colors[3])
 		end
 
-		if(element.Reward) then
+		if (element.Reward) then
 			-- no idea what this function actually does, but Blizzard uses it as well
 			C_Reputation.RequestFactionParagonPreloadRewardData(factionID)
 			element.Reward:SetShown(pendingReward)
 		end
 	end
 
-	if(element.PostUpdate) then
+	if (element.PostUpdate) then
 		--[[ Callbacks:header
 		### element:PostUpdate(_unit, cur, max, factionName, factionID, standingID, standingText, pendingReward_)
 
@@ -246,38 +253,38 @@ local function Path(self, ...)
 	- `event` - the event triggering the update _(string)_
 	- `unit`  - the unit accompanying the event _(variable(s))_
 	--]]
-	return (self.Reputation.Override or Update) (self, ...)
+	return (self.Reputation.Override or Update)(self, ...)
 end
 
 local function ElementEnable(self)
 	local element = self.Reputation
-	self:RegisterEvent('UPDATE_FACTION', Path, true)
+	self:RegisterEvent("UPDATE_FACTION", Path, true)
 
 	element:Show()
 	element:SetAlpha(element.outAlpha or 1)
 
-	Path(self, 'ElementEnable', 'player')
+	Path(self, "ElementEnable", "player")
 end
 
 local function ElementDisable(self)
-	self:UnregisterEvent('UPDATE_FACTION', Path)
+	self:UnregisterEvent("UPDATE_FACTION", Path)
 
 	self.Reputation:Hide()
 
-	Path(self, 'ElementDisable', 'player')
+	Path(self, "ElementDisable", "player")
 end
 
 local function Visibility(self, event, unit, selectedFactionIndex)
 	local shouldEnable
-	if(selectedFactionIndex ~= nil) then
-		if(selectedFactionIndex > 0) then
+	if (selectedFactionIndex ~= nil) then
+		if (selectedFactionIndex > 0) then
 			shouldEnable = true
 		end
-	elseif(not not (GetWatchedFactionInfo())) then
+	elseif (not (not (GetWatchedFactionInfo()))) then
 		shouldEnable = true
 	end
 
-	if(shouldEnable) then
+	if (shouldEnable) then
 		ElementEnable(self)
 	else
 		ElementDisable(self)
@@ -299,44 +306,47 @@ local function VisibilityPath(self, ...)
 end
 
 local function ForceUpdate(element)
-	return VisibilityPath(element.__owner, 'ForceUpdate', element.__owner.unit)
+	return VisibilityPath(element.__owner, "ForceUpdate", element.__owner.unit)
 end
 
 local function Enable(self, unit)
 	local element = self.Reputation
-	if(element) then
+	if (element) then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
-		hooksecurefunc('SetWatchedFactionIndex', function(selectedFactionIndex)
-			if(self:IsElementEnabled('Reputation')) then
-				VisibilityPath(self, 'SetWatchedFactionIndex', 'player', selectedFactionIndex or 0)
+		hooksecurefunc(
+			"SetWatchedFactionIndex",
+			function(selectedFactionIndex)
+				if (self:IsElementEnabled("Reputation")) then
+					VisibilityPath(self, "SetWatchedFactionIndex", "player", selectedFactionIndex or 0)
+				end
 			end
-		end)
+		)
 
-		if(not element:GetStatusBarTexture()) then
+		if (not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
-		if(element.Reward and element.Reward:IsObjectType('Texture') and not element.Reward:GetTexture()) then
-			element.Reward:SetAtlas('ParagonReputation_Bag')
+		if (element.Reward and element.Reward:IsObjectType("Texture") and not element.Reward:GetTexture()) then
+			element.Reward:SetAtlas("ParagonReputation_Bag")
 		end
 
-		if(element:IsMouseEnabled()) then
-			element.tooltipAnchor = element.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
+		if (element:IsMouseEnabled()) then
+			element.tooltipAnchor = element.tooltipAnchor or "ANCHOR_BOTTOMRIGHT"
 			element.inAlpha = element.inAlpha or 1
 			element.outAlpha = element.outAlpha or 1
 
-			if(not element:GetScript('OnEnter')) then
-				element:SetScript('OnEnter', OnEnter)
+			if (not element:GetScript("OnEnter")) then
+				element:SetScript("OnEnter", OnEnter)
 			end
 
-			if(not element:GetScript('OnLeave')) then
-				element:SetScript('OnLeave', OnLeave)
+			if (not element:GetScript("OnLeave")) then
+				element:SetScript("OnLeave", OnLeave)
 			end
 
-			if(not element:GetScript('OnMouseUp')) then
-				element:SetScript('OnMouseUp', OnMouseUp)
+			if (not element:GetScript("OnMouseUp")) then
+				element:SetScript("OnMouseUp", OnMouseUp)
 			end
 		end
 
@@ -345,9 +355,9 @@ local function Enable(self, unit)
 end
 
 local function Disable(self)
-	if(self.Reputation) then
+	if (self.Reputation) then
 		ElementDisable(self)
 	end
 end
 
-oUF:AddElement('Reputation', VisibilityPath, Enable, Disable)
+oUF:AddElement("Reputation", VisibilityPath, Enable, Disable)

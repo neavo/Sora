@@ -1,5 +1,5 @@
-## Interface: 90105
-## Version: v9.1.1
+## Interface: 100002
+## Version: v10.0.2
 ## Title: BugSack
 ## Notes: Toss those bugs inna sack.
 ## Notes-deDE: Werft den Fehler in einen Sack.
@@ -22,6 +22,7 @@
 ## X-Website: https://github.com/funkydude/BugSack
 ## X-Curse-Project-ID: 6273
 ## X-WoWI-ID: 5995
+## X-Wago-ID: rkGrrgGy
 ## X-BugGrabber-Display: BugSack
 
 embeds.xml

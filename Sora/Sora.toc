@@ -1,4 +1,4 @@
-﻿## Interface: 90105
+﻿## Interface: 100002
 ## Title: |cff70C0F5Sora's|r
 ## Author: Neavo
 ## SavedVariables: SoraDB

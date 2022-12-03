@@ -1,6 +1,7 @@
 # BlizzMove
 
-## [v3.2.2](https://github.com/Kiatra/BlizzMove/tree/v3.2.2) (2021-11-14)
-[Full Changelog](https://github.com/Kiatra/BlizzMove/commits/v3.2.2) [Previous Releases](https://github.com/Kiatra/BlizzMove/releases)
+## [v3.5.7](https://github.com/Kiatra/BlizzMove/tree/v3.5.7) (2022-11-28)
+[Full Changelog](https://github.com/Kiatra/BlizzMove/compare/v3.5.6...v3.5.7) [Previous Releases](https://github.com/Kiatra/BlizzMove/releases)
 
-- Frame position resets should now work more reliably  
+- TaintLess update  
+- fix a potential error when debugging broken frames  

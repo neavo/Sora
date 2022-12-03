@@ -22,6 +22,7 @@ end)
 LibEvent:attachTrigger("tooltip:unit", function(self, tip, unit)
     if (tip ~= GameTooltip) then return end
     if (not UnitIsVisible(unit)) then return end
+    if (unit ~= "mouseover") then return end
     if (addon.db.unit.player.showModel and UnitIsPlayer(unit)) then
         tip.model:SetUnit(unit)
         tip.model:SetFacing(-0.25)

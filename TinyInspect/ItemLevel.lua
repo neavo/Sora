@@ -21,6 +21,17 @@ if (C_EncounterJournal and C_EncounterJournal.GetLootInfoByIndex) then
     GetLootInfoByIndex = C_EncounterJournal.GetLootInfoByIndex
 end
 
+
+--fixed for 10.x
+local GetContainerItemLink = GetContainerItemLink or function() end
+if (C_Container and C_Container.GetContainerItemInfo) then
+    GetContainerItemLink = function(bag, id)
+        local info = C_Container.GetContainerItemInfo(bag, id)
+        return info and info.hyperlink
+    end
+end
+
+
 --框架 #category Bag|Bank|Merchant|Trade|GuildBank|Auction|AltEquipment|PaperDoll|Loot
 local function GetItemLevelFrame(self, category)
     if (not self.ItemLevelFrame) then
@@ -35,18 +46,18 @@ local function GetItemLevelFrame(self, category)
         end
         self.ItemLevelFrame = CreateFrame("Frame", nil, self)
         self.ItemLevelFrame:SetScale(max(0.75, h<32 and h/32 or 1))
-        self.ItemLevelFrame:SetFrameLevel(8)
+        self.ItemLevelFrame:SetFrameLevel(10)
         self.ItemLevelFrame:SetSize(w, h)
         self.ItemLevelFrame:SetPoint("CENTER", anchor, "CENTER", 0, 0)
         self.ItemLevelFrame.slotString = self.ItemLevelFrame:CreateFontString(nil, "OVERLAY")
-        self.ItemLevelFrame.slotString:SetFont(STANDARD_TEXT_FONT, 8+fontAdjust, "OUTLINE")
+        self.ItemLevelFrame.slotString:SetFont(STANDARD_TEXT_FONT, 10+fontAdjust, "OUTLINE")
         self.ItemLevelFrame.slotString:SetPoint("BOTTOMRIGHT", 1, 2)
         self.ItemLevelFrame.slotString:SetTextColor(1, 1, 1)
         self.ItemLevelFrame.slotString:SetJustifyH("RIGHT")
         self.ItemLevelFrame.slotString:SetWidth(30)
         self.ItemLevelFrame.slotString:SetHeight(0)
         self.ItemLevelFrame.levelString = self.ItemLevelFrame:CreateFontString(nil, "OVERLAY")
-        self.ItemLevelFrame.levelString:SetFont(STANDARD_TEXT_FONT, 12+fontAdjust, "OUTLINE")
+        self.ItemLevelFrame.levelString:SetFont(STANDARD_TEXT_FONT, 14+fontAdjust, "OUTLINE")
         self.ItemLevelFrame.levelString:SetPoint("TOP")
         self.ItemLevelFrame.levelString:SetTextColor(1, 0.82, 0)
         LibEvent:trigger("ITEMLEVEL_FRAME_CREATED", self.ItemLevelFrame, self)
@@ -128,22 +139,13 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
         local level = ""
         local _, count, quality, class, subclass, equipSlot, linklevel
         if (link and string.match(link, "item:(%d+):")) then
-            if (BagID and SlotID and (category == "Bag" or category == "AltEquipment")) then
-                count, level = LibItemInfo:GetContainerItemLevel(BagID, SlotID)
-                _, _, quality, linklevel, _, class, subclass, _, equipSlot = GetItemInfo(link)
-                if (count == 0 and level == 0) then
-                    level = linklevel
-                end
-            else
-                count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
-            end
-            --背包不显示装等
-            if (equipSlot == "INVTYPE_BAG") then
-                level = ""
-            end
+            _, _, quality, _, _, class, subclass, _, equipSlot = GetItemInfo(link)
             --除了装备和圣物外,其它不显示装等
             if ((equipSlot and string.find(equipSlot, "INVTYPE_"))
-                or (subclass and string.find(subclass, RELICSLOT))) then else
+                or (subclass and string.find(subclass, RELICSLOT))) then
+                count, level = LibItemInfo:GetItemInfo(link, nil, true)
+            else
+                count = 0
                 level = ""
             end
             --坐骑还是要显示的
@@ -171,7 +173,7 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
 end
 
 --[[ All ]]
-hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, suppressOverlays)
+hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, suppressOverlays, isBound)
     if (self.ItemLevelCategory or self.isBag) then return end
     local frame = GetItemLevelFrame(self)
     if (TinyInspectDB and not TinyInspectDB.EnableItemLevelOther) then
@@ -195,84 +197,18 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, sup
             SetItemLevel(self, link)
         --EncounterJournal
         elseif (self.encounterID and self.link) then
-            link = select(7, GetLootInfoByIndex(self.index))
-            SetItemLevel(self, link or self.link)
+            local itemInfo = GetLootInfoByIndex(self.index)
+            SetItemLevel(self, itemInfo.link or self.link)
         --EmbeddedItemTooltip
         elseif (self.Tooltip) then
             link = select(2, self.Tooltip:GetItem())
             SetItemLevel(self, link)
         else
-            SetItemLevelString(frame.levelString, "")
-            SetItemSlotString(frame.slotString)
+            SetItemLevel(self, itemIDOrLink)
         end
     else
         SetItemLevelString(frame.levelString, "")
         SetItemSlotString(frame.slotString)
-    end
-end)
-
--- Bag
-hooksecurefunc("ContainerFrame_Update", function(self)
-    local id = self:GetID()
-    local name = self:GetName()
-    local button
-    for i = 1, self.size do
-        button = _G[name.."Item"..i]
-        SetItemLevel(button, GetContainerItemLink(id, button:GetID()), "Bag", id, button:GetID())
-    end
-end)
-
--- Bank
-hooksecurefunc("BankFrameItemButton_Update", function(self)
-    if (self.isBag) then return end
-    SetItemLevel(self, GetContainerItemLink(self:GetParent():GetID(), self:GetID()), "Bank")
-end)
-
--- Merchant
-hooksecurefunc("MerchantFrameItem_UpdateQuality", function(self, link)
-    SetItemLevel(self.ItemButton, link, "Merchant")
-end)
-
--- Trade
-hooksecurefunc("TradeFrame_UpdatePlayerItem", function(id)
-    SetItemLevel(_G["TradePlayerItem"..id.."ItemButton"], GetTradePlayerItemLink(id), "Trade")
-end)
-hooksecurefunc("TradeFrame_UpdateTargetItem", function(id)
-    SetItemLevel(_G["TradeRecipientItem"..id.."ItemButton"], GetTradeTargetItemLink(id), "Trade")
-end)
-
--- Loot
-hooksecurefunc("LootFrame_UpdateButton", function(index)
-    local button = _G["LootButton"..index]
-    local numLootItems = LootFrame.numLootItems
-    local numLootToShow = LOOTFRAME_NUMBUTTONS
-    if (numLootItems > LOOTFRAME_NUMBUTTONS) then
-		numLootToShow = numLootToShow - 1
-	end
-    local slot = (numLootToShow * (LootFrame.page - 1)) + index
-    if (button:IsShown()) then
-        SetItemLevel(button, GetLootSlotLink(slot), "Loot")
-    end
-end)
-
--- GuildBank
-LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
-    if (addonName == "Blizzard_GuildBankUI") then
-        hooksecurefunc("GuildBankFrame_Update", function()
-            if (GuildBankFrame.mode == "bank") then
-                local tab = GetCurrentGuildBankTab()
-                local button, index, column
-                for i = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
-                    index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP)
-                    if (index == 0) then
-                        index = NUM_SLOTS_PER_GUILDBANK_GROUP
-                    end
-                    column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
-                    button = _G["GuildBankColumn"..column.."Button"..index]
-                    SetItemLevel(button, GetGuildBankItemLink(tab, i), "GuildBank")
-                end
-            end
-        end)
     end
 end)
 
@@ -293,66 +229,6 @@ if (EquipmentFlyout_DisplayButton) then
             SetItemLevel(button, link, "AltEquipment")
         end
     end)
-end
-
--- ForAddons: Bagnon Combuctor LiteBag ArkInventory
-LibEvent:attachEvent("PLAYER_LOGIN", function()
-    -- For Bagnon
-    if (Bagnon and Bagnon.Item and Bagnon.Item.Update) then
-        hooksecurefunc(Bagnon.Item, "Update", function(self)
-            SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
-        end)
-    elseif (Bagnon and Bagnon.ItemSlot and Bagnon.ItemSlot.Update) then
-        hooksecurefunc(Bagnon.ItemSlot, "Update", function(self)
-            SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
-        end)
-    end
-    -- For Combuctor
-    if (Combuctor and Combuctor.ItemSlot and Combuctor.ItemSlot.Update) then
-        hooksecurefunc(Combuctor.ItemSlot, "Update", function(self)
-            SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
-        end)
-    elseif (Combuctor and Combuctor.Item and Combuctor.Item.Update) then
-        hooksecurefunc(Combuctor.Item, "Update", function(self)
-            SetItemLevel(self, self.GetItem and self:GetItem() or self.hasItem, "Bag", self.GetBag and self:GetBag() or self.bag, self.GetID and self:GetID())
-        end)
-    end
-    -- For LiteBag
-    if (LiteBag_RegisterHook) then
-        LiteBag_RegisterHook("LiteBagItemButton_Update", function(self)
-            SetItemLevel(self, GetContainerItemLink(self:GetParent():GetID(), self:GetID()), "Bag", self:GetParent():GetID(), self:GetID())
-        end)
-    elseif (LiteBagItemButton_UpdateItem) then
-        hooksecurefunc("LiteBagItemButton_UpdateItem", function(self)
-            SetItemLevel(self, GetContainerItemLink(self:GetParent():GetID(), self:GetID()), "Bag", self:GetParent():GetID(), self:GetID())
-        end)
-    end
-    -- For ArkInventory
-    if (ArkInventory and ArkInventory.Frame_Item_Update_Texture) then
-        hooksecurefunc(ArkInventory, "Frame_Item_Update_Texture", function(button)
-            local i = ArkInventory.Frame_Item_GetDB(button)
-            if (i) then
-                SetItemLevel(button, i.h, "Bag")
-            end
-        end)
-    end
-end)
-
--- For Addon: BaudBag
-if (BaudBag and BaudBag.CreateItemButton) then
-    local BaudBagCreateItemButton = BaudBag.CreateItemButton
-    BaudBag.CreateItemButton = function(self, subContainer, slotIndex, buttonTemplate)
-        local ItemButton = BaudBagCreateItemButton(self, subContainer, slotIndex, buttonTemplate)
-        local Prototype = getmetatable(ItemButton).__index
-        local UpdateContent = Prototype.UpdateContent
-        Prototype.UpdateContent = function(self, useCache, slotCache)
-            local link, cacheEntry = UpdateContent(self, useCache, slotCache)
-            SetItemLevel(self.Frame, link)
-            return link, cacheEntry
-        end
-        setmetatable(ItemButton, {__index=Prototype})
-        return ItemButton
-    end
 end
 
 -- GuildNews
@@ -512,9 +388,9 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_BATTLEGROUND", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", filter)
 
---据说首次拾取大秘钥匙是个item:158923:
+--据说首次拾取大秘钥匙是个item:180653:
 function firstLootKeystone(Hyperlink)
-    local map, level = string.match(Hyperlink, "|Hitem:158923::::::::%d*:%d*:%d*:%d*:%d*:(%d+):(%d+):")
+    local map, level = string.match(Hyperlink, "|Hitem:180653::::::::%d*:%d*:%d*:%d*:%d*:(%d+):(%d+):")
     if (map and level) then
         local name = C_ChallengeMode.GetMapUIInfo(map)
         if name then
@@ -525,8 +401,8 @@ function firstLootKeystone(Hyperlink)
 end
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", function(self, event, msg, ...)
-    if (string.find(msg, "item:158923:")) then
-        msg = msg:gsub("(|Hitem:158923:.-|h.-|h)", firstLootKeystone)
+    if (string.find(msg, "item:180653:")) then
+        msg = msg:gsub("(|Hitem:180653:.-|h.-|h)", firstLootKeystone)
     end
     return false, msg, ...
 end)

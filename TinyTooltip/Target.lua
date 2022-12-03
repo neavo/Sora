@@ -5,7 +5,7 @@ local YOU = YOU
 local NONE = NONE
 local EMPTY = EMPTY
 local TARGET = TARGET
-local TOOLTIP_UPDATE_TIME = TOOLTIP_UPDATE_TIME
+local TOOLTIP_UPDATE_TIME = TOOLTIP_UPDATE_TIME or 0.2
 
 local addon = TinyTooltip
 
@@ -27,20 +27,23 @@ local function GetTargetString(unit)
 end
 
 GameTooltip:HookScript("OnUpdate", function(self, elapsed)
-    if (self.updateTooltip ~= TOOLTIP_UPDATE_TIME) then return end
-    if (not UnitExists("mouseover")) then return end
-    if (addon.db.unit.player.showTarget and UnitIsPlayer("mouseover"))
-        or (addon.db.unit.npc.showTarget and not UnitIsPlayer("mouseover")) then
-        local line = addon:FindLine(self, "^"..TARGET..":")
-        local text = GetTargetString("mouseovertarget")
-        if (line and not text) then
-            addon:HideLine(self, "^"..TARGET..":")
-            self:Show()
-        elseif (not line and text) then
-            self:AddLine(format("%s: %s", TARGET, text))
-            self:Show()
-        elseif (line) then
-            line:SetFormattedText("%s: %s", TARGET, text)
+    self.updateElapsed = (self.updateElapsed or 0) + elapsed
+    if (self.updateElapsed >= TOOLTIP_UPDATE_TIME) then
+        self.updateElapsed = 0
+        if (not UnitExists("mouseover")) then return end
+        if (addon.db.unit.player.showTarget and UnitIsPlayer("mouseover"))
+            or (addon.db.unit.npc.showTarget and not UnitIsPlayer("mouseover")) then
+            local line = addon:FindLine(self, "^"..TARGET..":")
+            local text = GetTargetString("mouseovertarget")
+            if (line and not text) then
+                addon:HideLine(self, "^"..TARGET..":")
+                self:Show()
+            elseif (not line and text) then
+                self:AddLine(format("%s: %s", TARGET, text))
+                self:Show()
+            elseif (line) then
+                line:SetFormattedText("%s: %s", TARGET, text)
+            end
         end
     end
 end)
@@ -74,7 +77,7 @@ local function GetTargetByString(mouseover, num, tip)
 end
 
 LibEvent:attachTrigger("tooltip:unit", function(self, tip, unit)
-    if (tip:IsUnit("mouseover")) then
+    if (unit and UnitIsUnit(unit, "mouseover")) then
         local num = GetNumGroupMembers()
         if (num >= 1) and
           ((addon.db.unit.player.showTargetBy and UnitIsPlayer("mouseover"))

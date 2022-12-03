@@ -124,7 +124,8 @@ end
 hooksecurefunc(addon, "UpdateDisplay", function()
 	if not window or not window:IsShown() then return end
 	-- can't just hook it right in because it would pass |self| as forceRefresh
-	updateSackDisplay(true)
+	local forceRefresh = currentErrorIndex and currentSackContents and currentErrorIndex == #currentSackContents
+	updateSackDisplay(forceRefresh)
 end)
 
 -- Only invoked when actually clicking a tab
@@ -176,7 +177,7 @@ local function createBugSack()
 	window:Hide()
 
 	window:SetFrameStrata("DIALOG")
-	window:SetWidth(500)
+	window:SetWidth(800)
 	window:SetHeight(310)
 	window:SetPoint("CENTER")
 	window:SetMovable(true)
@@ -263,7 +264,7 @@ local function createBugSack()
 	right:SetTexCoord(0.1171875, 0.2421875, 0, 1)
 
 	local close = CreateFrame("Button", nil, window, "UIPanelCloseButton")
-	close:SetPoint("TOPRIGHT", 2, 1)
+	close:SetPoint("TOPRIGHT", C_EditMode and -3 or 2, C_EditMode and -3 or 1)
 	close:SetScript("OnClick", addon.CloseSack)
 
 	countLabel = window:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -299,10 +300,10 @@ local function createBugSack()
 		window:Hide()
 		InterfaceOptionsFrame_OpenToCategory(addonName)
 	end)
-	local quickTips = "|cff44ff44Double-click|r to filter bug reports. After you are done with the search results, return to the full sack by selecting a tab at the bottom. |cff44ff44Left-click|r and drag to move the window. |cff44ff44Right-click|r to close the sack and open the interface options for BugSack."
+	local quickTips = L["quickTipsDesc"]
 	sessionLabel:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", -8, 8)
-		GameTooltip:AddLine("Quick tips")
+		GameTooltip:AddLine(L["Quick tips"])
 		GameTooltip:AddLine(quickTips, 1, 1, 1, 1)
 		GameTooltip:Show()
 	end)
@@ -313,16 +314,25 @@ local function createBugSack()
 	end)
 
 	searchLabel = window:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-	searchLabel:SetText("Filter:")
+	searchLabel:SetText(L["Filter"]..":")
 	searchLabel:SetJustifyH("LEFT")
 	searchLabel:SetPoint("TOPLEFT", titlebg, 6, -3)
 	searchLabel:SetTextColor(1, 1, 1, 1)
 	searchLabel:Hide()
 
-	searchBox = CreateFrame("EditBox", nil, window)
+	searchBox = CreateFrame("EditBox", nil, window, "BackdropTemplate")
 	searchBox:SetTextInsets(4, 4, 0, 0)
 	searchBox:SetMaxLetters(50)
 	searchBox:SetFontObject("ChatFontNormal")
+	searchBox:SetBackdrop({
+		edgeFile = nil,
+		bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+		insets = { left = 0, right = 0, top = 0, bottom = 0 },
+		tile = true,
+		tileSize = 16,
+		edgeSize = 1,
+	})
+	searchBox:SetBackdropColor(0, 0, 0, 0.5)
 	searchBox:SetScript("OnShow", function(self)
 		self:SetFocus()
 	end)
@@ -337,14 +347,11 @@ local function createBugSack()
 	searchBox:SetPoint("BOTTOMRIGHT", titlebg, "BOTTOMRIGHT", -26, 1)
 	searchBox:Hide()
 
-	local searchBackdrop = searchBox:CreateTexture(nil, "BACKGROUND")
-	searchBackdrop:SetAllPoints()
-	searchBackdrop:SetColorTexture(0, 0, 0, 0.5)
-
 	nextButton = CreateFrame("Button", "BugSackNextButton", window, "UIPanelButtonTemplate")
 	nextButton:SetPoint("BOTTOMRIGHT", window, -11, 16)
 	nextButton:SetFrameStrata("FULLSCREEN")
-	nextButton:SetWidth(130)
+	nextButton:SetHeight(40)
+	nextButton:SetWidth(200)
 	nextButton:SetText(L["Next >"])
 	nextButton:SetScript("OnClick", function()
 		if IsShiftKeyDown() then
@@ -358,7 +365,8 @@ local function createBugSack()
 	prevButton = CreateFrame("Button", "BugSackPrevButton", window, "UIPanelButtonTemplate")
 	prevButton:SetPoint("BOTTOMLEFT", window, 14, 16)
 	prevButton:SetFrameStrata("FULLSCREEN")
-	prevButton:SetWidth(130)
+	prevButton:SetHeight(40)
+	prevButton:SetWidth(200)
 	prevButton:SetText(L["< Previous"])
 	prevButton:SetScript("OnClick", function()
 		if IsShiftKeyDown() then
@@ -374,6 +382,7 @@ local function createBugSack()
 		sendButton:SetPoint("LEFT", prevButton, "RIGHT")
 		sendButton:SetPoint("RIGHT", nextButton, "LEFT")
 		sendButton:SetFrameStrata("FULLSCREEN")
+		sendButton:SetHeight(40)
 		sendButton:SetText(L["Send bugs"])
 		sendButton:SetScript("OnClick", function()
 			local eo = currentSackContents[currentErrorIndex]
@@ -395,20 +404,20 @@ local function createBugSack()
 	textArea:SetMaxLetters(99999)
 	textArea:EnableMouse(true)
 	textArea:SetScript("OnEscapePressed", textArea.ClearFocus)
-	textArea:SetWidth(450)
+	textArea:SetWidth(750)
 
 	scroll:SetScrollChild(textArea)
 
-	local all = CreateFrame("Button", "BugSackTabAll", window, "CharacterFrameTabButtonTemplate")
+	local all = CreateFrame("Button", "BugSackTabAll", window, C_EditMode and "CharacterFrameTabTemplate" or "CharacterFrameTabButtonTemplate")
 	all:SetFrameStrata("FULLSCREEN")
-	all:SetPoint("TOPLEFT", window, "BOTTOMLEFT", 0, 8)
+	all:SetPoint("TOPLEFT", window, "BOTTOMLEFT", C_EditMode and 10 or 0, C_EditMode and 6 or 8)
 	all:SetText(L["All bugs"])
 	all:SetScript("OnLoad", nil)
 	all:SetScript("OnShow", nil)
 	all:SetScript("OnClick", setActiveMethod)
 	all.bugs = "all"
 
-	local session = CreateFrame("Button", "BugSackTabSession", window, "CharacterFrameTabButtonTemplate")
+	local session = CreateFrame("Button", "BugSackTabSession", window, C_EditMode and "CharacterFrameTabTemplate" or "CharacterFrameTabButtonTemplate")
 	session:SetFrameStrata("FULLSCREEN")
 	session:SetPoint("LEFT", all, "RIGHT")
 	session:SetText(L["Current session"])
@@ -417,7 +426,7 @@ local function createBugSack()
 	session:SetScript("OnClick", setActiveMethod)
 	session.bugs = "currentSession"
 
-	local last = CreateFrame("Button", "BugSackTabLast", window, "CharacterFrameTabButtonTemplate")
+	local last = CreateFrame("Button", "BugSackTabLast", window, C_EditMode and "CharacterFrameTabTemplate" or "CharacterFrameTabButtonTemplate")
 	last:SetFrameStrata("FULLSCREEN")
 	last:SetPoint("LEFT", session, "RIGHT")
 	last:SetText(L["Previous session"])
@@ -427,7 +436,7 @@ local function createBugSack()
 	last.bugs = "previousSession"
 
 	tabs = {all, session, last}
-	local size = 500 / 3
+	local size = (C_EditMode and 480 or 500) / 3
 	for i, t in next, tabs do
 		PanelTemplates_TabResize(t, nil, size, size)
 		if i == 1 then

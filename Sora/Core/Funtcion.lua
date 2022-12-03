@@ -3,8 +3,13 @@ local S, C, L, DB = unpack(select(2, ...))
 
 -- Variables
 local void = CreateFrame("Frame", nil, nil)
+void:Hide()
 
 -- Common
+S.Void = void
+
+function S.Dummy() end
+
 function S.MakeText(parent, size)
     local s = C.Core.FontShadow == nil and true or C.Core.FontShadow
     local o = C.Core.FontOutline == nil and true or C.Core.FontOutline

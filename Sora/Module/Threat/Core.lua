@@ -15,7 +15,7 @@ local function UpdateThreat(unit)
         return
     end
 
-    local isTanking, status, _, _, threatValue = UnitDetailedThreatSituation(unit, "target")
+    local _, status, _, _, threatValue = UnitDetailedThreatSituation(unit, "target")
 
     if not status or not threatValue or threatValue == 0 then
         return
@@ -159,7 +159,7 @@ local function OnPlayerLogin(self, event, ...)
         table.insert(bars, bar)
     end
 
-    C_Timer.NewTicker(1.00, OnTicker)
+    C_Timer.NewTicker(0.50, OnTicker)
 end
 
 -- Handler

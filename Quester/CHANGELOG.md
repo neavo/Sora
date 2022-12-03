@@ -1,6 +1,7 @@
 # Quester
 
-## [9.1.0.0](https://github.com/Nevcairiel/Quester/tree/9.1.0.0) (2021-06-29)
-[Full Changelog](https://github.com/Nevcairiel/Quester/compare/9.0.5.0...9.1.0.0) [Previous Releases](https://github.com/Nevcairiel/Quester/releases)
+## [10.0.2.1](https://github.com/Nevcairiel/Quester/tree/10.0.2.1) (2022-11-16)
+[Full Changelog](https://github.com/Nevcairiel/Quester/compare/10.0.2.0...10.0.2.1) [Previous Releases](https://github.com/Nevcairiel/Quester/releases)
 
-- Update TOC for 9.1  
+- Remove the option to move the tracker  
+    You can do this with EditMode now  

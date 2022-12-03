@@ -1,0 +1,44 @@
+## Interface: 30400
+## Notes: Simple Map Mod
+## Notes-zhCN: 简单实用的地图模块
+## Notes-frFR: Simples modifications de la carte.
+## Title: Mapster
+## Author: Nevcairiel
+## SavedVariables: MapsterDB
+## X-Category: Map
+## Version: 1.10.4
+## X-License: All rights reserved.
+## X-Curse-Project-ID: 14376
+## X-WoWI-ID: 8306
+
+## OptionalDeps: Ace3, LibWindow-1.1
+
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceHook-3.0\AceHook-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+
+Libs\LibWindow-1.1\LibWindow-1.1.lua
+#@end-no-lib-strip@
+
+Locale\locale.xml
+
+Mapster.lua
+Config.lua
+
+Coords.lua
+# GroupIcons.lua
+# BattleMap.lua
+FogClearDataWrath.lua
+FogClear.lua
+Scaling.lua

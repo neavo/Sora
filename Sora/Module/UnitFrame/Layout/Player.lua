@@ -68,6 +68,19 @@ local function OnPlayerLogin(self, event, ...)
     PlayerPowerBarAlt:RegisterForDrag("LeftButton")
     PlayerPowerBarAlt:SetClampedToScreen(true)
 
+    local ban = {
+        PlayerCastingBarFrame = true
+    }
+
+    local frames = EditModeManagerFrame.registeredSystemFrames
+    for i = #frames, 1, -1 do
+        if ban[frames[i]:GetName()] then
+            table.remove(frames, i)
+        end
+    end
+
+    EditModeManagerFrame.AccountSettings.RefreshCastBar = S.Dummy -- 施法条
+
     local function OnDragStop(self, button, ...)
         self:StopMovingOrSizing()
     end
@@ -76,15 +89,15 @@ local function OnPlayerLogin(self, event, ...)
         self:StartMoving()
     end
 
+    PlayerPowerBarAlt:SetScript("OnDragStop", OnDragStop)
+    PlayerPowerBarAlt:SetScript("OnDragStart", OnDragStart)
+
     local function HookUnitPowerBarAltSetup(self, barID)
         if self.statusFrame.enabled then
             self.statusFrame:Show()
             self.statusFrame.Hide = self.statusFrame.Show
         end
     end
-
-    PlayerPowerBarAlt:SetScript("OnDragStop", OnDragStop)
-    PlayerPowerBarAlt:SetScript("OnDragStart", OnDragStart)
     hooksecurefunc("UnitPowerBarAlt_SetUp", HookUnitPowerBarAltSetup)
 end
 

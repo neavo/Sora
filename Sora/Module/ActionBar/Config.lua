@@ -9,8 +9,8 @@ local function CreateDB(self, ...)
     SoraDB = SoraDB or {}
     SoraDB.ActionBar = SoraDB.ActionBar or {}
 
-    SoraDB.ActionBar.Size = SoraDB.ActionBar.Size or 36
-    SoraDB.ActionBar.Space = SoraDB.ActionBar.Space or 8
+    SoraDB.ActionBar.Size = SoraDB.ActionBar.Size or 40
+    SoraDB.ActionBar.Space = SoraDB.ActionBar.Space or 6
     SoraDB.ActionBar.Postion = SoraDB.ActionBar.Postion or {"BOTTOM", "UIParent", "BOTTOM", 0, 8}
     SoraDB.ActionBar.PostionLeftSide = SoraDB.ActionBar.PostionLeftSide or {"LEFT", "UIParent", "LEFT", 8, 0}
     SoraDB.ActionBar.PostionRightSide = SoraDB.ActionBar.PostionRightSide or {"RIGHT", "UIParent", "RIGHT", -8, 0}

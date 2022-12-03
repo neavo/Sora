@@ -6,6 +6,14 @@ local function ShouldShowHonor()
     return IsPlayerAtEffectiveMaxLevel() and (IsWatchingHonorAsXP() or C_PvP.IsActiveBattlefield() or IsInActiveWorldPVP())
 end
 
+local function ShouldShowArtifactPower()
+    local azeriteItem = C_AzeriteItem.FindActiveAzeriteItem()
+    local showAzeriteBar = azeriteItem and azeriteItem:IsEquipmentSlot() and C_AzeriteItem.IsAzeriteItemEnabled(azeriteItem)
+    local showArtifactBar = HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()
+
+    return showAzeriteBar or showArtifactBar
+end
+
 -- Event
 local function OnPlayerLogin(self, event, ...)
     local unit = nil
@@ -28,21 +36,21 @@ local function OnPlayerLogin(self, event, ...)
     unit:SetSize((Minimap:GetWidth() - 8) / 2, 6)
     unit:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, yOffset * row + 4)
 
-    unit = S.Minimap.CreateHonor(Minimap)
-    unit:SetSize(Minimap:GetWidth(), 6)
-    table.insert(units, unit)
+    local Honor = S.Minimap.CreateHonor(Minimap)
+    Honor:SetSize(Minimap:GetWidth(), 6)
+    table.insert(units, Honor)
 
-    unit = S.Minimap.CreateExperience(Minimap)
-    unit:SetSize(Minimap:GetWidth(), 6)
-    table.insert(units, unit)
+    local Experience = S.Minimap.CreateExperience(Minimap)
+    Experience:SetSize(Minimap:GetWidth(), 6)
+    table.insert(units, Experience)
 
-    unit = S.Minimap.CreateReputation(Minimap)
-    unit:SetSize(Minimap:GetWidth(), 6)
-    table.insert(units, unit)
+    local Reputation = S.Minimap.CreateReputation(Minimap)
+    Reputation:SetSize(Minimap:GetWidth(), 6)
+    table.insert(units, Reputation)
 
-    unit = S.Minimap.CreateArtifactPower(Minimap)
-    unit:SetSize(Minimap:GetWidth(), 6)
-    table.insert(units, unit)
+    local ArtifactPower = S.Minimap.CreateArtifactPower(Minimap)
+    ArtifactPower:SetSize(Minimap:GetWidth(), 6)
+    table.insert(units, ArtifactPower)
 
     local function OnTicker()
         if InCombatLockdown() then
@@ -56,27 +64,23 @@ local function OnPlayerLogin(self, event, ...)
         row = 2
         if ShouldShowHonor() then
             row = row + 1
-            units[1]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
+            Honor:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
 
         if not IsPlayerAtEffectiveMaxLevel() then
             row = row + 1
-            units[2]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
+            Experience:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
 
         if select(1, GetWatchedFactionInfo()) then
             row = row + 1
-            units[3]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
+            Reputation:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
 
-        local azeriteItem = C_AzeriteItem.FindActiveAzeriteItem()
-        local showAzeriteBar = azeriteItem and azeriteItem:IsEquipmentSlot() and C_AzeriteItem.IsAzeriteItemEnabled(azeriteItem)
-        local showArtifactBar = HasArtifactEquipped() and not C_ArtifactUI.IsEquippedArtifactDisabled()
-
-        units[4].ArtifactPower:ForceUpdate()
-        if showAzeriteBar or showArtifactBar then
+        if ShouldShowArtifactPower() then
             row = row + 1
-            units[4]:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
+            ArtifactPower.ArtifactPower:ForceUpdate()
+            ArtifactPower:SetPoint("TOP", Minimap, "BOTTOM", 0, yOffset * row + 4)
         end
     end
 

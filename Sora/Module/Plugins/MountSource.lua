@@ -1,57 +1,69 @@
-﻿-- Engine
-local S, C, L, DB = unpack(select(2, ...))
 
--- Variables
+
+--------------------------------------------------------------
+--【坐骑来源】------------------------------------------------
+--------------------------------------------------------------
 local mountsData = {}
-
--- Begin
-local function HookSetUnitAura(self, unit, index, filter)
-    if InCombatLockdown() then
-        return
+local function UpdateMountsData()
+    local mountIDs = C_MountJournal.GetMountIDs()
+    for key, value in ipairs(mountIDs) do
+        local creatureName, spellId, icon, active, summonable, source, isFavorite, isFactionSpecific, faction, hideOnChar, isCollected, mountID = C_MountJournal.GetMountInfoByID(value)
+        if spellId then
+            mountsData[spellId] = (isCollected and 1 or -1) * mountID
+        end
     end
-
-    if not UnitIsPlayer(unit) and not UnitPlayerControlled(unit) then
-        return
-    end
-
-    local name, texture, count, debuffType, duration, expirationTime, _, _, _, spellId, _, _, _, _, timeMod = UnitAura(unit, index, filter)
-    local mountID = mountsData[spellId]
-
-    if mountID then
-        local creatureDisplayID, descriptionText, sourceText, isSelfMount = C_MountJournal.GetMountInfoExtraByID(abs(mountID))
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddDoubleLine(
-            "坐骑来源：",
-            mountID > 0 and "（已收集）" or "（未收集）",
-            mountID > 0 and 0.10 or 0.90,
-            mountID > 0 and 0.90 or 0.00,
-            0.10,
-            mountID > 0 and 0.10 or 0.90,
-            mountID > 0 and 0.90 or 0.00,
-            0.10
-        )
-        GameTooltip:AddLine(sourceText, 0.90, 0.90, 0.90)
-        GameTooltip:Show()
-    end
-end
-
--- Event
-local function OnPlayerLogin(self, event, ...)
-    hooksecurefunc(GameTooltip, "SetUnitAura", HookSetUnitAura)
-    hooksecurefunc(GameTooltip, "SetUnitBuff", HookSetUnitAura)
-end
-
-local function OnPlayerEnteringWorld(self, event, ...)
     for i = 1, C_MountJournal.GetNumMounts() do
-        local _, spellId, _, _, _, _, _, _, _, _, isCollected, mountID = C_MountJournal.GetDisplayedMountInfo(i)
+        local creatureName, spellId, icon, active, summonable, source, isFavorite, isFactionSpecific, faction, hideOnChar, isCollected, mountID = C_MountJournal.GetDisplayedMountInfo(i)
         if spellId then
             mountsData[spellId] = (isCollected and 1 or -1) * mountID
         end
     end
 end
 
--- Handler
-local EventHandler = S.CreateEventHandler()
-EventHandler.Event.PLAYER_LOGIN = OnPlayerLogin
-EventHandler.Event.PLAYER_ENTERING_WORLD = OnPlayerEnteringWorld
-EventHandler.Register()
+local function showMountInfo(spellId)
+    local mountID = mountsData[spellId]
+    if (mountID) then
+        local creatureDisplayID, descriptionText, sourceText, isSelfMount = C_MountJournal.GetMountInfoExtraByID(abs(mountID))
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddDoubleLine("坐骑来源：", mountID > 0 and "(已收集)" or "(未收集)", mountID > 0 and 0 or 1, mountID > 0 and 1 or 0, 0, mountID > 0 and 0 or 1, mountID > 0 and 1 or 0, 0)
+        GameTooltip:AddLine(sourceText, 1, 1, 1)
+        GameTooltip:Show()
+    end
+end
+
+local function hookMountBuffInfo(self, unit, index, filter)
+    if InCombatLockdown() then return end
+    if not UnitIsPlayer(unit) and not UnitPlayerControlled(unit) then return end
+    local name, texture, count, debuffType, duration, expirationTime, _, _, _, spellId, _, _, _, _, timeMod = UnitAura(unit, index, filter);
+    showMountInfo(spellId)
+end
+
+local function hookMountBuffInfoForTarget(self, unit, auraInstanceID)
+    if InCombatLockdown() then return end
+    if not UnitIsPlayer(unit) and not UnitPlayerControlled(unit) then return end
+    local aura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID)
+    local spellId = aura.spellId
+    showMountInfo(spellId)
+end
+
+hooksecurefunc(GameTooltip, "SetUnitAura", function(...)
+    hookMountBuffInfo(...)
+end)
+hooksecurefunc(GameTooltip, "SetUnitBuff", function(...)
+    hookMountBuffInfo(...)
+end)
+hooksecurefunc(GameTooltip, "SetUnitBuffByAuraInstanceID",function(self, unit, auraInstanceID)
+    hookMountBuffInfoForTarget(self, unit, auraInstanceID)
+end)
+
+local frame = CreateFrame("frame")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:SetScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_ENTERING_WORLD" then
+        UpdateMountsData()
+    end
+end)
+
+
+
+

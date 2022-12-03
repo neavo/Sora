@@ -54,13 +54,21 @@ LibEvent:attachEvent("VARIABLES_LOADED", function()
         ColorStatusBar(self)
     end)
     bar:HookScript("OnValueChanged", function(self, hp)
-        if (hp <= 0) then
-            local min, max = self:GetMinMaxValues()
+        if (UnitIsDeadOrGhost("mouseover")) then
+            local max = UnitHealthMax("mouseover") or 1
             self.TextString:SetFormattedText("|cff999999%s|r |cffffcc33<%s>|r", AbbreviateLargeNumbers(max), DEAD)
-        else
-            TextStatusBar_UpdateTextString(self)
+        elseif (not self.forceHideText) then
+            local cur = UnitHealth("mouseover") or 1
+            local max = UnitHealthMax("mouseover") or 1
+            if(self.TextString) then
+                self.TextString:SetText(AbbreviateLargeNumbers(cur) .. " / " .. AbbreviateLargeNumbers(max))
+            end
+        elseif (self.forceHideText) then
+            if(self.TextString) then
+                self.TextString:SetText("")
+            end
         end
-        ColorStatusBar(self, hp)
+        ColorStatusBar(self)
     end)
     bar:HookScript("OnShow", function(self)
         if (addon.db.general.statusbarHeight == 0) then
@@ -90,6 +98,7 @@ LibEvent:attachTrigger("tooltip:cleared, tooltip:hide", function(self, tip)
     LibEvent:trigger("tooltip.style.background", tip, unpack(addon.db.general.background))
     if (tip.BigFactionIcon) then tip.BigFactionIcon:Hide() end
     if (tip.SetBackdrop) then tip:SetBackdrop(nil) end
+    if (tip.NineSlice) then tip.NineSlice:Hide() end
 end)
 
 LibEvent:attachTrigger("tooltip:show", function(self, tip)

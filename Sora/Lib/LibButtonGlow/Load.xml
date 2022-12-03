@@ -1,6 +1,0 @@
-﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
-
-	<Script file = "LibStub\LibStub.lua" />
-	<Script file = "LibButtonGlow-1.0.lua" />
-
-</Ui>

@@ -10,8 +10,8 @@ local function CreateDB(self, ...)
     SoraDB.Chat = SoraDB.Chat or {}
 
     SoraDB.Chat.Width = SoraDB.Chat.Width or 450
-    SoraDB.Chat.Height = SoraDB.Chat.Height or 132
-    SoraDB.Chat.Postion = SoraDB.Chat.Postion or {"BOTTOMLEFT", "UIParent", "BOTTOMLEFT", 8, 28}
+    SoraDB.Chat.Height = SoraDB.Chat.Height or 200
+    SoraDB.Chat.Postion = SoraDB.Chat.Postion or {"BOTTOMLEFT", "UIParent", "BOTTOMLEFT", 8, 8}
 
     C.Chat = S.Copy(SoraDB.Chat)
 end
@@ -41,8 +41,8 @@ local function CreateConfig(self, ...)
             key = "SoraDB.Chat.Height",
             text = "聊天框体高度",
             step = 1,
-            maxValue = 264,
-            minValue = 0,
+            maxValue = 300,
+            minValue = 100,
             OnDataChanged = function(self, data, ...)
                 if data.value then
                     SoraDB.Chat.Height = data.value

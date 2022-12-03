@@ -64,7 +64,7 @@ local function ShowBigFactionIcon(tip, config, raw)
         tip.BigFactionIcon:Show()
         tip.BigFactionIcon:SetTexture("Interface\\Timer\\".. raw.factionGroup .."-Logo")
         tip:Show()
-        tip:SetMinimumWidth(tip:GetWidth() + 20)
+        tip:SetMinimumWidth(tip:GetWidth() + 30)
     end
 end
 
@@ -113,6 +113,7 @@ local function NonPlayerCharacter(tip, unit, config, raw)
     ColorBackground(tip, config, raw)
     GrayForDead(tip, config, unit)
     ShowBigFactionIcon(tip, config, raw)
+    addon:AutoSetTooltipWidth(tip)
 end
 
 LibEvent:attachTrigger("tooltip:unit", function(self, tip, unit)

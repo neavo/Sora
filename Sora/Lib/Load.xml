@@ -5,11 +5,5 @@
 	<include file = "oUF_Experience\Load.xml" />
 	<include file = "oUF_Reputation\Load.xml" />
 	<include file = "oUF_ArtifactPower\Load.xml" />
-
-	<include file = "rLib\Load.xml" />
-	<include file = "rActionBar\Load.xml" />
-	<include file = "rButtonTemplate\Load.xml" />
-
-	<include file = "LibButtonGlow\Load.xml" />
-
+	
 </Ui>

@@ -11,14 +11,6 @@ local function ColorBorder(tip, r, g, b)
     end
 end
 
-if (GameTooltip_SetBackdropStyle) then
-    hooksecurefunc("GameTooltip_SetBackdropStyle", function(self, style)
-        if (self.style) then
-            self:SetBackdrop(nil)
-        end
-    end)
-end
-
 local function ItemIcon(tip, link)
     if (addon.db.item.showItemIcon) then
         local texture = select(10, GetItemInfo(link))
@@ -45,11 +37,4 @@ LibEvent:attachTrigger("tooltip:item", function(self, tip, link)
     ColorBorder(tip, r, g, b)
     ItemStackCount(tip, link)
     ItemIcon(tip, link)
-end)
-
-hooksecurefunc("EmbeddedItemTooltip_OnTooltipSetItem", function(self)
-    local tip = self:GetParent()
-    if (not tip or tip:GetObjectType() ~= "GameTooltip") then return end
-    local r, g, b = self.IconBorder:GetVertexColor()
-    ColorBorder(tip, r, g, b)
 end)

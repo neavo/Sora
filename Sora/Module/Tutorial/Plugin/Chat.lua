@@ -11,7 +11,7 @@ local function OnPlayerLogin(self, event, ...)
     end
 
     for i = 1, NUM_CHAT_WINDOWS do
-        SetChatWindowSize(i, 12)
+        SetChatWindowSize(i, 13)
     end
 end
 

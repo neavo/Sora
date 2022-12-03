@@ -8,7 +8,6 @@ local defaults = {
 		questLevels = false,
 		removeComplete = true,
 		highlightReward = true,
-		trackerMovable = false,
 		showObjectivePercentages = true,
 		hide01 = true,
 		shortenNumbers = false,
@@ -223,22 +222,6 @@ local function getOptionsTable()
 		get = function(k) return db[k.arg] end,
 		set = function(k, v) db[k.arg] = v end,
 		args = {
-			trackerMovable = {
-				name = L["Unlock Quest Tracker position"],
-				desc = L["Unlock the position of the Objective Tracker, allowing it to be moved by clicking and dragging its header."],
-				type = "toggle",
-				order = 0,
-				arg = "trackerMovable",
-				width = "double",
-				set = function(k, v) db.trackerMovable = v; Quester:ToggleTrackerMovable() end,
-			},
-			trackerReset = {
-				name = L["Reset Position"],
-				desc = L["Reset the position of the Objective Tracker to the default."],
-				type = "execute",
-				order = 0.5,
-				func = function() db.pos.x = nil; db.pos.y = nil; UIParent_ManageFramePositions() end,
-			},
 			behaviorheader = {
 				type = "header",
 				name = L["Behavior Configuration"],
@@ -423,19 +406,11 @@ function Quester:OnInitialize()
 
 	self:RegisterChatCommand("quester", function() InterfaceOptionsFrame_OpenToCategory(optFrame) end)
 
-	self:RestoreTrackerPosition()
-	hooksecurefunc("UIParent_ManageFramePositions", function() Quester:RestoreTrackerPosition() end)
-
 	self.eventFrame = CreateFrame("Frame", "QuesterEventFrame")
 	self.eventFrame:SetScript("OnEvent", function(frame, event, ...) Quester:HandleEvent(event, ...) end)
-end
 
-function Quester:RestoreTrackerPosition()
-	if db.pos.x and db.pos.y then
-		ObjectiveTrackerFrame:ClearAllPoints()
-		ObjectiveTrackerFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", db.pos.x, db.pos.y)
-		ObjectiveTrackerFrame:SetPoint("BOTTOM", UIParent, "BOTTOM")
-	end
+	TooltipDataProcessor.AddLinePostCall(Enum.TooltipDataLineType.QuestTitle, self.TooltipLineProcessorQuestTitle)
+	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, self.TooltipProcessorItem)
 end
 
 function Quester:RegisterEvent(event)
@@ -463,8 +438,6 @@ function Quester:OnEnable()
 
 	self:RawHookScript(UIErrorsFrame, "OnEvent", "UIErrorsFrame_OnEvent", true)
 
-	self:HookScript(GameTooltip, "OnTooltipSetItem")
-	self:HookScript(GameTooltip, "OnTooltipSetUnit")
 	self:SecureHook(QUEST_TRACKER_MODULE, "GetBlock", "QuestTrackerGetBlock")
 	self:SecureHook(QUEST_TRACKER_MODULE, "OnFreeBlock", "QuestTrackerOnFreeBlock")
 	self:SecureHook(QUEST_TRACKER_MODULE, "AddObjective", "ObjectiveTracker_AddObjective")
@@ -483,67 +456,10 @@ function Quester:OnEnable()
 	if QuestFrameRewardPanel:IsVisible() then
 		self:QUEST_COMPLETE()
 	end
-
-
-	if db.trackerMovable then
-		self:ToggleTrackerMovable()
-	end
 end
 
 function Quester:OnDisable()
 	self.eventFrame:UnregisterAllEvents()
-end
-
-local function MakeBlockMovable(block, flag)
-	block:EnableMouse(flag)
-
-	if flag then
-		if not block.QuesterMoveLock then
-			block:SetScript("OnMouseDown", function() ObjectiveTrackerFrame:StartMoving() end)
-			block:SetScript("OnMouseUp",
-				function()
-					ObjectiveTrackerFrame:StopMovingOrSizing()
-					db.pos.x = ObjectiveTrackerFrame:GetLeft()
-					db.pos.y = ObjectiveTrackerFrame:GetTop()
-				end
-			)
-			local LockFrame = CreateFrame("Button", nil, block)
-			LockFrame.lock = LockFrame:CreateTexture()
-			LockFrame.lock:SetAllPoints(LockFrame)
-			LockFrame.lock:SetTexture("Interface\\GuildFrame\\GuildFrame")
-			LockFrame.lock:SetTexCoord(0.51660156, 0.53320313, 0.92578125, 0.96679688)
-			LockFrame:SetSize(15, 18)
-			LockFrame:SetPoint("TOPRIGHT", -16, -2)
-			LockFrame:SetScript("OnEnter", function(self) GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT") GameTooltip:SetText(L["Lock the Objective Tracker in place"], 1, .82, 0, 1) GameTooltip:AddLine(L["You can unlock it again in the options"], 1, 1, 1, 1) GameTooltip:Show() end)
-			LockFrame:SetScript("OnLeave", function() GameTooltip:Hide() end)
-			LockFrame:SetScript("OnClick", function() db.trackerMovable = false; Quester:ToggleTrackerMovable() end)
-
-			block.QuesterMoveLock = LockFrame
-		end
-		block.QuesterMoveLock:Show()
-	else
-		if block.QuesterMoveLock then
-			block.QuesterMoveLock:Hide()
-		end
-	end
-end
-
-function Quester:ToggleTrackerMovable()
-	if db.trackerMovable then
-		ObjectiveTrackerFrame:SetMovable(true)
-		ObjectiveTrackerFrame:SetClampedToScreen(true)
-		ObjectiveTrackerFrame:SetClampRectInsets(-26, 0, 0, ObjectiveTrackerFrame:GetHeight() - 26)
-		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.QuestHeader, true)
-		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.CampaignQuestHeader, true)
-		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.AchievementHeader, true)
-		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, true)
-	else
-		ObjectiveTrackerFrame:SetMovable(false)
-		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.QuestHeader, false)
-		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.CampaignQuestHeader, false)
-		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.AchievementHeader, false)
-		MakeBlockMovable(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, false)
-	end
 end
 
 function Quester:UIErrorsFrame_OnEvent(frame, event, ...)
@@ -805,49 +721,27 @@ function Quester:QUEST_LOG_UPDATE()
 	blockQuestUpdate = nil
 end
 
-local function ProcessGossip(index, num, data)
-	assert(num == #data)
-	for _i = 1, num do
-		local button = GossipFrame_GetTitleButton(index)
-		if not button then return end
-		local text = button:GetText()
-		if text:match("^|c(.*)%[") then
-			local col, t = text:match("^|c(.*)%[[^%]]+%]|r%s?(.*)")
-			if not t then
-				col, t = text:match("^|c(.*)%[[^%]]+%]%s?(.*)")
-			end
-			if t then
-				text = t
-			end
-		elseif text:match("^%[") then
-			local t = text:match("^%[[^%]]+%]%s?(.*)")
-			if t then
-				text = t
-			end
-		end
-		local level = data and data[num] and data[num].questLevel or -1
-		if level == -1 then
-			-- keep the text untouched
-		elseif db.gossipColor then
-			button:SetText(format("|cff%s[%d]|r %s", GetQuestColorString(level), level, text))
-		else
-			button:SetText(format("[%d] %s", level, text))
-		end
-		button:Resize()
-		index = index + 1
+local function ProcessGossip(button, data)
+	local text = data.info.title
+	local level = data.info.questLevel or -1
+	local tagString = GetQuestTag(data.info.suggestedGroup, data.info.frequency, C_QuestLog.GetQuestTagInfo(data.info.questID)) or ""
+	if level <= 0 then
+		-- keep the text untouched
+	elseif db.gossipColor then
+		button:SetText(format("|cff%s[%d%s]|r %s", GetQuestColorString(level), level, tagString, text))
+	else
+		button:SetText(format("[%d%s] %s", level, tagString, text))
 	end
-	return index + 1
+	button:Resize()
 end
 
 function Quester:GOSSIP_SHOW()
 	if not GossipFrame:IsVisible() or not db.questLevels then return end
-	local buttonindex = 1
-	local available, active = C_GossipInfo.GetNumAvailableQuests(), C_GossipInfo.GetNumActiveQuests()
-	if available and available > 0 then
-		buttonindex = ProcessGossip(buttonindex, available, C_GossipInfo.GetAvailableQuests())
-	end
-	if active and active > 0 then
-		buttonindex = ProcessGossip(buttonindex, active, C_GossipInfo.GetActiveQuests())
+	for _, frame in GossipFrame.GreetingPanel.ScrollBox:GetView():EnumerateFrames() do
+		local data = frame:GetElementData()
+		if data.buttonType == GOSSIP_BUTTON_TYPE_ACTIVE_QUEST or data.buttonType == GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST then
+			ProcessGossip(frame, data)
+		end
 	end
 end
 
@@ -873,36 +767,33 @@ function Quester:QUEST_GREETING()
 	end
 end
 
-function Quester:OnTooltipSetUnit(tooltip, ...)
-	local numLines = tooltip:NumLines()
-	for i = 1, numLines do
-		local line = _G["GameTooltipTextLeft" .. i]
-		if line then
-			local text = line:GetText()
-			if quests[text] then
-				local index = C_QuestLog.GetLogIndexForQuestID(quests[text])
-				if index and index > 0 then
-					line:SetText(GetTaggedTitle(index, db.tooltipColor, true))
-					tooltip:Show()
-				end
-			end
+function Quester.TooltipLineProcessorQuestTitle(tooltip, lineData)
+	local self = Quester
+	if tooltip ~= GameTooltip then return end
+	if lineData.id then
+		local index = C_QuestLog.GetLogIndexForQuestID(lineData.id)
+		if index and index > 0 then
+			_G["GameTooltipTextLeft" .. lineData.lineIndex]:SetText(GetTaggedTitle(index, db.tooltipColor, true))
 		end
 	end
 end
 
-function Quester:OnTooltipSetItem(tooltip, ...)
-	local name = tooltip:GetItem()
-	if items[name] then
+function Quester.TooltipProcessorItem(tooltip, data)
+	local self = Quester
+	if tooltip ~= GameTooltip then return end
+
+	local name, link, id = TooltipUtil.GetDisplayedItem(tooltip)
+	if name and items[name] then
 		local it = items[name]
 		if progress[it] then
 			local index = C_QuestLog.GetLogIndexForQuestID(progress[it].qid)
 			if index and index > 0 then
+				tooltip:AddLine(" ")
 				tooltip:AddLine(GetTaggedTitle(index, db.tooltipColor, true))
 				local text = GetQuestLogLeaderBoard(progress[it].lid, index)
 				if text then
 					tooltip:AddLine(format(" - |cff%s%s|r", rgb2hex(ColorGradient(progress[it].perc, 1,0,0, 1,1,0, 0,1,0)), text))
 				end
-				tooltip:Show()
 			end
 		end
 	end

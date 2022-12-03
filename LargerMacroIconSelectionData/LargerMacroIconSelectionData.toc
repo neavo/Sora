@@ -1,9 +1,0 @@
-## Interface: 90100
-## Version: v1.6.2
-## Title: LargerMacroIconSelectionData
-## Author: Xinhuan, Ketho
-## Notes: Load on Demand Icon FileData
-## LoadOnDemand: 1
-
-FileDataRetail.lua
-FileDataClassic.lua

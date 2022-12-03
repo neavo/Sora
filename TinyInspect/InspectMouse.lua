@@ -40,31 +40,36 @@ local function AppendToGameTooltip(guid, ilevel, spec, weaponLevel, isArtifact)
 end
 
 --觸發觀察
-GameTooltip:HookScript("OnTooltipSetUnit", function(self)
-    if (TinyInspectDB and (TinyInspectDB.EnableMouseItemLevel or TinyInspectDB.EnableMouseSpecialization)) then
-        local _, unit = self:GetUnit()
-        if (not unit) then return end
-        local guid = UnitGUID(unit)
-        if (not guid) then return end
-        local hp = UnitHealthMax(unit)
-        local data = GetInspectInfo(unit)
-        if (data and data.hp == hp and data.ilevel > 0) then
-            return AppendToGameTooltip(guid, floor(data.ilevel), data.spec, data.weaponLevel, data.isArtifact)
-        end
-        if (not CanInspect(unit) or not UnitIsVisible(unit)) then return end
-        local inspecting = GetInspecting()
-        if (inspecting) then
-            if (inspecting.guid ~= guid) then
-                return AppendToGameTooltip(guid, "n/a")
-            else
-                return AppendToGameTooltip(guid, "....")
+if (GameTooltip.ProcessInfo) then
+    hooksecurefunc(GameTooltip, "ProcessInfo", function(self, info)
+        if (not info or not info.tooltipData) then return end
+        local flag = info.tooltipData.type
+        local guid = info.tooltipData.guid
+        if (flag ~= 2) then return end
+
+        if (TinyInspectDB and (TinyInspectDB.EnableMouseItemLevel or TinyInspectDB.EnableMouseSpecialization)) then
+            local _, unit = self:GetUnit()
+            if (not unit) then return end
+            local hp = UnitHealthMax(unit)
+            local data = GetInspectInfo(unit)
+            if (data and data.hp == hp and data.ilevel > 0) then
+                return AppendToGameTooltip(guid, floor(data.ilevel), data.spec, data.weaponLevel, data.isArtifact)
             end
+            if (not CanInspect(unit) or not UnitIsVisible(unit)) then return end
+            local inspecting = GetInspecting()
+            if (inspecting) then
+                if (inspecting.guid ~= guid) then
+                    return AppendToGameTooltip(guid, "n/a")
+                else
+                    return AppendToGameTooltip(guid, "......")
+                end
+            end
+            ClearInspectPlayer()
+            NotifyInspect(unit)
+            AppendToGameTooltip(guid, "...")
         end
-        ClearInspectPlayer()
-        NotifyInspect(unit)
-        AppendToGameTooltip(guid, "...")
-    end
-end)
+    end)
+end
 
 --@see InspectCore.lua
 LibEvent:attachTrigger("UNIT_INSPECT_READY", function(self, data)

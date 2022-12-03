@@ -5,7 +5,7 @@
 	<Script file = "Core.lua"/>
 	<Script file = "Channel.lua"/>
 	<Script file = "ChatBar.lua"/>
-	<Script file = "ChatCopy.lua"/>
+	<!-- <Script file = "ChatCopy.lua"/> -->
 	<Script file = "ChatEmote.lua"/>
 	<Script file = "ChatHistory.lua"/>
 	<Script file = "ChatAtFriends.lua"/>

@@ -1,0 +1,351 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+
+	<Script file="config.lua"/>
+	<Script file="autosize.lua"/>
+	<Script file="cache.lua"/>
+	<Script file="stacksplit.lua"/>
+	<Script file="tooltip.lua"/>
+
+	<Frame name="VladsVendorListItemQuantityStackSplitFrame" frameStrata="HIGH" parent="UIParent" toplevel="true" enableMouse="true" enableKeyboard="true" hidden="true" clampedToScreen="true" mixin="VladsVendorListItemQuantityStackSplitMixin">
+		<Size x="172" y="96"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="SingleItemSplitBackground" file="Interface\MoneyFrame\UI-MoneyFrame">
+					<Size x="256" y="32"/>
+					<TexCoords left="0" right="0.671875" top="0" bottom="0.75"/>
+				</Texture>
+				<Texture parentKey="MultiItemSplitBackground" atlas="UI-MoneyFrame-Large" useAtlasSize="true" hidden="true"/>
+				<FontString parentKey="StackSplitText" inherits="GameFontHighlight" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="RIGHT" x="-50" y="18"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="StackItemCountText" inherits="GameFontNormal" hidden="true">
+					<Anchors>
+						<Anchor point="BOTTOM" relativeKey="$parent.StackSplitText" x="0" y="-25"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="LeftButton">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="RIGHT" relativePoint="CENTER" x="-59" y="18"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():LeftButtonOnClick()
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\MoneyFrame\Arrow-Left-Up"/>
+				<PushedTexture file="Interface\MoneyFrame\Arrow-Left-Down"/>
+				<DisabledTexture file="Interface\MoneyFrame\Arrow-Left-Disabled"/>
+			</Button>
+			<Button parentKey="RightButton">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="CENTER" x="64" y="18"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():RightButtonOnClick()
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\MoneyFrame\Arrow-Right-Up"/>
+				<PushedTexture file="Interface\MoneyFrame\Arrow-Right-Down"/>
+				<DisabledTexture file="Interface\MoneyFrame\Arrow-Right-Disabled"/>
+			</Button>
+			<Button parentKey="OkayButton" inherits="UIPanelButtonTemplate" text="OKAY">
+				<Size x="64" y="24"/>
+				<Anchors>
+					<Anchor point="RIGHT" relativePoint="BOTTOM" x="-3" y="32"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():OkayButtonOnClick()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentKey="CancelButton" inherits="UIPanelButtonTemplate" text="CANCEL">
+				<Size x="64" y="24"/>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="BOTTOM" x="5" y="32"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():CancelButtonOnClick()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnHide method="OnHide"/>
+			<OnChar method="OnChar"/>
+			<OnKeyDown method="OnKeyDown"/>
+			<OnKeyUp method="OnKeyUp"/>
+		</Scripts>
+	</Frame>
+
+	<Script file="frame_list_item_cost_frame_button.lua"/>
+	<Script file="frame_list_item_cost_frame.lua"/>
+	<Script file="frame_list_item_quantity.lua"/>
+	<Script file="frame_list_item_methods.lua"/>
+	<Script file="frame_list_item.lua"/>
+	<Script file="frame_list.lua"/>
+	<Script file="frame_search.lua"/>
+	<Script file="frame.lua"/>
+
+	<Button name="VladsVendorListItemCostButtonTemplate" registerForClicks="LeftButtonUp, RightButtonUp" virtual="true" mixin="VladsVendorListItemCostButtonMixin, VladsVendorListAutoSizeMixin">
+		<Size x="20" y="20"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Name" inherits="GameFontHighlight" justifyH="RIGHT" wordwrap="false">
+					<Anchors>
+						<Anchor point="RIGHT" relativeKey="$parent" relativePoint="RIGHT" x="-1" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="Icon" mixin="VladsVendorListAutoSizeMixin">
+				<Size x="20" y="20"/>
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent" relativePoint="RIGHT" x="0" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="Texture" mask="Interface\CharacterFrame\TempPortraitAlphaMask">
+							<Size x="20" y="20"/>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
+							<!--<TexCoords left="0.1" right="0.9" top="0.1" bottom="0.9"/>-->
+						</Texture>
+						<MaskTexture parentKey="CircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+							<Size x="18" y="18"/>
+							<Anchors>
+								<Anchor point="CENTER" relativeKey="$parent.Texture" relativePoint="CENTER"/>
+							</Anchors>
+							<MaskedTextures>
+								<MaskedTexture childKey="Texture"/>
+							</MaskedTextures>
+						</MaskTexture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Count" inherits="GameFontHighlight" justifyH="RIGHT" justifyV="BOTTOM" wordwrap="false">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
+			<OnClick method="OnClick"/>
+		</Scripts>
+	</Button>
+
+	<Frame name="VladsVendorListItemCostFrameTemplate" virtual="true" mixin="VladsVendorListItemCostFrameMixin, VladsVendorListAutoSizeMixin">
+		<Size x="180" y="20"/>
+		<Frames>
+			<Button parentArray="Costs" parentKey="Cost1" inherits="VladsVendorListItemCostButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent" relativePoint="RIGHT" x="0" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Costs" parentKey="Cost2" inherits="VladsVendorListItemCostButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.Cost1" relativePoint="LEFT" x="-4" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Costs" parentKey="Cost3" inherits="VladsVendorListItemCostButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.Cost2" relativePoint="LEFT" x="-4" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Costs" parentKey="Cost4" inherits="VladsVendorListItemCostButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.Cost3" relativePoint="LEFT" x="-4" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Costs" parentKey="Cost5" inherits="VladsVendorListItemCostButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.Cost4" relativePoint="LEFT" x="-4" y="0"/>
+				</Anchors>
+			</Button>
+			<Button parentArray="Costs" parentKey="Cost6" inherits="VladsVendorListItemCostButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.Cost5" relativePoint="LEFT" x="-4" y="0"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+		</Scripts>
+	</Frame>
+
+	<Button name="VladsVendorListItemQuantityButtonTemplate" registerForClicks="LeftButtonUp" virtual="true" mixin="VladsVendorListItemQuantityButtonMixin">
+		<Size x="10" y="20"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Bg">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Name" inherits="GameFontHighlightSmall" justifyH="LEFT" wordwrap="false">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+			<OnShow method="OnShow"/>
+			<OnHide method="OnHide"/>
+			<OnClick method="OnClick"/>
+		</Scripts>
+		<NormalTexture setAllPoints="true" file="Interface\PaperDollInfoFrame\UI-GearManager-FlyoutButton"/>
+		<HighlightTexture file="Interface\PaperDollInfoFrame\UI-GearManager-FlyoutButton" alphaMode="ADD" setAllPoints="true"/>
+	</Button>
+
+	<Button name="VladsVendorListItemTemplate" registerForClicks="LeftButtonUp, RightButtonUp" virtual="true" mixin="VladsVendorListItemMixin">
+		<Size x="300" y="20"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Bg" file="Interface\Tooltips\UI-Tooltip-Background">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Icon">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="LEFT" x="4" y="0"/>
+					</Anchors>
+					<!--<TexCoords left="0.1" right="0.9" top="0.1" bottom="0.9"/>-->
+				</Texture>
+				<MaskTexture parentKey="CircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+					<Size x="18" y="18"/>
+					<Anchors>
+						<Anchor point="LEFT" x="6" y="0"/>
+					</Anchors>
+					<MaskedTextures>
+						<MaskedTexture childKey="Icon"/>
+					</MaskedTextures>
+				</MaskTexture>
+				<FontString parentKey="Name" inherits="GameFontHighlightSmall" justifyH="LEFT" wordwrap="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Icon" relativePoint="TOPRIGHT" x="4" y="0"/>
+						<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-4" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="Quantity" inherits="VladsVendorListItemQuantityButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Frame parentKey="Cost" inherits="VladsVendorListItemCostFrameTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.Quantity" relativePoint="LEFT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+			<OnShow method="OnShow"/>
+			<OnHide method="OnHide"/>
+			<OnEvent method="OnEvent"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
+			<OnUpdate method="OnUpdate"/>
+			<OnClick method="OnClick"/>
+		</Scripts>
+		<NormalTexture setAllPoints="true" file="Interface\GuildFrame\GuildFrame">
+			<TexCoords left="0.36230469" right="0.38183594" top="0.95898438" bottom="0.99804688"/>
+		</NormalTexture>
+		<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alphaMode="ADD" setAllPoints="true"/>
+	</Button>
+
+	<Frame name="VladsVendorFrameListTemplate" mixin="VladsVendorListMixin" virtual="true">
+		<Frames>
+			<ScrollFrame parentKey="ListScrollFrame" inherits="HybridScrollFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Frames>
+					<Slider parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-15"/>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="11"/>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture parentKey="Background" file="Interface\FrameGeneral\UI-Background-Marble" horizTile="true" vertTile="true" setAllPoints="true"/>
+							</Layer>
+						</Layers>
+					</Slider>
+				</Frames>
+			</ScrollFrame>
+			<Frame parentKey="InsetFrame" useParentLevel="false" inherits="InsetFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-3" y="3"/>
+					<Anchor point="BOTTOMRIGHT" x="-2" y="-2"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+			<OnShow method="OnShow"/>
+			<OnHide method="OnHide"/>
+			<OnEvent method="OnEvent"/>
+		</Scripts>
+	</Frame>
+
+	<EditBox name="VladsVendorFrameSearchTemplate" virtual="true" multiLine="false" letters="255" countInvisibleLetters="true" autoFocus="false" inherits="SearchBoxTemplate" mixin="VladsVendorFrameSearchMixin">
+		<Size x="102" y="32"/>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+			<OnHide method="OnHide"/>
+			<OnTextChanged method="OnTextChanged"/>
+			<OnChar method="OnChar"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
+		</Scripts>
+	</EditBox>
+
+	<Frame name="VladsVendorFrame" toplevel="true" parent="MerchantBuyBackItem" frameStrata="HIGH" movable="true" enableMouse="true" hidden="true" mixin="VladsVendorFrameMixin">
+		<Frames>
+			<EditBox parentKey="Search" inherits="VladsVendorFrameSearchTemplate"/>
+			<Frame parentKey="List" inherits="VladsVendorFrameListTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+			<OnEvent method="OnEvent"/>
+		</Scripts>
+	</Frame>
+
+</Ui>

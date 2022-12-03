@@ -1,14 +1,9 @@
 # BugSack
 
-## [v9.1.1](https://github.com/funkydude/BugSack/tree/v9.1.1) (2021-11-12)
-[Full Changelog](https://github.com/funkydude/BugSack/compare/v9.1.0...v9.1.1) [Previous Releases](https://github.com/funkydude/BugSack/releases)
+## [v10.0.2](https://github.com/funkydude/BugSack/tree/v10.0.2) (2022-11-15)
+[Full Changelog](https://github.com/funkydude/BugSack/compare/v10.0.1...v10.0.2) [Previous Releases](https://github.com/funkydude/BugSack/releases)
 
-- bump toc  
-- Add option to play error sound over the 'Master' audio channel, closes #44  
-- Clamp the error window to the screen  
-- Fix click handling for the error window title (#51)  
-    Closes #26  
-- Add option to enable alt-click wipe (#50)  
-    Closes #46  
-- bump toc  
-- Update workflow  
+- UI tweaks (#80)  
+    - title bar doubleclick search now has a background  
+    - main window is now wider  
+    - backslashes replaced with forward slashes in path matching  

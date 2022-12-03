@@ -36,6 +36,7 @@ ns.L = {
     PaperDoll                   = "Окно персонажа",
     Chat                        = "Чат",
     --Loot                        = "",
+    ShowGemAndEnchant           = "Show Gem And Enchant",
 }
 
 BINDING_NAME_InspectRaidFrame = "рамку"

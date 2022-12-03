@@ -14,35 +14,28 @@ local function OnPlayerLogin(self, event, ...)
 
 	BigTipDB.general = {}
 	BigTipDB.general.mask = false
-	BigTipDB.general.bgfile = "dark"
-	BigTipDB.general.borderSize = 1
-	BigTipDB.general.borderColor = {0.90, 0.90, 0.90, 1.00}
-	BigTipDB.general.borderCorner = "1 Pixel"
+	BigTipDB.general.scale = 1.00
+	BigTipDB.general.borderSize = 1.00
+	BigTipDB.general.borderCorner = "angular"
+	BigTipDB.general.alwaysShowIdInfo = true
+	BigTipDB.general.statusbarFont = "default"
+	BigTipDB.general.statusbarTexture = "Solid"
+	BigTipDB.general.statusbarFontFlag = "OUTLINE"
 	BigTipDB.general.anchor = {
-		["returnOnUnitFrame"] = false,
 		["position"] = "cursorRight",
-		["hiddenInCombat"] = true,
-		["cp"] = "BOTTOM",
 		["p"] = "BOTTOMRIGHT",
-		["returnInCombat"] = false
+		["cp"] = "BOTTOM",
+		["hiddenInCombat"] = true,
+		["returnInCombat"] = false,
+		["returnOnUnitFrame"] = false
 	}
-
-	BigTipDB.item = {}
-	BigTipDB.item.coloredItemBorder = true
 
 	BigTipDB.unit = {}
 	BigTipDB.unit.npc = {}
 	BigTipDB.unit.npc.showModel = false
-	BigTipDB.unit.npc.background = {
-		["alpha"] = 0.70,
-		["colorfunc"] = "default"
-	}
+
 	BigTipDB.unit.player = {}
 	BigTipDB.unit.player.showModel = false
-	BigTipDB.unit.player.background = {
-		["alpha"] = 0.70,
-		["colorfunc"] = "default"
-	}
 end
 
 -- Handler

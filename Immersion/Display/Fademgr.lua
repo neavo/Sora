@@ -83,7 +83,9 @@ local function RestoreFadedFrames(self)
 		for frame in pairs(__staticHideFrames) do
 			if not __cacheAlphaIgnored[frame] then
 				FadeIn(frame, 0.5, frame:GetAlpha(), 1)
-				frame:Show()
+				if not frame:IsProtected() then
+					frame:Show()
+				end
 			end
 		end
 		self.ignoredFadeFrames = nil
@@ -93,6 +95,12 @@ end
 ----------------------------------
 -- Exposed to logic layer
 ----------------------------------
+local function SafeOnFadeOut(frame)
+	if not frame:IsProtected() then
+		frame:Hide()
+	end
+end
+
 function frame:FadeIn(fadeTime, playAnimations, ignoreFrameFade)
 	fadeTime = fadeTime or 0.2
 
@@ -110,7 +118,7 @@ function frame:FadeIn(fadeTime, playAnimations, ignoreFrameFade)
 		for frame in pairs(__staticHideFrames) do
 			if not __cacheAlphaIgnored[frame] then
 				FadeOut(frame, fadeTime, frame:GetAlpha(), 0, {
-					finishedFunc = frame.Hide;
+					finishedFunc = SafeOnFadeOut;
 					finishedArg1 = frame;
 				})
 			end
@@ -152,6 +160,14 @@ do 	local function GameTooltipAlphaHandler(self)
 	end
 
 	GameTooltip:HookScript('OnTooltipSetDefaultAnchor', GameTooltipAlphaHandler)
-	GameTooltip:HookScript('OnTooltipSetItem', GameTooltipAlphaHandler)
 	GameTooltip:HookScript('OnShow', GameTooltipAlphaHandler)
+
+	if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall then
+		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(self)
+			if self ~= GameTooltip then return end;
+			GameTooltipAlphaHandler(self)
+		end)
+	else
+		GameTooltip:HookScript('OnTooltipSetItem', GameTooltipAlphaHandler)
+	end
 end

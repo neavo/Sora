@@ -3,6 +3,5 @@
 	<script file = "Config.lua" />
 
 	<Script file = "Core.lua" />
-	<Script file = "Style.lua" />
 </Ui>
 

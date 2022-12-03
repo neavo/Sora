@@ -7,29 +7,28 @@ local function getMoney(money)
     local s = math.floor((money % 10000) / 100)
     local g = math.floor(money / 10000)
 
-    return format(GOLD_AMOUNT_TEXTURE, g, 0, 0) ..
-        " " .. format(SILVER_AMOUNT_TEXTURE, s, 0, 0) .. " " .. format(COPPER_AMOUNT_TEXTURE, c, 0, 0)
+    return format(GOLD_AMOUNT_TEXTURE, g, 0, 0) .. " " .. format(SILVER_AMOUNT_TEXTURE, s, 0, 0) .. " " .. format(COPPER_AMOUNT_TEXTURE, c, 0, 0)
 end
 
 local function OnMerchantShow(self, event, ...)
     local cost = 0
 
-    for container = 0, 4 do
-        local numSlots = GetContainerNumSlots(container)
+    for containerIndex = 0, 4 do
+        local numSlots = C_Container.GetContainerNumSlots(containerIndex)
 
         for slot = 1, numSlots do
-            local link = GetContainerItemLink(container, slot)
+            local itemLink = C_Container.GetContainerItemLink(containerIndex, slot)
 
-            if link then
-                local quality = select(3, GetItemInfo(link))
-                local vendorPrice = select(11, GetItemInfo(link))
-                local count = select(2, GetContainerItemInfo(container, slot))
+            if itemLink then
+                local quality = select(3, GetItemInfo(itemLink))
+                local vendorPrice = select(11, GetItemInfo(itemLink))
+                local stackCount = C_Container.GetContainerItemInfo(containerIndex, slot).stackCount
 
-                if vendorPrice and vendorPrice > 0 and count > 0 and quality == 0 then
-                    UseContainerItem(container, slot)
+                if vendorPrice and vendorPrice > 0 and quality == 0 and stackCount > 0 then
+                    C_Container.UseContainerItem(containerIndex, slot)
                     PickupMerchantItem()
 
-                    cost = cost + vendorPrice * count
+                    cost = cost + vendorPrice * stackCount
                 end
             end
         end

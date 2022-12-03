@@ -3,7 +3,7 @@
 	<script file = "Config.lua" />
 
 	<script file = "Core.lua" />
-	<script file = "Glow.lua" />
+	<script file = "Fader.lua" />
 	<script file = "Style.lua" />
 	<script file = "HotKey.lua" />
 

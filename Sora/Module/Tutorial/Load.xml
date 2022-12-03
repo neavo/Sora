@@ -6,7 +6,6 @@
 	<Script file = "Plugin\DBM.lua"/>
 	<Script file = "Plugin\CVar.lua"/>
 	<Script file = "Plugin\Chat.lua"/>
-	<Script file = "Plugin\AdiBags.lua"/>
 	<Script file = "Plugin\Mapster.lua"/>
 	<Script file = "Plugin\Quester.lua"/>
 	<Script file = "Plugin\TinyInspect.lua"/>

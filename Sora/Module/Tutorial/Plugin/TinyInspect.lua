@@ -10,6 +10,7 @@ local function OnPlayerLogin(self, event, ...)
 	TinyInspectDB = {}
 	TinyInspectDB.version = 0.01
 	TinyInspectDB.ShowItemStats = true
+	TinyInspectDB.ShowPluginGreenState = true
 	TinyInspectDB.ShowInspectAngularBorder = true
 	TinyInspectDB.ShowOwnFrameWhenInspecting = true
 end
